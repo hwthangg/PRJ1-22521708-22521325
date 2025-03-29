@@ -1,11 +1,29 @@
-const express = require('express')
-const app = express()
-const port = 3000
+const express = require('express');
+const mongoose = require('mongoose');
+//import routes
+const userRoutes = require('./routes/UserRoutes.js');
+const chapterRoutes = require('./routes/ChapterRoutes.js');
 
-app.get('/', (req, res) => {
-  res.send('Hello World!')
+const app = express();
+//connect db
+mongoose
+  .connect("mongodb://localhost:27017/TestServer")
+  .then(() => console.log("💻 Mondodb Connected"))
+  .catch(err => console.error(err));
+
+app.use(express.json());
+
+app.get("/", (req,res)=>{
+  res.send("Hello World")
 })
 
-app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`)
-})
+// User routes
+app.use('/api/users', userRoutes);
+
+// Chapter routes
+app.use('/api/chapters', chapterRoutes);
+
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => {
+  console.log(`Server is running on port http://localhost:${PORT}`);
+});
