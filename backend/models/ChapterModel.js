@@ -35,8 +35,8 @@ const chapterSchema = new mongoose.Schema({
   },
   status: {
     type: String,
-    enum: ['Active', 'Deleted'],
-    default: 'Active'
+    enum: ['active', 'deleted'],
+    default: 'active'
   }
 });
 

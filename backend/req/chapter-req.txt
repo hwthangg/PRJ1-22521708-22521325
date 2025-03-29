@@ -3,12 +3,10 @@
     "method": "POST",
     "url": "/api/chapters",
     "body": {
-      "leaderId": "60d5f9e8fc13ae4567000000",
       "name": "Chi đoàn A",
       "address": "123 Đường ABC, Quận 1, TP.HCM",
       "affiliated": "Đoàn cơ sở X",
       "establishedDate": "2023-05-01",
-      "status": "Active"
     }
   },
   "getAllChapters": {
@@ -24,7 +22,7 @@
     "url": "/api/chapters/{id}",
     "body": {
       "name": "Chi đoàn B",
-      "status": "Deleted"
+      "status": "deleted"
     }
   },
   "deleteChapter": {

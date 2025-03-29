@@ -9,7 +9,7 @@
       "birthday": "1990-01-01",
       "gender": "male",
       "password": "securepassword",
-      "role": "user",
+      "role": "leader",
       "status": "active"
     }
   },
@@ -26,7 +26,7 @@
     "url": "/api/users/{id}",
     "body": {
       "fullname": "John Updated",
-      "status": "inactive"
+      "status": "deleted"
     }
   },
   "deleteUser": {
