@@ -10,6 +10,7 @@ const chapterLogRoutes = require('./routes/ChapterLogRoutes.js');
 const transferLogRoutes = require('./routes/TransferLogRoutes.js')
 const participationRoutes = require('./routes/ParticipationRoutes.js');
 const commentRoutes = require('./routes/CommentRoutes.js')
+const favoriteRoutes = require('./routes/FavoriteRoutes.js')
 
 const app = express();
 //connect db
@@ -49,6 +50,8 @@ app.use('/api/transfer-logs', transferLogRoutes);
 app.use('/api/participations', participationRoutes);
 
 app.use('/api/comments', commentRoutes);
+
+app.use('/api/favorites', favoriteRoutes);
 
 
 const PORT = process.env.PORT || 5000;

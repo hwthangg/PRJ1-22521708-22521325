@@ -6,7 +6,7 @@ const memberController = require('../controllers/MemberController.js');
 router.post('/', memberController.createMember);
 
 // Get all members
-router.get('/', memberController.getAllMembers);
+router.get('/', memberController.getMembers);
 
 // Get a single member by ID
 router.get('/:id', memberController.getMemberById);
