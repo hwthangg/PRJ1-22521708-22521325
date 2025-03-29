@@ -8,6 +8,7 @@ const memberRoutes = require('./routes/MemberRoutes.js')
 const eventRoutes = require('./routes/EventRoutes.js')
 const chapterLogRoutes = require('./routes/ChapterLogRoutes.js'); 
 const transferLogRoutes = require('./routes/TransferLogRoutes.js')
+const participationRoutes = require('./routes/ParticipationRoutes.js');
 
 const app = express();
 //connect db
@@ -42,6 +43,10 @@ app.use('/api/chapter-logs', chapterLogRoutes);
 
 // Transfer log routes
 app.use('/api/transfer-logs', transferLogRoutes);
+
+
+app.use('/api/participations', participationRoutes);
+
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
