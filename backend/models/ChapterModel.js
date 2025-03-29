@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const chapterSchema = new mongoose.Schema({
+const ChapterSchema = new mongoose.Schema({
   leaderId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
@@ -40,4 +40,4 @@ const chapterSchema = new mongoose.Schema({
   }
 });
 
-module.exports = mongoose.model('Chapter', chapterSchema, "ChapterCollection");
+module.exports = mongoose.model('Chapter', ChapterSchema, "ChapterCollection");

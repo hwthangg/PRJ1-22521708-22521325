@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const eventSchema = new mongoose.Schema({
+const EventSchema = new mongoose.Schema({
   chapterId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Chapter',
@@ -56,4 +56,4 @@ const eventSchema = new mongoose.Schema({
   }
 });
 
-module.exports = mongoose.model('Event', eventSchema, 'EventCollection');
+module.exports = mongoose.model('Event', EventSchema, 'EventCollection');

@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const documentSchema = new mongoose.Schema({
+const DocumentSchema = new mongoose.Schema({
   chapterId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Chapter',
@@ -43,4 +43,4 @@ const documentSchema = new mongoose.Schema({
   }
 });
 
-module.exports = mongoose.model('Document', documentSchema, 'DocumentCollection');
+module.exports = mongoose.model('Document', DocumentSchema, 'DocumentCollection');

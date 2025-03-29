@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const memberSchema = new mongoose.Schema({
+const MemberSchema = new mongoose.Schema({
   chapterId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Chapter',
@@ -91,4 +91,4 @@ const memberSchema = new mongoose.Schema({
   }
 });
 
-module.exports = mongoose.model('Member', memberSchema, 'MemberCollection');
+module.exports = mongoose.model('Member', MemberSchema, 'MemberCollection');
