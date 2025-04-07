@@ -13,4 +13,8 @@ ChapterRoutes.put("/:chapterId", ChapterController.updateChapter);
 
 ChapterRoutes.delete("/:chapterId", ChapterController.deleteChapter);
 
+ChapterRoutes.get("/:chapterId/chapter-logs", ChapterController.retrieveChapterLogs);
+
+
+
 export default ChapterRoutes;

@@ -1,4 +1,6 @@
+import mongoose from "mongoose";
 import Chapter from "../models/chapter.model.js";
+import ChapterLog from "../models/chapter_log.model.js";
 
 const ChapterController = () => {
   const createChapter = async (req, res) => {
@@ -11,7 +13,7 @@ const ChapterController = () => {
         return res.status(409).send("Address is already in use");
       }
       const newChapter = await new Chapter(chapterData).save();
-      
+
       return res.status(201).send(newChapter);
     } catch (error) {
       return res.status(500).send({
@@ -87,11 +89,11 @@ const ChapterController = () => {
   const deleteChapter = async (req, res) => {
     try {
       const { chapterId } = req.params;
-      const deletedChapter = await Chapter.findByIdAndDelete(chapterId);
-      if (deletedChapter) {
+      const logs = await ChapterLog.findByIdAndDelete(chapterId);
+      if (logs.length > 0) {
         return res.send(deletedChapter);
       } else {
-        return res.status(404).send("Chapter not found");
+        return res.status(404).send("Chapter logs not found");
       }
     } catch (error) {
       res.status(500).send({
@@ -100,13 +102,32 @@ const ChapterController = () => {
       });
     }
   };
+const retrieveChapterLogs =async(req, res) => {
+  try {
+    const chapterId = req.params.chapterId
+    const logs = await ChapterLog.find({chapterId: chapterId});
+  
 
+  
+    if (logs.length > 0) {
+      return res.send(logs);
+    } else {
+      return res.status(404).send("No chapter logs found");
+    }
+  } catch (error) {
+    res.status(500).send({
+      message: "Internal server error",
+      error: error.message,
+    });
+  }
+}
   return {
     createChapter,
     retrieveOneChapter,
     retrieveManyChapters,
     updateChapter,
     deleteChapter,
+    retrieveChapterLogs
   };
 };
 
