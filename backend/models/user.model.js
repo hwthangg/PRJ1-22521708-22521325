@@ -1,53 +1,28 @@
 import mongoose, { Schema } from "mongoose";
 
-const userSchema = new Schema(
+const UserSchema = new Schema(
   {
-    email: {
-      type: String,
-      required: true,
-
-    },
-    phone: {
-      type: String,
-      required: true,
-
-    },
-    fullname: {
-      type: String,
-      required: true,
-    },
-    birthday: {
-      type: Date,
-      required: true,
-    },
-    gender: {
-      type: String,
-      enum: ["Male", "Female", "Other"], // Các giá trị hợp lệ cho giới tính
-      required: true,
-    },
-    password: {
-      type: String,
-      required: true,
-    },
+    email: { type: String, required: true },
+    phone: { type: String, required: true },
+    fullname: { type: String, required: true },
+    birthday: { type: String, required: true },
+    gender: { type: String, enum: ["male", "female"], required: true },
+    password: { type: String, required: true },
     role: {
       type: String,
-      enum: ["Admin", "Leader"], // Các vai trò hợp lệ
+      enum: ["admin", "leader"],
       required: true,
-    },
-    chapterId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Chapter", // Mô hình 'Chapter' để liên kết với chi đoàn
-      default: null,
+      default: "leader",
     },
     status: {
       type: String,
-      enum: ["Activated", "Deleted"], // Các trạng thái hợp lệ
-      default: "Activated", // Mặc định là Activated
+      enum: ["activated", "deleted"],
+      default: "activated",
     },
+    chapterId: { type: mongoose.Types.ObjectId, ref: "Chapter", default: null }, //Kiểu ObjectId của MongoDB
   },
-  { timestamps: true } // Tự động thêm createdAt và updatedAt khi sử dụng timestamps
+  { timestamps: true } //Tự động tạo createdAt, updatedAt
 );
 
-const User = mongoose.model("User", userSchema, "user_collection");
-
+const User = mongoose.model("User", UserSchema, "user_collection");
 export default User;

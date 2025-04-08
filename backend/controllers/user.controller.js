@@ -1,144 +1,200 @@
-import Chapter from "../models/chapter.model.js";
 import User from "../models/user.model.js";
 
+// Định nghĩa UserController
 const UserController = () => {
+  // Tạo người dùng mới
   const createUser = async (req, res) => {
     try {
-      const userData = req.body;
-      const existingUser = await User.findOne({
-        $or: [{ email: userData.email }, { phone: userData.phone }],
+      const inputUser = req.body; // Lấy dữ liệu người dùng từ body request
+
+      // Kiểm tra xem email hoặc số điện thoại đã tồn tại trong DB chưa
+      const isAlreadyEmailOrPhone = await User.findOne({
+        $or: [{ email: inputUser.email }, { phone: inputUser.phone }],
       });
-      if (existingUser) {
-        return res.status(409).send("Email or phone is already in use");
+
+      if (isAlreadyEmailOrPhone) {
+        res.status(409).send({
+          status: "error",
+          message: "Email or phone is already used", // Trả về lỗi nếu email/phone bị trùng
+        });
+        return;
       }
-      const newUser = await new User(userData).save();
-      return res.status(201).send(newUser);
+
+      // Tạo và lưu người dùng mới
+      const newUser = await new User(inputUser).save();
+      console.log(newUser); // In thông tin người dùng mới vào console (có thể xoá ở production)
+      res.status(201).send("Creating user successfully"); // Trả về thông báo thành công
     } catch (error) {
-      return res.status(500).send({
-        status: "error",
-        message: "Internal server error",
-        error: error.message,
-      });
+      // Ghi log và trả về lỗi server
+      console.log(`Error code: ${error.code} \nError message: ${error.message}`);
+      res.status(500).send("Server Error");
     }
   };
 
-  const retrieveOneUser = async (req, res) => {
+  // Lấy tất cả người dùng có thể kèm theo bộ lọc
+  const getAllUsersWithFilter = async (req, res) => {
     try {
-      const { userId } = req.params;
-      const user = await User.findById(userId);
-      if (user) {
-        return res.status(200).send(user);
-      } else {
-        return res.status(404).send("User not found");
-      }
-    } catch (error) {
-      return res.status(500).send({
-        status: "error",
-        message: "Internal server error",
-        error: error.message,
-      });
-    }
-  };
+      const inputFilter = req.query; // Lấy dữ liệu bộ lọc từ query string
+      const users = await User.find(inputFilter); // Tìm người dùng theo bộ lọc
 
-  const retrieveManyUsers = async (req, res) => {
-    try {
-      const filter = req.query;
-      const users = await User.find(filter);
-      if (users.length > 0) {
-        return res.status(200).send(users);
-      } else {
-        return res.status(404).send({ message: "No users found" });
-      }
-    } catch (error) {
-      return res.status(500).send({
-        status: "error",
-        message: "Internal server error",
-        error: error.message,
-      });
-    }
-  };
+      console.log(users); // Log danh sách người dùng
 
-  const updateUser = async (req, res) => {
-    try {
-      const { userId } = req.params;
-      const userData = req.body;
-      const existingUser = await User.findOne({
-        $or: [{ email: userData.email }, { phone: userData.phone }]
-      });
-      if (existingUser) {
-        return res.status(409).send("Email or phone is already in use");
+      if (users.length < 1) {
+        res.status(404).send({
+          status: "error",
+          message: "No users found", // Không tìm thấy người dùng phù hợp
+        });
+        return;
       }
-      const updatedUser = await User.findByIdAndUpdate(userId, userData, {
-        new: true,
+
+      res.status(200).send({
+        status: "success",
+        message: "Retrieving users successfully",
+        data: { users },
       });
-      if (updatedUser) {
-        return res.send(updatedUser);
-      } else {
-        return res.status(404).send("User not found");
-      }
     } catch (error) {
+      // Trả lỗi server nếu có exception
+      console.log(`Error code: ${error.code} \nError message: ${error.message}`);
       res.status(500).send({
-        message: "Internal server error",
-        error: error.message,
+        status: "error",
+        message: error.message,
+        error,
       });
     }
   };
 
-  const deleteUser = async (req, res) => {
+  // Lấy thông tin người dùng theo ID
+  const getUserById = async (req, res) => {
     try {
-      const { userId } = req.params;
-      const deletedUser = await User.findByIdAndDelete(userId);
-      if (deletedUser) {
-        return res.send(deletedUser);
-      } else {
-        return res.status(404).send("User not found");
+      const inputId = req.params.userId; // Lấy ID từ route params
+      const user = await User.findById(inputId); // Tìm người dùng theo ID
+
+      if (!user) {
+        res.status(404).send({
+          status: "error",
+          message: "User not found",
+        });
+        return;
       }
+
+      res.status(200).send({
+        status: "success",
+        message: "Retrieving user successfully",
+        data: { user },
+      });
     } catch (error) {
+      console.log(`Error code: ${error.code} \nError message: ${error.message}`);
       res.status(500).send({
-        message: "Internal server error",
-        error: error.message,
+        status: "error",
+        message: error.message,
+        error,
       });
     }
   };
 
-  const setUserChapterId = async (req, res) => {
+  // Cập nhật người dùng theo ID
+  const updateUserById = async (req, res) => {
     try {
-      const { userId, chapterId } = req.params; // Lấy userId và chapterId từ URL params
+      const inputUserId = req.params.userId;
+      const inputUpdatingUser = req.body;
 
-      // Kiểm tra xem chapter có tồn tại hay không
-      const existingChapter = await Chapter.findById(chapterId);
-      if (!existingChapter) {
-        return res.status(404).send("Chapter not found"); // Nếu không có chapter thì trả về lỗi
+      const currentUser = await User.findById(inputUserId); // Lấy người dùng hiện tại từ DB
+
+      if (!currentUser) {
+        res.status(404).send({
+          status: "error",
+          message: "User not found",
+        });
+        return;
       }
 
-      // Cập nhật chapterId cho người dùng
+      // Kiểm tra xem email/phone có thay đổi không
+      const isModifiedEmailOrPhone =
+        currentUser.email != inputUpdatingUser.email ||
+        currentUser.phone != inputUpdatingUser.phone;
+
+      if (isModifiedEmailOrPhone) {
+        // Nếu có thay đổi, kiểm tra email/phone mới đã được người khác dùng chưa
+        const isAlreadyEmailOrPhone = await User.findOne({
+          $or: [
+            { email: inputUpdatingUser.email },
+            { phone: inputUpdatingUser.phone },
+          ],
+        });
+
+        if (isAlreadyEmailOrPhone) {
+          res.status(409).send({
+            status: "error",
+            message: "Email or phone is already used",
+          });
+          return;
+        }
+      }
+
+      // Cập nhật người dùng và trả về bản ghi mới
       const updatedUser = await User.findByIdAndUpdate(
-        userId,
-        { chapterId },
-        { new: true } // Trả về bản ghi sau khi đã cập nhật
+        inputUserId,
+        inputUpdatingUser,
+        { new: true } // Trả về bản ghi sau khi cập nhật
       );
 
-      if (updatedUser) {
-        return res.send(updatedUser); // Trả về người dùng sau khi cập nhật thành công
-      } else {
-        return res.status(404).send("User not found"); // Không tìm thấy người dùng để cập nhật
-      }
+      res.status(200).send({
+        status: "success",
+        message: "Updating user successfully",
+        data: { user: updatedUser },
+      });
     } catch (error) {
-      // Nếu có lỗi xảy ra trong quá trình xử lý
+      console.log(`Error code: ${error.code} \nError message: ${error.message}`);
       res.status(500).send({
-        message: "Internal server error",
-        error: error.message,
+        status: "error",
+        message: error.message,
+        error,
       });
     }
   };
 
+  // Xóa mềm người dùng theo ID (cập nhật status thành 'deleted')
+  const deletedUserById = async (req, res) => {
+    try {
+      const inputUserId = req.params.userId;
+
+      // Cập nhật trạng thái của người dùng thành "deleted"
+      const deletedUser = await User.findByIdAndUpdate(
+        inputUserId,
+        { status: "deleted" },
+        { new: true }
+      );
+
+      if (!deletedUser) {
+        res.status(404).send({
+          status: "error",
+          message: "User not found",
+        });
+        return;
+      }
+
+      res.status(200).send({
+        status: "success",
+        message: "Deleting user successfully",
+        data: { user: deletedUser },
+      });
+    } catch (error) {
+      console.log(`Error code: ${error.code} \nError message: ${error.message}`);
+      res.status(500).send({
+        status: "error",
+        message: error.message,
+        error,
+      });
+    }
+  };
+
+  // Trả về các hàm controller
   return {
     createUser,
-    retrieveOneUser,
-    retrieveManyUsers,
-    updateUser,
-    deleteUser,
-    setUserChapterId,
+    getAllUsersWithFilter,
+    getUserById,
+    updateUserById,
+    deletedUserById,
   };
 };
 

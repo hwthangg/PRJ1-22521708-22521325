@@ -24,8 +24,8 @@ app.get("/", (req, res) => {
 // app.use("/api/auth", AuthRoutes)
 import UserRoutes from "./routes/user.routes.js"
 app.use("/api/users", UserRoutes)
-import ChapterRoutes from "./routes/chapter.routes.js";
-app.use("/api/chapters", ChapterRoutes)
+
+// app.use("/api/chapters", ChapterRoutes)
 // app.use("/api/members", MemberRoutes)
 // app.use("/api/transfer-logs", TransferLogRoutes)
 // app.use("/api/events", EventRoutes)
