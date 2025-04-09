@@ -18,4 +18,7 @@ UserRoutes.put("/:userId", UserController.updateUserById);
 // Xoá mềm người dùng theo ID
 UserRoutes.delete("/:userId", UserController.deletedUserById);
 
+// Cấp quyền quản lý một chi đoàn
+UserRoutes.patch("/:userId/lead-chapter/:chapterId", UserController.setChapterLeader)
+
 export default UserRoutes;

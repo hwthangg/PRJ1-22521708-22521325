@@ -1,3 +1,4 @@
+import Chapter from "../models/chapter.model.js";
 import User from "../models/user.model.js";
 
 // Định nghĩa UserController
@@ -188,6 +189,53 @@ const UserController = () => {
     }
   };
 
+  const setChapterLeader = async (req, res) => {
+    try {
+      const inputUserId = req.params.userId
+      const inputChapterId = req.params.chapterId
+
+      const chapter = await Chapter.findById(inputChapterId)
+
+      if(!chapter){
+        res.status(404).send({
+          status: "error",
+          message: "Chapter not found", 
+        });
+        return;
+      }
+      const leader = await User.findByIdAndUpdate(
+        inputUserId,
+        { chapterId: inputChapterId },
+        { new: true }
+      );
+
+      if (!leader) {
+        res.status(404).send({
+          status: "error",
+          message: "User not found",
+        });
+        return;
+      }
+
+      res.status(200).send({
+        status: "success",
+        message: "Setting chapter's leader successfully",
+        data: { user: leader },
+      });
+      
+
+    } catch (error) {
+      console.log(
+        `Error code: ${error.code} \nError message: ${error.message}`
+      );
+      res.status(500).send({
+        status: "error",
+        message: error.message,
+        error,
+      });
+    }
+  };
+
   // Trả về các hàm controller
   return {
     createUser,
@@ -195,6 +243,7 @@ const UserController = () => {
     getUserById,
     updateUserById,
     deletedUserById,
+    setChapterLeader
   };
 };
 

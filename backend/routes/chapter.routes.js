@@ -18,4 +18,7 @@ ChapterRoutes.put("/:chapterId", ChapterController.updateChapterById);
 // Xoá mềm chi đoàn theo ID
 ChapterRoutes.delete("/:chapterId", ChapterController.deleteChapterById);
 
+// Lấy logs của chi đoàn
+ChapterRoutes.get("/:chapterId/logs",ChapterController.getAllChapterLogs)
+
 export default ChapterRoutes;
