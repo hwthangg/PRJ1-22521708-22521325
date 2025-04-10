@@ -1,3 +1,8 @@
-.test{
-    color:green
-}
+.footer {
+    background-color: #bdc2fc;
+    color: white;
+    text-align: center;
+    padding: 10px 0;
+    font-size: 14px;
+  }
+  
