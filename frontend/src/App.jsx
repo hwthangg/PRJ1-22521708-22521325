@@ -4,6 +4,7 @@ import Header from "./components/Header/Header";
 import Footer from "./components/Footer/Footer";
 import Search from "./components/Search/Search";
 import DateSelect from "./components/Date/Date";
+import AdminDashboard from "./pages/AdminDashboard/AdminDashboard";
 
 import './App.css';
 
@@ -18,7 +19,7 @@ function App() {
       </div>
 
       <Routes>
-        <Route path="/" element={<TestPage />} />
+        <Route path="/" element={<AdminDashboard />} />
       </Routes>
 
       <Footer />
