@@ -30,6 +30,7 @@ app.use("/api/users", UserRoutes)
 import ChapterRoutes from "./routes/chapter.routes.js"
 import MemberRoutes from "./routes/member.routes.js";
 import DocumentRoutes from "./routes/document.routes.js";
+import EventRoutes from "./routes/event.routes.js";
 app.use("/api/chapters", ChapterRoutes)
 
 app.use("/api/members", MemberRoutes)
@@ -38,7 +39,7 @@ app.use("/api/members", MemberRoutes)
 app.use("/api/documents", DocumentRoutes);
 
 // app.use("/api/transfer-logs", TransferLogRoutes)
-// app.use("/api/events", EventRoutes)
+app.use("/api/events", EventRoutes)
 // app.use("/api/docs", DocRoutes)
 
 app.listen(PORT, () => {
