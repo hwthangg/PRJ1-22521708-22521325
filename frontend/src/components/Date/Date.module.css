@@ -1,0 +1,28 @@
+.dateContainer {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    font-family: sans-serif;
+  }
+  
+  .selectGroup {
+    display: flex;
+    gap: 26px; /* khoảng cách giữa các dropdown */
+  }
+  
+  .label {
+    font-weight: bold;
+    font-size: 14px;
+    white-space: nowrap;
+  }
+  
+  .select {
+    padding: 10px 12px;
+    border: none;
+    background-color: #d9d9d9;
+    border-radius: 6px;
+    font-size: 14px;
+    cursor: pointer;
+    min-width: 60px;
+  }
+  
