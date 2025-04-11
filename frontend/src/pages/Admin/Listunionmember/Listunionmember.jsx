@@ -24,7 +24,6 @@ const Listunionmember = () => {
       'Địa chỉ thường trú': '1/1 đường A, khu phố A, phường A, huyện A, tỉnh A',
       'Thông tin liên hệ': 'Email: dht@gmail.com\nSĐT: 0123456789'
     },
-    // Thêm dòng khác nếu cần
   ];
 
   return (
