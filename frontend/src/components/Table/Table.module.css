@@ -1,0 +1,28 @@
+.tableWrapper {
+    overflow-x: auto;
+  }
+  
+  .table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: sans-serif;
+    font-size: 14px;
+  }
+  
+  th, td {
+    border: 1px solid #ccc;
+    padding: 8px;
+    text-align: left;
+    vertical-align: top;
+  }
+  
+  th {
+    background-color: #4955CE;
+    color: white;
+    font-weight: bold;
+  }
+  
+  td input[type='checkbox'] {
+    transform: scale(1.2);
+  }
+  

@@ -1,13 +1,13 @@
 .searchBox {
     display: flex;
     align-items: center;
-    border: 1px solid #ccc;
+    border: 1px solid #4955CE;
     border-radius: 6px;
-    padding: 8px 12px;
+    padding: 10px 12px;
     width: 100%;
-    max-width: 900px;
+    max-width: 940px;
     background-color: white;
-    margin: 10px 120px;
+    margin: 10px 100px;
   }
   
   .icon {
@@ -22,6 +22,6 @@
     outline: none;
     flex: 1;
     font-size: 14px;
-    color: #333;
+    color: #000000;
   }
   
