@@ -272,7 +272,7 @@
   overflow-y: auto;
 }
 
-.commentSection {
+/* .commentSection {
   background-color: #ffffff; 
   padding: 16px;
   border: 1px solid #ccc;
@@ -280,6 +280,19 @@
   width: 100%;
   box-sizing: border-box;
   overflow-wrap: break-word;
+} */
+.commentSection {
+  background-color: #ffffff;
+  padding: 16px;
+  border: 1px solid #ccc;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  width: 100%;
+  box-sizing: border-box;
+  overflow-wrap: break-word;
+
+  /* Thêm đoạn dưới để giới hạn chiều cao và có thanh cuộn */
+  max-height: 400px; /* hoặc 300px tuỳ thiết kế */
+  overflow-y: auto;
 }
 
 .commentBlock {

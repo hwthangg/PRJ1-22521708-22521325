@@ -1,25 +1,33 @@
 import React, { useState, useRef, useEffect, useState as useReactState } from 'react';
 import styles from './Society.module.css';
-import avatar from '../../assets/avatar.jpg'; 
+import avatar from '../../assets/avatar.jpg';
 
 const Society = ({ site }) => {
   const [showComments, setShowComments] = useState(false);
   const [showScrollButtons, setShowScrollButtons] = useReactState(false);
   const [liked, setLiked] = useState(false);
   const [likeCount, setLikeCount] = useState(site.initialLikes || 0);
-  const scrollRef = useRef(null);
   const [activeMenuIndex, setActiveMenuIndex] = useState(null);
+  const [comments, setComments] = useState([
+    {
+      author: 'Chi đoàn KP Đông B',
+      text: 'Chúng ta vẫn biết rằng, làm việc với một đoạn văn bản dễ đọc và rõ nghĩa để gây rối trí...',
+    },
+    {
+      author: 'Chi đoàn KP Đông A',
+      text: 'Một đoạn văn bản dễ đọc sẽ giúp người đọc tập trung hơn vào nội dung chính.',
+    },
+  ]);
+  const [newComment, setNewComment] = useState('');
+  const scrollRef = useRef(null);
+  const menuRefs = useRef([]);
 
   const scrollLeft = () => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollBy({ left: -300, behavior: 'smooth' });
-    }
+    if (scrollRef.current) scrollRef.current.scrollBy({ left: -300, behavior: 'smooth' });
   };
 
   const scrollRight = () => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollBy({ left: 300, behavior: 'smooth' });
-    }
+    if (scrollRef.current) scrollRef.current.scrollBy({ left: 300, behavior: 'smooth' });
   };
 
   useEffect(() => {
@@ -40,9 +48,36 @@ const Society = ({ site }) => {
     if (option === 'edit') {
       alert(`Chỉnh sửa bình luận ${index + 1}`);
     } else if (option === 'delete') {
-      alert(`Xoá bình luận ${index + 1}`);
+      setComments(prev => prev.filter((_, i) => i !== index));
     }
     setActiveMenuIndex(null);
+  };
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        activeMenuIndex !== null &&
+        menuRefs.current[activeMenuIndex] &&
+        !menuRefs.current[activeMenuIndex].contains(event.target)
+      ) {
+        setActiveMenuIndex(null);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [activeMenuIndex]);
+
+  const handleSendComment = () => {
+    if (newComment.trim() === '') return;
+
+    const newEntry = {
+      author: 'Bạn',
+      text: newComment.trim(),
+    };
+
+    setComments(prev => [...prev, newEntry]);
+    setNewComment('');
   };
 
   return (
@@ -58,28 +93,20 @@ const Society = ({ site }) => {
 
       <div className={styles.title}>{site.name}</div>
 
-      {/* Nội dung */}
       <div className={styles.content}>
         <div className={styles.leftColumn}>
-          {/* Scroll ảnh */}
           <div className={styles.imageScrollWrapper}>
-            {showScrollButtons && (
-              <button className={styles.scrollButton} onClick={scrollLeft}>←</button>
-            )}
+            {showScrollButtons && <button className={styles.scrollButton} onClick={scrollLeft}>←</button>}
             <div className={styles.images} ref={scrollRef}>
               {site.images.map((img, index) => (
                 <img key={index} src={img} alt={site.name} className={styles.image} />
               ))}
             </div>
-            {showScrollButtons && (
-              <button className={styles.scrollButton} onClick={scrollRight}>→</button>
-            )}
+            {showScrollButtons && <button className={styles.scrollButton} onClick={scrollRight}>→</button>}
           </div>
 
-          {/* Mô tả */}
           <p className={styles.description}>{site.description}</p>
 
-          {/* Nút yêu thích và bình luận */}
           <div className={styles.buttonGroup}>
             <button
               className={styles.favoriteButton}
@@ -97,29 +124,29 @@ const Society = ({ site }) => {
           </div>
         </div>
 
-        {/* Bình luận */}
         {showComments && (
           <div className={styles.rightColumn}>
             <div className={styles.commentSection}>
-              {[1, 2].map((_, index) => (
+              {comments.map((comment, index) => (
                 <div key={index} className={styles.commentBlock}>
                   <img src={avatar} alt="avatar" className={styles.commentAvatar} />
                   <div className={styles.commentBubble}>
-                    <strong>Chi đoàn KP Đông {index === 0 ? 'B' : 'A'}</strong>
-                    <p>Chúng ta vẫn biết rằng, làm việc với một đoạn văn bản dễ đọc và rõ nghĩa để gây rối trí và cản trở việc tập trung vào yếu tố trình bày văn bản.</p>
+                    <strong>{comment.author}</strong>
+                    <p>{comment.text}</p>
                   </div>
 
-                  {/* Nút 3 chấm */}
                   <button
                     className={styles.commentOptionsButton}
-                    onClick={() => setActiveMenuIndex(index)}
+                    onClick={() => setActiveMenuIndex(prev => (prev === index ? null : index))}
                   >
                     ⋯
                   </button>
 
-                  {/* Menu tùy chọn */}
                   {activeMenuIndex === index && (
-                    <div className={styles.optionsMenu}>
+                    <div
+                      className={styles.optionsMenu}
+                      ref={el => (menuRefs.current[index] = el)}
+                    >
                       <button onClick={() => handleOptionClick('edit', index)}>Chỉnh sửa</button>
                       <button onClick={() => handleOptionClick('delete', index)}>Xoá</button>
                     </div>
@@ -127,10 +154,16 @@ const Society = ({ site }) => {
                 </div>
               ))}
 
-              {/* Nhập bình luận mới */}
               <div className={styles.commentInputWrapper}>
-                <input type="text" placeholder="Thêm bình luận của bạn" className={styles.commentInput} />
-                <button className={styles.commentSend}>➤</button>
+                <input
+                  type="text"
+                  placeholder="Thêm bình luận của bạn"
+                  value={newComment}
+                  onChange={(e) => setNewComment(e.target.value)}
+                  className={styles.commentInput}
+                  onKeyDown={(e) => e.key === 'Enter' && handleSendComment()}
+                />
+                <button className={styles.commentSend} onClick={handleSendComment}>➤</button>
               </div>
             </div>
           </div>

@@ -3,11 +3,12 @@
     align-items: center;
     gap: 16px;
     font-family: sans-serif;
+    margin-left: 290px;
   }
   
   .selectGroup {
     display: flex;
-    gap: 26px; /* khoảng cách giữa các dropdown */
+    gap: 26px; 
   }
   
   .label {
