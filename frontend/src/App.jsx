@@ -5,6 +5,7 @@ import Footer from "./components/Footer/Footer";
 import Search from "./components/Search/Search";
 import DateSelect from "./components/Date/Date";
 import AdminDashboard from "./pages/AdminDashboard/AdminDashboard";
+import Listunionmember from "./pages/Admin/Listunionmember/Listunionmember";
 
 import './App.css';
 
@@ -19,10 +20,8 @@ function App() {
       </div>
 
       <Routes>
-        <Route path="/" element={<AdminDashboard />} />
+        <Route path="/" element={<Listunionmember />} />
       </Routes>
-
-      <Footer />
     </BrowserRouter>
   );
 }

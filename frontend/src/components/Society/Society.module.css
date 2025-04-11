@@ -2,7 +2,7 @@
   padding: 20px;
   position: relative;
   overflow-x: hidden;
-  border: 1px solid black;
+  border: 1px solid #4955CE;
   width: 80%;
   margin: 0 auto;
   background-color: #fff;
@@ -284,7 +284,7 @@
 .commentSection {
   background-color: #ffffff;
   padding: 16px;
-  border: 1px solid #ccc;
+  border: 1px solid #4955CE;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
   width: 100%;
   box-sizing: border-box;
