@@ -4,7 +4,7 @@ import Info from '../Info/Info';
 
 const Table = ({ columns, data }) => {
   const [checkedRows, setCheckedRows] = useState(new Array(data.length).fill(false));
-  const [selectedRow, setSelectedRow] = useState(null); // Track selected row for Info
+  const [selectedRow, setSelectedRow] = useState(null);
 
   const handleCheckAll = (e) => {
     const checked = e.target.checked;
@@ -18,11 +18,11 @@ const Table = ({ columns, data }) => {
   };
 
   const handleRowClick = (rowIndex) => {
-    setSelectedRow(rowIndex); // Set the selected row to display the Info
+    setSelectedRow(rowIndex);
   };
 
   const handleCloseInfo = () => {
-    setSelectedRow(null); // Close the Info component
+    setSelectedRow(null);
   };
 
   const renderStatus = (text) => {
@@ -53,13 +53,13 @@ const Table = ({ columns, data }) => {
               <th key={index}>
                 {col === 'Họ và tên' ? (
                   <>
+                    {col}
                     <input
                       type="checkbox"
                       checked={checkedRows.every(Boolean)}
                       onChange={handleCheckAll}
-                      className={styles.inlineCheckbox}
-                    />{' '}
-                    {col}
+                      className={styles.headerCheckbox}
+                    />
                   </>
                 ) : (
                   col
@@ -75,20 +75,20 @@ const Table = ({ columns, data }) => {
               {columns.map((col, colIndex) => (
                 <td key={colIndex}>
                   {col === 'Họ và tên' ? (
-                    <>
+                    <div className={styles.nameCell}>
+                      <span
+                        className={styles.nameLink}
+                        onClick={() => handleRowClick(rowIndex)}
+                      >
+                        {row[col]}
+                      </span>
                       <input
                         type="checkbox"
                         checked={checkedRows[rowIndex]}
                         onChange={() => handleCheckRow(rowIndex)}
                         className={styles.inlineCheckbox}
-                      />{' '}
-                      <span
-                        className={styles.nameLink}
-                        onClick={() => handleRowClick(rowIndex)} // Trigger info on name click
-                      >
-                        {row[col]}
-                      </span>
-                    </>
+                      />
+                    </div>
                   ) : col === 'Trạng thái' ? (
                     renderStatus(row[col])
                   ) : (
@@ -103,10 +103,9 @@ const Table = ({ columns, data }) => {
         </tbody>
       </table>
 
-      {/* Conditionally render Info component based on selected row */}
       {selectedRow !== null && (
         <div className={styles.infoModal}>
-          <Info onClose={handleCloseInfo} /> {/* Pass the onClose function */}
+          <Info onClose={handleCloseInfo} />
         </div>
       )}
     </div>
