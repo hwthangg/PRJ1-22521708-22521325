@@ -1,22 +1,23 @@
 import React, { useState } from 'react';
 import styles from './Info.module.css';
+import defaultAvatar from '../../assets/avatar_icon.png'; 
 
 const Info = ({ onClose }) => {
-  const [avatar, setAvatar] = useState('https://via.placeholder.com/100'); // Default avatar URL
+  const [avatar, setAvatar] = useState(defaultAvatar); 
 
   const handleAvatarChange = (e) => {
     const file = e.target.files[0];
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        setAvatar(reader.result); // Set the new avatar
+        setAvatar(reader.result); 
       };
       reader.readAsDataURL(file);
     }
   };
 
   const handleAvatarClick = () => {
-    document.getElementById('avatarInput').click(); // Trigger the file input when the avatar is clicked
+    document.getElementById('avatarInput').click(); 
   };
 
   return (
@@ -102,7 +103,7 @@ const Info = ({ onClose }) => {
         type="file"
         accept="image/*"
         onChange={handleAvatarChange}
-        style={{ display: 'none' }} // Make the input invisible
+        style={{ display: 'none' }} 
       />
     </div>
   );
