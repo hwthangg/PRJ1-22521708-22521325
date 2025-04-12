@@ -25,11 +25,10 @@ th {
 }
 
 .inlineCheckbox {
-  margin-right: 8px;
+  margin-left: 8px;
   transform: scale(1.2);
 }
 
-/* Status button styles */
 .approvedBtn {
   color: green;
   background: none;
@@ -63,8 +62,31 @@ th {
   align-items: center;
   z-index: 1000;
 }
+
+.nameCell {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
 .nameLink {
-  color: blue;
+  flex: 1;
+  text-align: center;
   cursor: pointer;
+  color: #000;
+}
+
+.headerCheckbox {
+  margin-left: 6px;
+  transform: scale(1.1);
+}
+
+.link {
+  color: #2a5bd7;
   text-decoration: underline;
+  cursor: pointer;
+}
+
+.link:hover {
+  text-decoration: none;
 }

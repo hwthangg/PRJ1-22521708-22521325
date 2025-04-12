@@ -12,3 +12,8 @@
     max-width: 50%;
   }
   
+  .no-flex {
+    flex: none;
+    max-width: unset;
+  }
+  

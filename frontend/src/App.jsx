@@ -7,6 +7,9 @@ import DateSelect from "./components/Date/Date";
 import AdminDashboard from "./pages/AdminDashboard/AdminDashboard";
 import Listunionmember from "./pages/Admin/Listunionmember/Listunionmember";
 import Filter from "./components/Filter/Filter";
+import Add from "./components/Add/Add";
+import ActivityStatistics from "./pages/Admin/ActivityStatistics/ActivityStatistics";
+import Listevent from "./pages/Admin/Listevent/Listevent";
 
 import './App.css';
 
@@ -16,12 +19,15 @@ function App() {
       <Header />
 
       <div className="search-date-wrapper">
-        <Search />
-        <Filter />
-      </div>
+  <Search />
+  <Filter />
+  <div className="no-flex">
+    <Add />
+  </div>
+</div>
 
       <Routes>
-        <Route path="/" element={<Listunionmember />} />
+        <Route path="/" element={<Listevent />} />
       </Routes>
     </BrowserRouter>
   );
