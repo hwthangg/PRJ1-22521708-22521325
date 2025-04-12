@@ -3,26 +3,42 @@ import styles from './Listunionmember.module.css';
 import Table from '../../../components/Table/Table';
 
 const Listunionmember = () => {
-  const columns = ['STT', 'Họ và tên', 'Giới tính', 'Ngày sinh', 'Chức vụ', 'Địa chỉ thường trú', 'Thông tin liên hệ'];
+  const columns = [
+    'Họ và tên',
+    'Ngày yêu cầu',
+    'Chi đoàn yêu cầu chuyển sinh hoạt',
+    'Nội dung chuyển sinh hoạt',
+    'Trạng thái'
+  ];
 
   const data = [
     {
-      STT: '1',
       'Họ và tên': 'Đặng Hữu Thắng',
-      'Giới tính': 'Nam',
-      'Ngày sinh': '25/10/2004',
-      'Chức vụ': 'Phó bí thư',
-      'Địa chỉ thường trú': '1/1 đường A, khu phố A, phường A, huyện A, tỉnh A',
-      'Thông tin liên hệ': 'Email: dht@gmail.com\nSĐT: 0123456789'
+      'Ngày yêu cầu': '25/10/2004',
+      'Chi đoàn yêu cầu chuyển sinh hoạt': 'Chi đoàn KP A',
+      'Nội dung chuyển sinh hoạt': 'Xét chuyển sinh hoạt do chuyển hộ khẩu',
+      'Trạng thái': 'Đã tiếp nhận',
     },
     {
-      STT: '2',
       'Họ và tên': 'Đặng Hữu Thắng',
-      'Giới tính': 'Nam',
-      'Ngày sinh': '25/10/2004',
-      'Chức vụ': 'Bí thư',
-      'Địa chỉ thường trú': '1/1 đường A, khu phố A, phường A, huyện A, tỉnh A',
-      'Thông tin liên hệ': 'Email: dht@gmail.com\nSĐT: 0123456789'
+      'Ngày yêu cầu': '25/10/2004',
+      'Chi đoàn yêu cầu chuyển sinh hoạt': 'Chi đoàn KP B',
+      'Nội dung chuyển sinh hoạt': 'Xét chuyển sinh hoạt do chuyển hộ khẩu',
+      'Trạng thái': 'Tiếp nhận Từ chối',
+    },
+    {
+      'Họ và tên': 'Đặng Hữu Thắng',
+      'Ngày yêu cầu': '25/10/2004',
+      'Chi đoàn yêu cầu chuyển sinh hoạt': 'Chi đoàn KP B',
+      'Nội dung chuyển sinh hoạt': 'Xét chuyển sinh hoạt do chuyển hộ khẩu',
+      'Trạng thái': 'Tiếp nhận Từ chối',
+    },
+    {
+      'Họ và tên': 'Đặng Hữu Thắng',
+      'Ngày yêu cầu': '25/10/2004',
+      'Chi đoàn yêu cầu chuyển sinh hoạt': 'Chi đoàn D',
+      'Nội dung chuyển sinh hoạt': 'Xét chuyển sinh hoạt do chuyển hộ khẩu',
+      'Trạng thái': 'Tiếp nhận Từ chối',
     },
   ];
 

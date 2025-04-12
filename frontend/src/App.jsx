@@ -6,6 +6,7 @@ import Search from "./components/Search/Search";
 import DateSelect from "./components/Date/Date";
 import AdminDashboard from "./pages/AdminDashboard/AdminDashboard";
 import Listunionmember from "./pages/Admin/Listunionmember/Listunionmember";
+import Filter from "./components/Filter/Filter";
 
 import './App.css';
 
@@ -16,7 +17,7 @@ function App() {
 
       <div className="search-date-wrapper">
         <Search />
-        <DateSelect />
+        <Filter />
       </div>
 
       <Routes>
