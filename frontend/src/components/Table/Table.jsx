@@ -51,7 +51,7 @@ const Table = ({ columns, data }) => {
             <th>STT</th>
             {columns.map((col, index) => (
               <th key={index}>
-                {col === 'Họ và tên' ? (
+                {(col === 'Họ và tên' || col === 'Tên sự kiện') ? (
                   <>
                     {col}
                     <input
@@ -74,7 +74,7 @@ const Table = ({ columns, data }) => {
               <td>{rowIndex + 1}</td>
               {columns.map((col, colIndex) => (
                 <td key={colIndex}>
-                  {col === 'Họ và tên' ? (
+                  {(col === 'Họ và tên' || col === 'Tên sự kiện') ? (
                     <div className={styles.nameCell}>
                       <span
                         className={styles.nameLink}
@@ -91,6 +91,14 @@ const Table = ({ columns, data }) => {
                     </div>
                   ) : col === 'Trạng thái' ? (
                     renderStatus(row[col])
+                  ) : col === 'Điểm danh' ? (
+                    <a
+                      href="#"
+                      className={styles.link}
+                      onClick={() => alert(row[col])}
+                    >
+                      {row[col]}
+                    </a>
                   ) : (
                     String(row[col])
                       .split('\n')

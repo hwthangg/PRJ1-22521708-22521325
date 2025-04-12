@@ -9,6 +9,7 @@ import Listunionmember from "./pages/Admin/Listunionmember/Listunionmember";
 import Filter from "./components/Filter/Filter";
 import Add from "./components/Add/Add";
 import ActivityStatistics from "./pages/Admin/ActivityStatistics/ActivityStatistics";
+import Listevent from "./pages/Admin/Listevent/Listevent";
 
 import './App.css';
 
@@ -26,7 +27,7 @@ function App() {
 </div>
 
       <Routes>
-        <Route path="/" element={<ActivityStatistics />} />
+        <Route path="/" element={<Listevent />} />
       </Routes>
     </BrowserRouter>
   );
