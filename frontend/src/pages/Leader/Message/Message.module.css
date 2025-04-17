@@ -1,0 +1,40 @@
+.container {
+    display: flex;
+    height: 100vh;
+    background-color: #fff;
+    font-family: sans-serif;
+  }
+  
+  .sidebar {
+    width: 30%;
+    border-right: 1px solid #ddd;
+    padding: 10px;
+    overflow-y: auto;
+    background-color: #f9f9ff;
+  }
+  
+  .chat {
+    width: 70%;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background-color: #fff;
+  }
+  
+  @media (max-width: 768px) {
+    .container {
+      flex-direction: column;
+    }
+    .sidebar {
+      width: 100%;
+      height: 50vh;
+      border-right: none;
+      border-bottom: 1px solid #ddd;
+    }
+    .chat {
+      width: 100%;
+      height: 50vh;
+    }
+  }
+  

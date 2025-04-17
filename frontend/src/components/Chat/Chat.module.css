@@ -1,0 +1,77 @@
+.container {
+    max-width: 600px;
+    margin: 0 auto;
+    font-family: sans-serif;
+    padding: 20px;
+  }
+  
+  .header {
+    font-weight: bold;
+    font-size: 18px;
+    margin-bottom: 16px;
+  }
+  
+  .chatBox {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-height: 400px;
+    overflow-y: auto;
+    margin-bottom: 16px;
+  }
+  
+  .messageRow {
+    display: flex;
+    align-items: flex-end;
+  }
+  
+  .left {
+    justify-content: flex-start;
+  }
+  
+  .right {
+    justify-content: flex-end;
+  }
+  
+  .avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    margin: 0 8px;
+  }
+  
+  .messageBubble {
+    background-color: #eee9fb;
+    padding: 10px 16px;
+    border-radius: 16px;
+    max-width: 70%;
+    font-size: 14px;
+  }
+  
+  .inputArea {
+    display: flex;
+    align-items: center;
+    background-color: #eee9fb;
+    border-radius: 20px;
+    padding: 8px 12px;
+  }
+  
+  .inputField {
+    flex: 1;
+    border: none;
+    outline: none;
+    background: transparent;
+    font-size: 14px;
+  }
+  
+  .sendButton {
+    background: none;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .sendIcon {
+    width: 24px;
+    height: 24px;
+  }
+  

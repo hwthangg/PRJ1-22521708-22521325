@@ -5,11 +5,12 @@ import Footer from "./components/Footer/Footer";
 import Search from "./components/Search/Search";
 import DateSelect from "./components/Date/Date";
 import AdminDashboard from "./pages/AdminDashboard/AdminDashboard";
-import Listunionmember from "./pages/Admin/Listunionmember/Listunionmember";
+import Listunionmember from "./pages/Leader/Listunionmember/Listunionmember";
 import Filter from "./components/Filter/Filter";
 import Add from "./components/Add/Add";
-import ActivityStatistics from "./pages/Admin/ActivityStatistics/ActivityStatistics";
-import Listevent from "./pages/Admin/Listevent/Listevent";
+import ActivityStatistics from "./pages/Leader/ActivityStatistics/ActivityStatistics";
+import Listevent from "./pages/Leader/Listevent/Listevent";
+import Message from "./pages/Leader/Message/Message";
 
 import './App.css';
 
@@ -18,16 +19,16 @@ function App() {
     <BrowserRouter>
       <Header />
 
-      <div className="search-date-wrapper">
+      {/* <div className="search-date-wrapper">
   <Search />
   <Filter />
   <div className="no-flex">
     <Add />
   </div>
-</div>
+</div> */}
 
       <Routes>
-        <Route path="/" element={<Listevent />} />
+        <Route path="/" element={<Message />} />
       </Routes>
     </BrowserRouter>
   );
