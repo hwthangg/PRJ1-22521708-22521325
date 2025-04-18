@@ -1,90 +1,5 @@
-// import React, { useState } from 'react';
-// import styles from './Header.module.css';
-// import logodoan from '../../assets/logodoan.png';
-// import bellIcon from '../../assets/bellicon.png';
-// import notifyIcon from '../../assets/notifyicon.png';
-
-// const Header = () => {
-//   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-//   const [hoveredMenu, setHoveredMenu] = useState(null);
-
-//   const toggleDropdown = () => {
-//     setIsDropdownOpen(prev => !prev);
-//   };
-
-//   return (
-//     <header className={styles.header}>
-//       <div className={styles.leftSection}>
-//         <img src={logodoan} alt="Logo" className={styles.logo} />
-//       </div>
-
-//       <nav className={styles.nav}>
-//         <a href="#">Trang chủ</a>
-
-//         {/* Nghiệp vụ đoàn viên */}
-//         <div
-//           className={styles.navItemWithDropdown}
-//           onMouseOver={() => setHoveredMenu('nghiepvu')}
-//           onMouseOut={() => setHoveredMenu(null)}
-//         >
-//           <div className={styles.dropdownContainer}>
-//             <a href="#">Nghiệp vụ đoàn viên ▾</a>
-//             {hoveredMenu === 'nghiepvu' && (
-//               <ul className={styles.dropdownMenuNav}>
-//                 <li>Thêm đoàn viên</li>
-//                 <li>Danh sách đoàn viên</li>
-//                 <li>Quản lý đoàn phí</li>
-//               </ul>
-//             )}
-//           </div>
-//         </div>
-
-//         {/* Tổ chức sự kiện */}
-//         <div
-//           className={styles.navItemWithDropdown}
-//           onMouseOver={() => setHoveredMenu('sukien')}
-//           onMouseOut={() => setHoveredMenu(null)}
-//         >
-//           <div className={styles.dropdownContainer}>
-//             <a href="#">Tổ chức sự kiện ▾</a>
-//             {hoveredMenu === 'sukien' && (
-//               <ul className={styles.dropdownMenuNav}>
-//                 <li>Thêm sự kiện</li>
-//                 <li>Danh sách sự kiện</li>
-//                 <li>Thống kê tham gia</li>
-//               </ul>
-//             )}
-//           </div>
-//         </div>
-
-//         <a href="#">Tài liệu</a>
-//       </nav>
-
-//       <div className={styles.rightSection}>
-//         <button className={styles.iconButton}>
-//           <img src={bellIcon} alt="Thông báo" />
-//         </button>
-//         <button className={styles.iconButton}>
-//           <img src={notifyIcon} alt="Tin nhắn" />
-//         </button>
-//         <div className={styles.dropdownWrapper}>
-//           <div className={styles.dropdownText} onClick={toggleDropdown}>
-//             Chi đoàn KP Đông B ▾
-//           </div>
-//           {isDropdownOpen && (
-//             <ul className={styles.dropdownMenu}>
-//               <li>Hồ sơ</li>
-//               <li>Đăng xuất</li>
-//             </ul>
-//           )}
-//         </div>
-//       </div>
-//     </header>
-//   );
-// };
-
-// export default Header;
 import React, { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom'; 
 import styles from './Header.module.css';
 import logodoan from '../../assets/logodoan.png';
 import bellIcon from '../../assets/bellicon.png';
@@ -95,6 +10,8 @@ const Header = () => {
   const [activeMenu, setActiveMenu] = useState(null);
   const navRef = useRef(null);
   const accountRef = useRef(null);
+
+  const navigate = useNavigate(); // thêm dòng này
 
   const toggleDropdown = () => {
     setIsDropdownOpen(prev => !prev);
@@ -160,7 +77,7 @@ const Header = () => {
         <button className={styles.iconButton}>
           <img src={bellIcon} alt="Thông báo" />
         </button>
-        <button className={styles.iconButton}>
+        <button className={styles.iconButton} onClick={() => navigate('/message')}>
           <img src={notifyIcon} alt="Tin nhắn" />
         </button>
         <div className={styles.dropdownWrapper} ref={accountRef}>

@@ -28,7 +28,8 @@ function App() {
 </div> */}
 
       <Routes>
-        <Route path="/" element={<Message />} />
+        <Route path="/" element={<Listunionmember />} />
+        <Route path="/message" element={<Message />} />
       </Routes>
     </BrowserRouter>
   );
