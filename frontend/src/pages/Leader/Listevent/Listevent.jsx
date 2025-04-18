@@ -69,6 +69,83 @@ const originalData = [
     'Địa điểm tổ chức': '1/1 đường A, khu phố A, phường A, huyện A, tỉnh A',
     'Điểm danh': <a href="#">Xem người tham gia</a>,
   },
+  {
+    'Tên sự kiện': 'Chương trình Mùa hè xanh',
+    'Trạng thái': 'Hoàn thành',
+    'Thời gian tổ chức': '12/12/2025',
+    'Địa điểm tổ chức': '1/1 đường A, khu phố A, phường A, huyện A, tỉnh A',
+    'Điểm danh': <a href="#">Xem người tham gia</a>,
+  },
+  {
+    'Tên sự kiện': 'Chương trình Mùa hè xanh',
+    'Trạng thái': 'Hoàn thành',
+    'Thời gian tổ chức': '12/12/2025',
+    'Địa điểm tổ chức': '1/1 đường A, khu phố A, phường A, huyện A, tỉnh A',
+    'Điểm danh': <a href="#">Xem người tham gia</a>,
+  },
+  {
+    'Tên sự kiện': 'Chương trình Mùa hè xanh',
+    'Trạng thái': 'Hoàn thành',
+    'Thời gian tổ chức': '12/12/2025',
+    'Địa điểm tổ chức': '1/1 đường A, khu phố A, phường A, huyện A, tỉnh A',
+    'Điểm danh': <a href="#">Xem người tham gia</a>,
+  },
+  {
+    'Tên sự kiện': 'Chương trình Mùa hè xanh',
+    'Trạng thái': 'Hoàn thành',
+    'Thời gian tổ chức': '12/12/2025',
+    'Địa điểm tổ chức': '1/1 đường A, khu phố A, phường A, huyện A, tỉnh A',
+    'Điểm danh': <a href="#">Xem người tham gia</a>,
+  },
+  {
+    'Tên sự kiện': 'Chương trình Mùa hè xanh',
+    'Trạng thái': 'Hoàn thành',
+    'Thời gian tổ chức': '12/12/2025',
+    'Địa điểm tổ chức': '1/1 đường A, khu phố A, phường A, huyện A, tỉnh A',
+    'Điểm danh': <a href="#">Xem người tham gia</a>,
+  },
+  {
+    'Tên sự kiện': 'Chương trình Mùa hè xanh',
+    'Trạng thái': 'Hoàn thành',
+    'Thời gian tổ chức': '12/12/2025',
+    'Địa điểm tổ chức': '1/1 đường A, khu phố A, phường A, huyện A, tỉnh A',
+    'Điểm danh': <a href="#">Xem người tham gia</a>,
+  },
+  {
+    'Tên sự kiện': 'Chương trình Mùa hè xanh',
+    'Trạng thái': 'Hoàn thành',
+    'Thời gian tổ chức': '12/12/2025',
+    'Địa điểm tổ chức': '1/1 đường A, khu phố A, phường A, huyện A, tỉnh A',
+    'Điểm danh': <a href="#">Xem người tham gia</a>,
+  },
+  {
+    'Tên sự kiện': 'Chương trình Mùa hè xanh',
+    'Trạng thái': 'Hoàn thành',
+    'Thời gian tổ chức': '12/12/2025',
+    'Địa điểm tổ chức': '1/1 đường A, khu phố A, phường A, huyện A, tỉnh A',
+    'Điểm danh': <a href="#">Xem người tham gia</a>,
+  },
+  {
+    'Tên sự kiện': 'Chương trình Mùa hè xanh',
+    'Trạng thái': 'Hoàn thành',
+    'Thời gian tổ chức': '12/12/2025',
+    'Địa điểm tổ chức': '1/1 đường A, khu phố A, phường A, huyện A, tỉnh A',
+    'Điểm danh': <a href="#">Xem người tham gia</a>,
+  },
+  {
+    'Tên sự kiện': 'Chương trình Mùa hè xanh',
+    'Trạng thái': 'Hoàn thành',
+    'Thời gian tổ chức': '12/12/2025',
+    'Địa điểm tổ chức': '1/1 đường A, khu phố A, phường A, huyện A, tỉnh A',
+    'Điểm danh': <a href="#">Xem người tham gia</a>,
+  },
+  {
+    'Tên sự kiện': 'Chương trình Mùa hè xanh',
+    'Trạng thái': 'Hoàn thành',
+    'Thời gian tổ chức': '12/12/2025',
+    'Địa điểm tổ chức': '1/1 đường A, khu phố A, phường A, huyện A, tỉnh A',
+    'Điểm danh': <a href="#">Xem người tham gia</a>,
+  },
 ];
 
 const Listevent = () => {
@@ -95,7 +172,11 @@ const Listevent = () => {
           onChange={setFilterStatus}
         />
         <Add onClick={() => console.log('Add button clicked')} />
-        <ChatAI onClick={() => console.log('ChatAi button clicked')} />
+        <ChatAI
+  onClick={() => console.log('ChatAi button clicked')}
+  fixed={true}
+/>
+
       </div>
       <Table columns={columns} data={filteredData} />
     </div>

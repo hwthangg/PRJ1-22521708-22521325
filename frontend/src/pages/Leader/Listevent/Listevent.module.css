@@ -39,4 +39,10 @@
     margin-left: 0; /* hoặc margin-left: -10px nếu muốn đẩy mạnh hơn */
     flex: 1;
   }
+  .chatAIButton {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 999; /* đảm bảo hiển thị trên các thành phần khác */
+  }
   
