@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import styles from './Chat.module.css';
+import avatar from '../../assets/avatar.jpg';
 
 const Chat = () => {
   const [messages, setMessages] = useState([
@@ -21,14 +22,18 @@ const Chat = () => {
 
   return (
     <div className={styles.chatContainer}>
-      <div className={styles.header}>Chi đoàn KP B</div>
+      <div className={styles.header}>
+  <img src={avatar} alt="avatar" className={styles.headerAvatar} />
+  <span>Chi đoàn KP B</span>
+</div>
+
       <div className={styles.messages}>
         {messages.map((msg) => (
           <div
             key={msg.id}
             className={`${styles.message} ${msg.sender === 'right' ? styles.right : styles.left}`}
           >
-            <img src="/logo.png" alt="avatar" className={styles.avatar} />
+            <img src={avatar} alt="avatar" className={styles.avatar} />
             <div className={styles.text}>{msg.text}</div>
           </div>
         ))}

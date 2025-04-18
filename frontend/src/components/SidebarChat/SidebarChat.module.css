@@ -1,4 +1,3 @@
-/* Chat item layout */
 .chatItem {
     display: flex;
     align-items: center;
@@ -10,12 +9,10 @@
     gap: 10px;
   }
   
-  /* Active chat item highlighting */
   .chatItem.active {
     background-color: #e6f7ff;
   }
   
-  /* Avatar style */
   .avatar {
     width: 40px;
     height: 40px;
@@ -23,21 +20,18 @@
     object-fit: cover;
   }
   
-  /* Chat information container */
   .chatInfo {
     display: flex;
     flex-direction: column;
     width: 100%;
   }
   
-  /* Name styling */
   .name {
     font-weight: bold;
     font-size: 16px;
     margin-bottom: 5px;
   }
   
-  /* Message box container */
   .messageBox {
     background-color: #f0f0f0;
     padding: 8px 12px;
@@ -47,12 +41,24 @@
     background-color: #f4f5f6;
   }
   
-  /* Message styling */
   .message {
     color: #555;
     font-size: 14px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+  }
+  .searchContainer {
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
+    background-color: #fff;
+  }
+  
+  .searchInput {
+    width: 100%;
+    padding: 8px 12px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
   }
   

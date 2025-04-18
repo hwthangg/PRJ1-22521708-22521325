@@ -37,4 +37,8 @@
       height: 50vh;
     }
   }
+  .searchWrapper {
+    margin-bottom: 10px;
+    width: 95%;
+  }
   
