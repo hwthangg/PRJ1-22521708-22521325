@@ -31,6 +31,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Informationevent />} />
         <Route path="/message" element={<Message />} />
+        <Route path="/AdminDashboard" element={<AdminDashboard />} />  
       </Routes>
     </BrowserRouter>
   );
