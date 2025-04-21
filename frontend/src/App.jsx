@@ -11,6 +11,7 @@ import Add from "./components/Add/Add";
 import ActivityStatistics from "./pages/Leader/ActivityStatistics/ActivityStatistics";
 import Listevent from "./pages/Leader/Listevent/Listevent";
 import Message from "./pages/Leader/Message/Message";
+import Informationevent from "./pages/Leader/Informationevent/Informationevent";
 
 import './App.css';
 
@@ -28,7 +29,9 @@ function App() {
 </div> */}
 
       <Routes>
-        <Route path="/" element={<Message />} />
+        <Route path="/" element={<Informationevent />} />
+        <Route path="/message" element={<Message />} />
+        <Route path="/AdminDashboard" element={<AdminDashboard />} />  
       </Routes>
     </BrowserRouter>
   );
