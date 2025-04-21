@@ -12,6 +12,7 @@ import ActivityStatistics from "./pages/Leader/ActivityStatistics/ActivityStatis
 import Listevent from "./pages/Leader/Listevent/Listevent";
 import Message from "./pages/Leader/Message/Message";
 import Informationevent from "./pages/Leader/Informationevent/Informationevent";
+import Create_event from "./pages/Leader/Create_event/Create_event";
 
 import './App.css';
 
@@ -29,7 +30,7 @@ function App() {
 </div> */}
 
       <Routes>
-        <Route path="/" element={<Informationevent />} />
+        <Route path="/" element={<Create_event />} />
         <Route path="/message" element={<Message />} />
         <Route path="/AdminDashboard" element={<AdminDashboard />} />  
       </Routes>
