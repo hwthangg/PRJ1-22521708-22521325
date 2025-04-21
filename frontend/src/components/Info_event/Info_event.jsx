@@ -6,13 +6,40 @@ import sample2 from '../../assets/a2.jpg';
 import sample3 from '../../assets/a3.jpg';
 
 const Info_event = () => {
-  const columns = ['STT', 'Họ và tên', 'Số thẻ đoàn', 'Thời gian', 'Chức vụ'];
+  const columns = ['Họ và tên', 'Số thẻ đoàn', 'Thời gian', 'Chức vụ'];
   const data = [
-    ['1', 'Đặng Hữu Thắng', '00000000000', '25/10/2004', 'Đoàn viên'],
-    ['2', 'Đặng Hữu Thắng', '00000000000', '25/10/2004', 'Đoàn viên'],
-    ['3', 'Đặng Hữu Thắng', '00000000000', '25/10/2004', 'Đoàn viên'],
-    ['4', 'Đặng Hữu Thắng', '00000000000', '25/10/2004', 'Đoàn viên'],
+    {
+      'Họ và tên': 'Trần Phương Vy',
+      'Số thẻ đoàn': '00110000000',
+      'Thời gian': '25/10/2004',
+      'Chức vụ': 'Đoàn viên'
+    },
+    {
+      'Họ và tên': 'Đặng Hữu Thắng',
+      'Số thẻ đoàn': '00000000000',
+      'Thời gian': '25/10/2004',
+      'Chức vụ': 'Đoàn viên'
+    },
+    {
+      'Họ và tên': 'Đặng Hữu Thắng',
+      'Số thẻ đoàn': '00000000000',
+      'Thời gian': '25/10/2004',
+      'Chức vụ': 'Đoàn viên'
+    },
+    {
+      'Họ và tên': 'Đặng Hữu Thắng',
+      'Số thẻ đoàn': '00000000000',
+      'Thời gian': '25/10/2004',
+      'Chức vụ': 'Đoàn viên'
+    },
+    {
+      'Họ và tên': 'Đặng Hữu Thắng',
+      'Số thẻ đoàn': '00000000000',
+      'Thời gian': '25/10/2004',
+      'Chức vụ': 'Đoàn viên'
+    },
   ];
+  
 
   const [selectedTopics, setSelectedTopics] = useState({
     'Giáo dục': true,
@@ -43,7 +70,20 @@ const closePreview = () => {
       [topic]: !prev[topic],
     }));
   };
-  const imageList = [sample1, sample2, sample3];
+  const [imageList, setImageList] = useState([sample1, sample2, sample3]);
+
+  const handleImageUpload = (e) => {
+    const files = e.target.files;
+    if (files) {
+      const newImages = Array.from(files).map((file) => URL.createObjectURL(file));
+      setImageList((prevList) => [...prevList, ...newImages]);
+    }
+  };
+  const handleDeleteImage = (index) => {
+    setImageList((prevList) => prevList.filter((_, i) => i !== index));  
+  };
+  
+  
 
   return (
     <div className={styles.container}>
@@ -105,31 +145,52 @@ const closePreview = () => {
         </div>
 
         <div className={styles.imageGroup}>
-          <label>Hình ảnh liên quan</label>
-          <div className={styles.images}>
+  <div className={styles.imageLabel}>
+    <label>Hình ảnh liên quan</label>
+    <label className={styles.uploadButton}>
+      <input
+        type="file"
+        accept="image/*"
+        hidden
+        multiple 
+        onChange={handleImageUpload} 
+      />
+      +
+    </label>
+  </div>
+
+  <div className={styles.images}>
   {imageList.map((img, i) => (
-    <img
-      key={i}
-      src={img}
-      alt={`Ảnh ${i + 1}`}
-      onClick={() => handleImageClick(img)}
-      className={styles.imageItem}
-    />
+    <div key={i} className={styles.imageContainer}>
+      <img
+        src={img}
+        alt={`Ảnh ${i + 1}`}
+        onClick={() => handleImageClick(img)}
+        className={styles.imageItem}
+      />
+      <button
+        className={styles.deleteButton}
+        onClick={() => handleDeleteImage(i)}  
+      >
+        X
+      </button>
+    </div>
   ))}
 </div>
 
 
-{previewImage && (
-  <div className={styles.previewOverlay}>
-    <button className={styles.closeButton} onClick={closePreview}>×</button>
-    <div className={styles.previewContent}>
-      <img src={previewImage} alt="Preview" />
+  {previewImage && (
+    <div className={styles.previewOverlay}>
+      <button className={styles.closeButton} onClick={closePreview}>×</button>
+      <div className={styles.previewContent}>
+        <img src={previewImage} alt="Preview" />
+      </div>
     </div>
-  </div>
-)}
+  )}
+</div>
 
 
-        </div>
+
       </div>
 
       <div className={styles.tableSection}>
