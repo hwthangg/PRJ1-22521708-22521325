@@ -16,9 +16,9 @@
   .controls {
     display: flex;
     align-items: center;     
-    gap: 16px;
+    gap: 46px;
     margin-bottom: 20px;
-    padding: 0 60px;     
+    padding: 0 70px;     
   }
   
   
@@ -57,4 +57,3 @@
   .table th:last-child, .table td:last-child {
     text-align: center;
   }
-  

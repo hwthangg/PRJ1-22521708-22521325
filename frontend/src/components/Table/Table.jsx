@@ -228,7 +228,7 @@ const Table = ({ columns, data }) => {
       <td>{actualIndex + 1}</td>
       {columns.map((col, colIndex) => (
         <td key={colIndex}>
-          {(col === 'Họ và tên' || col === 'Tên sự kiện') ? (
+          {(col === 'Họ và tên' || col === 'Tên sự kiện' || col === 'Tên tài liệu') ? (
             <div className={styles.nameCell}>
               <span className={styles.nameLink}>{row[col]}</span>
               <input

@@ -6,6 +6,7 @@ import Filter from '../../../components/Filter/Filter';
 import Add from '../../../components/Add/Add';
 import ChatAI from '../../../components/ChatAI/ChatAI';
 import downloadIcon from '../../../assets/download-icon.png'; 
+import Delete from '../../../components/Delete/Delete';
 
 const columns = ['Tên tài liệu', 'Loại tài liệu', 'Ngày ban hành', 'Nơi ban hành', 'Tải tài liệu'];
 
@@ -64,10 +65,7 @@ const Listdocument = () => {
           onChange={setFilterStatus}
         />
         <Add onClick={() => console.log('Add button clicked')} />
-        <ChatAI
-          onClick={() => console.log('ChatAI button clicked')}
-          fixed={true}
-        />
+        <Delete onClick={() => console.log('Delete buttton clicked')}/>
       </div>
       <Table columns={columns} data={filteredData} />
     </div>
