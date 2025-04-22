@@ -74,7 +74,7 @@ const Header = () => {
           )}
         </div>
 
-        <a href="#">Tài liệu</a>
+        <a href="/documents">Tài liệu</a>
       </nav>
 
       <div className={styles.rightSection}>
