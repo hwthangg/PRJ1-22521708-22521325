@@ -25,12 +25,9 @@ import Register from "./pages/Auth/Register/Register";
 function App() {
   const {
     ROLE: { role },
-   
   } = useContext(AuthContext);
   return (
-   <BrowserRouter>
-     
-
+    <BrowserRouter>
       <>
         {/* <div className="search-date-wrapper">
   <Search />
@@ -42,26 +39,27 @@ function App() {
       </>
       {role == "leader" && <Header />}
       <Routes>
-      
         <Route path="/" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <>
-        {/* <Route path="/leader" element={<Informationevent />} />
+          {/* <Route path="/leader" element={<Informationevent />} />
         <Route path="/message" element={<Message />} />
         <Route path="/AdminDashboard" element={<AdminDashboard />} />*/}
-        <Route path="/test" element={<TestPage />} />
+          <Route path="/test" element={<TestPage />} />
         </>
-        <Route path="/home" element={<Home/>}/>
-        <Route path="/members/receiving" element={<Listunionmember/>}/>
-        <Route path="/members/activity-statistic" element={<ActivityStatistics/>}/>
-        <Route path="/message" element={<Message/>}/>
+        <Route path="/home" element={<Home />} />
+        <Route path="/members/receiving" element={<Listunionmember />} />
+        <Route
+          path="/members/activity-statistic"
+          element={<ActivityStatistics />}
+        />
+        <Route path="/events" element={<Listevent />} />
+        <Route path="/events/:eventId" element={<Informationevent />} />
+        <Route path="/documents" element={<Listdocument />} />
 
-
-        <Route path="/events" element={<Listevent/>}/>
-        <Route path="/events/:eventId" element={<Informationevent/>}/>
-
+        <Route path="/message" element={<Message />} />
       </Routes>
-      </BrowserRouter>
+    </BrowserRouter>
   );
 }
 
