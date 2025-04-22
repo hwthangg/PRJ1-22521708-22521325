@@ -1,0 +1,19 @@
+.search-date-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 30px;
+    gap: 20px;
+    flex-wrap: nowrap;
+  }
+  
+  .search-date-wrapper > * {
+    flex: 1;
+    max-width: 50%;
+  }
+  
+  .no-flex {
+    flex: none;
+    max-width: unset;
+  }
+  

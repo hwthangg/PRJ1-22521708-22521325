@@ -1,10 +1,11 @@
 import React from 'react'
-import footerClassName from "../Footer/Footer.module.css"
+import styles from "../Footer/Footer.module.css"  // Đổi tên thành styles cho dễ hiểu
 
-function Footer() {
+const Footer = () => {
   return (
-    <div className={footerClassName.test}>Footer</div>
-  )
-}
+    <footer className={styles.footer}>
+    </footer>
+  );
+};
 
-export default Footer
+export default Footer;

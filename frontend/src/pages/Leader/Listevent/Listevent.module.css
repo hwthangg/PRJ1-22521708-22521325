@@ -1,0 +1,48 @@
+.container {
+    padding: 20px;
+    background-color: #fff;
+  }
+  
+  .title {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 20px;
+  }
+  .container {
+    padding: 20px ;
+    background-color: #fff;
+  }
+  
+  .controls {
+    display: flex;
+    align-items: center;     
+    gap: 16px;
+    margin-bottom: 20px;
+    padding: 0 60px;     
+  }
+  
+  
+  .searchInput {
+    flex: 1;
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  .filterSelect {
+    width: 200px;
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  .searchWrapper {
+    margin-left: 0; /* hoặc margin-left: -10px nếu muốn đẩy mạnh hơn */
+    flex: 1;
+  }
+  .chatAIButton {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 999; /* đảm bảo hiển thị trên các thành phần khác */
+  }
+  
