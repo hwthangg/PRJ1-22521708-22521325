@@ -13,12 +13,12 @@ const Sidebar_infoevent = ({ onBack }) => {
   return (
     <div className={styles.sidebar}>
       <div className={styles.header}>
-        <IoArrowBack className={styles.backIcon} onClick={onBack} />
+        <IoArrowBack className={styles.backIcon} onClick={()=>handleNavigate('/events')} />
         <span className={styles.title}>Thông tin sự kiện</span>
       </div>
       <div className={styles.content}>
         <p className={styles.option} onClick={() => handleNavigate('/qr')}>QR điểm danh</p>
-        <p className={styles.option} onClick={() => handleNavigate('/AdminDashboard')}>Bài viết của sự kiện này</p>
+        <p className={styles.option} onClick={() => handleNavigate('/home')}>Bài viết của sự kiện này</p>
       </div>
     </div>
   );

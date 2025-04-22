@@ -5,6 +5,7 @@ import Search from '../../../components/Search/Search';
 import Filter from '../../../components/Filter/Filter';
 import Add from '../../../components/Add/Add';
 import ChatAI from '../../../components/ChatAI/ChatAI';
+import { AuthContext } from '../../../../context/AuthContext';
 
 const columns = ['Tên sự kiện', 'Trạng thái', 'Thời gian tổ chức', 'Địa điểm tổ chức', 'Điểm danh'];
 
@@ -110,6 +111,7 @@ const originalData = [
 ];
 
 const Listevent = () => {
+ 
   const [searchText, setSearchText] = useState('');
   const [filterStatus, setFilterStatus] = useState('all');  // Set default value to 'all'
 
@@ -134,7 +136,7 @@ const Listevent = () => {
         />
         <Add onClick={() => console.log('Add button clicked')} />
         <ChatAI
-  onClick={() => console.log('ChatAi button clicked')}
+  onClick={() => console.log(`ChatAi button clicked ${role}`)}
   fixed={true}
 />
 

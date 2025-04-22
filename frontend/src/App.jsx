@@ -15,25 +15,49 @@ import Informationevent from "./pages/Leader/Informationevent/Informationevent";
 import Create_event from "./pages/Leader/Create_event/Create_event";
 import Listdocument from "./pages/Leader/Listdocument/Listdocument";
 
-import './App.css';
+import "./App.css";
+import { useContext } from "react";
+import { AuthContext } from "../context/AuthContext";
+import Login from "./pages/Auth/Login/Login";
+import Home from "./pages/Leader/Home/Home";
+import Register from "./pages/Auth/Register/Register";
 
 function App() {
+  const {
+    ROLE: { role },
+  } = useContext(AuthContext);
   return (
     <BrowserRouter>
-      <Header />
-
-      {/* <div className="search-date-wrapper">
+      <>
+        {/* <div className="search-date-wrapper">
   <Search />
   <Filter />
   <div className="no-flex">
     <Add />
   </div>
 </div> */}
-
+      </>
+      {role == "leader" && <Header />}
       <Routes>
-        <Route path="/" element={<Listdocument />} />
+        <Route path="/" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <>
+          {/* <Route path="/leader" element={<Informationevent />} />
         <Route path="/message" element={<Message />} />
-        <Route path="/AdminDashboard" element={<AdminDashboard />} />  
+        <Route path="/AdminDashboard" element={<AdminDashboard />} />*/}
+          <Route path="/test" element={<TestPage />} />
+        </>
+        <Route path="/home" element={<Home />} />
+        <Route path="/members/receiving" element={<Listunionmember />} />
+        <Route
+          path="/members/activity-statistic"
+          element={<ActivityStatistics />}
+        />
+        <Route path="/events" element={<Listevent />} />
+        <Route path="/events/:eventId" element={<Informationevent />} />
+        <Route path="/documents" element={<Listdocument />} />
+
+        <Route path="/message" element={<Message />} />
       </Routes>
     </BrowserRouter>
   );

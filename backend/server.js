@@ -1,11 +1,47 @@
-const express = require('express')
-const app = express()
-const port = 3000
+import express from "express";
+import cors from "cors";
+import mongoose from "mongoose";
+import { configDotenv } from "dotenv";
+import cookieParser from "cookie-parser";
 
-app.get('/', (req, res) => {
-  res.send('Hello World!')
-})
 
-app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`)
-})
+
+configDotenv();
+const PORT = process.env.PORT;
+const DB_CONNECT_STRING = process.env.DB_CONNECT_STRING;
+
+mongoose
+  .connect(DB_CONNECT_STRING)
+  .then(() => console.log("💻 Mondodb Connected"))
+  .catch((err) => console.error(err));
+
+const app = express();
+
+app.use(express.json());
+app.use(cors());
+app.use(cookieParser());
+app.get("/", (req, res) => {
+  res.status(200).send({ message: "HwThang's Server", data: {} });
+});
+
+// app.use("/api/auth", AuthRoutes)
+import UserRoutes from "./routes/user.routes.js"
+app.use("/api/users", UserRoutes)
+import ChapterRoutes from "./routes/chapter.routes.js"
+import MemberRoutes from "./routes/member.routes.js";
+import DocumentRoutes from "./routes/document.routes.js";
+import EventRoutes from "./routes/event.routes.js";
+app.use("/api/chapters", ChapterRoutes)
+
+app.use("/api/members", MemberRoutes)
+
+
+app.use("/api/documents", DocumentRoutes);
+
+// app.use("/api/transfer-logs", TransferLogRoutes)
+app.use("/api/events", EventRoutes)
+// app.use("/api/docs", DocRoutes)
+
+app.listen(PORT, () => {
+  console.log(`Server at: http://localhost:${PORT}`);
+});

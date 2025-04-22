@@ -1,5 +1,5 @@
 import React from "react";
-import HistoricalSiteInfo from "../../components/Society/Society";
+import Society from "../../components/Society/Society";
 import a1 from "../../assets/a1.jpg";
 import a2 from "../../assets/a2.jpg";
 import a3 from "../../assets/a3.jpg";
@@ -30,7 +30,7 @@ const AdminDashboard = () => {
     <div>
       {sites.map((site, index) => (
         <div key={index} style={{ marginBottom: "40px" }}>
-          <HistoricalSiteInfo site={site} />
+          <Society site={site} />
         </div>
       ))}
     </div>
