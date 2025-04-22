@@ -12,6 +12,8 @@ import ActivityStatistics from "./pages/Leader/ActivityStatistics/ActivityStatis
 import Listevent from "./pages/Leader/Listevent/Listevent";
 import Message from "./pages/Leader/Message/Message";
 import Informationevent from "./pages/Leader/Informationevent/Informationevent";
+import Create_event from "./pages/Leader/Create_event/Create_event";
+import Listdocument from "./pages/Leader/Listdocument/Listdocument";
 
 import "./App.css";
 import { useContext } from "react";
