@@ -1,3 +1,88 @@
-.test{
-    color: blue;
-}
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 50px;
+    background-color: #eaeaff;
+    min-height: 100vh;
+  }
+  
+  .form_wrapper {
+    background-color: #f2f3ff;
+    padding: 40px;
+    border-radius: 16px;
+    width: 900px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  }
+  
+  .title {
+    text-align: center;
+    color: #3e3eff;
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 30px;
+  }
+  
+  .form_grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px 40px;
+  }
+  
+  .field_group {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .label {
+    color: #3e3eff;
+    font-weight: 500;
+    margin-bottom: 6px;
+  }
+  
+  .input_wrapper {
+    display: flex;
+    align-items: center;
+    border: 1.5px solid #3e3eff;
+    border-radius: 10px;
+    padding: 10px;
+    background-color: white;
+  }
+  
+  .input_wrapper svg {
+    color: #3e3eff;
+    margin-right: 10px;
+  }
+  
+  .input_wrapper input,
+  .input_wrapper select {
+    border: none;
+    outline: none;
+    flex: 1;
+    font-size: 14px;
+    background-color: transparent;
+  }
+  
+  .error {
+    color: red;
+    font-size: 12px;
+    margin-top: 4px;
+  }
+  
+  .button_wrapper {
+    margin-top: 30px;
+    display: flex;
+    justify-content: center;
+  }
+  
+  .button_wrapper button {
+    background-color: #3e3eff;
+    color: white;
+    padding: 12px 40px;
+    font-size: 16px;
+    font-weight: bold;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+  }
+  
