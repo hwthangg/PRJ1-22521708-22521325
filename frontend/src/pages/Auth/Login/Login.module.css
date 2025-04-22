@@ -1,7 +1,9 @@
 .container {
     display: flex;
     height: 100vh;
+    margin: 0;
     font-family: sans-serif;
+    border: 1px solid;
   }
   
   .container_login {
@@ -117,3 +119,10 @@
     text-decoration: none;
   }
   
+  .toggle_password{
+    display: flex;
+  }
+
+  .toggle_password:active{
+    opacity: 0.5;
+  }

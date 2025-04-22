@@ -1,88 +1,162 @@
+/* ==== LAYOUT CHUNG ==== */
 .container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 50px;
-    background-color: #eaeaff;
-    min-height: 100vh;
-  }
+  display: flex;
+  height: 100vh;
+  font-family: sans-serif;
+  flex: 1;
+}
+
+.container_login {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.container_image {
+  flex: 1;
+  background-image: url('../../assets/banner.png');
+  background-size: contain;
+  background-position: right;
+  background-repeat: no-repeat;
+}
+
+/* ==== FORM LOGIN ==== */
+.container_login_form {
+  background-color: #f2f3ff;
+  padding: 0 40px 40px 40px;
+  border-radius: 20px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+  width: 380px;
+  position: relative;
+}
+
+.container_login_form p {
+  text-align: center;
+  font-size: 30px;
+  font-weight: bold;
+  color: #3e3eff;
+  margin-bottom: 20px;
+  position: relative;
+  top: -45px;
+}
+
+.container_login_form label {
+  font-weight: 500;
+  color: #3e3eff;
+  display: block;
+  margin-bottom: 6px;
+  margin-top: 16px;
+}
+
+/* ==== INPUT FIELD ==== */
+.input_field {
+  display: flex;
+  align-items: center;
+  border: 1.5px solid #3e3eff;
+  border-radius: 10px;
+  padding: 10px;
+  margin-bottom: 4px;
+  background-color: white;
   
-  .form_wrapper {
-    background-color: #f2f3ff;
-    padding: 40px;
-    border-radius: 16px;
-    width: 900px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
-  }
-  
-  .title {
-    text-align: center;
-    color: #3e3eff;
-    font-size: 24px;
-    font-weight: bold;
-    margin-bottom: 30px;
-  }
-  
-  .form_grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 20px 40px;
-  }
-  
-  .field_group {
-    display: flex;
-    flex-direction: column;
-  }
-  
-  .label {
-    color: #3e3eff;
-    font-weight: 500;
-    margin-bottom: 6px;
-  }
-  
-  .input_wrapper {
-    display: flex;
-    align-items: center;
-    border: 1.5px solid #3e3eff;
-    border-radius: 10px;
-    padding: 10px;
-    background-color: white;
-  }
-  
-  .input_wrapper svg {
-    color: #3e3eff;
-    margin-right: 10px;
-  }
-  
-  .input_wrapper input,
-  .input_wrapper select {
-    border: none;
-    outline: none;
-    flex: 1;
-    font-size: 14px;
-    background-color: transparent;
-  }
-  
-  .error {
-    color: red;
-    font-size: 12px;
-    margin-top: 4px;
-  }
-  
-  .button_wrapper {
-    margin-top: 30px;
-    display: flex;
-    justify-content: center;
-  }
-  
-  .button_wrapper button {
-    background-color: #3e3eff;
-    color: white;
-    padding: 12px 40px;
-    font-size: 16px;
-    font-weight: bold;
-    border: none;
-    border-radius: 10px;
-    cursor: pointer;
-  }
-  
+}
+
+.input_field svg {
+  color: #3e3eff;
+}
+
+.input_field input {
+  border: none;
+  outline: none;
+  margin-left: 10px;
+  font-size: 14px;
+  flex:1
+}
+
+/* ==== ERROR ==== */
+.error {
+  color: red;
+  font-size: 12px;
+  margin-bottom: 4px;
+}
+
+/* ==== ACTIONS: BUTTON + LINK ==== */
+.actions {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 20px;
+}
+
+.actions button {
+  background-color: #3e3eff;
+  color: white;
+  padding: 10px 25px;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  font-size: 15px;
+}
+
+.actions a {
+  color: #3e3eff;
+  font-size: 13px;
+  text-decoration: none;
+}
+
+/* ==== REGISTER LINK ==== */
+.register {
+  margin-top: 10px;
+  text-align: center;
+  font-size: 13px;
+}
+
+.register a {
+  color: #3e3eff;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+/* ==== BIRTHDAY + GENDER CONTAINER ==== */
+.container_birthday_gender {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+ 
+}
+
+.container_birthday {
+
+  width: 60%;
+}
+
+.container_gender {
+
+  width: 30%;
+}
+
+/* ==== BIRTHDAY FIELD ==== */
+.birthday input {
+  width: 40px;
+  text-align: center;
+}
+
+/* ==== GENDER FIELD ==== */
+.gender {
+  height: 20px ;
+}
+
+.gender select{
+  width: 100%;
+  border: none;
+}
+
+.gender select:focus{
+ 
+  outline: none;
+}
+
+
+
+

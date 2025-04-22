@@ -124,12 +124,15 @@
 import React, { useState } from 'react';
 import styles from './Table.module.css';
 import Info from '../Info/Info';
+import { useNavigate } from 'react-router-dom';
 
 const Table = ({ columns, data }) => {
   const [checkedRows, setCheckedRows] = useState(new Array(data.length).fill(false));
   const [selectedRow, setSelectedRow] = useState(null);
   const [rowsPerPage, setRowsPerPage] = useState(10); // ✅ Dùng state cho số dòng mỗi trang
   const [currentPage, setCurrentPage] = useState(1);  // ✅ State cho trang hiện tại
+
+  const navigate = useNavigate()
 
   // Tính tổng số trang
   const totalPages = Math.ceil(data.length / rowsPerPage);
@@ -164,7 +167,11 @@ const Table = ({ columns, data }) => {
 
   // Click chọn dòng (mở Info)
   const handleRowClick = (e, rowIndex) => {
-    if (e.target.type !== 'checkbox') {
+
+    if(columns.includes('Tên sự kiện')) {
+      navigate('/events/1')
+    }
+    else if (e.target.type !== 'checkbox') {
       setSelectedRow(rowIndex);
     }
   };

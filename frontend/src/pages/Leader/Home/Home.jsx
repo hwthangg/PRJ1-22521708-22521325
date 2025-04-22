@@ -1,10 +1,12 @@
-import React from "react";
-import Society from "../../components/Society/Society";
-import a1 from "../../assets/a1.jpg";
-import a2 from "../../assets/a2.jpg";
-import a3 from "../../assets/a3.jpg";
+import React, { useEffect, useContext } from "react";
+import Society from "../../../components/Society/Society";
+import a1 from "../../../assets/a1.jpg";
+import a2 from "../../../assets/a2.jpg";
+import a3 from "../../../assets/a3.jpg";
+import { AuthContext } from "../../../../context/AuthContext";
 
-const AdminDashboard = () => {
+const Home = () => {
+  const {role, isLogged} = useContext(AuthContext)
   const sites = [
     {
       name: "",
@@ -26,6 +28,10 @@ const AdminDashboard = () => {
     }
   ];
 
+  useEffect(()=>{
+    console.log(`${role}`)
+  },[])
+
   return (
     <div>
       {sites.map((site, index) => (
@@ -37,4 +43,4 @@ const AdminDashboard = () => {
   );
 };
 
-export default AdminDashboard;
+export default Home;

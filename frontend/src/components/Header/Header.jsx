@@ -1,11 +1,13 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useContext } from 'react';
 import { useNavigate } from 'react-router-dom'; 
 import styles from './Header.module.css';
 import logodoan from '../../assets/logodoan.png';
 import bellIcon from '../../assets/bellicon.png';
 import notifyIcon from '../../assets/notifyicon.png';
+import { AuthContext } from '../../../context/AuthContext';
 
 const Header = () => {
+  const {ROLE:{setRole}} = useContext(AuthContext)
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [activeMenu, setActiveMenu] = useState(null);
   const navRef = useRef(null);
@@ -42,7 +44,7 @@ const Header = () => {
       </div>
 
       <nav className={styles.nav} ref={navRef}>
-        <a href="#">Trang chủ</a>
+        <a href="/home">Trang chủ</a>
 
         <div className={styles.navItemWithDropdown}>
           <div className={styles.dropdownText} onClick={() => handleMenuClick('nghiepvu')}>
@@ -50,9 +52,11 @@ const Header = () => {
           </div>
           {activeMenu === 'nghiepvu' && (
             <ul className={styles.dropdownMenuNav}>
-              <li>Thêm đoàn viên</li>
-              <li>Danh sách đoàn viên</li>
-              <li>Quản lý đoàn phí</li>
+              <li><a>Danh sách đoàn viên</a></li>
+              <li><a>Thêm đoàn viên</a></li>
+              <li><a href='/members/receiving'>Tiếp nhận đoàn viên</a></li>
+              <li><a>Đoàn viên chuyển sinh hoạt</a></li>
+              <li><a href='/members/activity-statistic'>Thống kê hoạt động</a></li>
             </ul>
           )}
         </div>
@@ -63,9 +67,9 @@ const Header = () => {
           </div>
           {activeMenu === 'sukien' && (
             <ul className={styles.dropdownMenuNav}>
-              <li>Thêm sự kiện</li>
-              <li>Danh sách sự kiện</li>
-              <li>Thống kê tham gia</li>
+              <li><a href='#'>Thêm sự kiện</a></li>
+              <li><a href='/events'>Danh sách sự kiện</a></li>
+              <li><a href='#'>Thống kê tham gia</a></li>
             </ul>
           )}
         </div>
@@ -86,8 +90,8 @@ const Header = () => {
           </div>
           {isDropdownOpen && (
             <ul className={styles.dropdownMenu}>
-              <li>Hồ sơ</li>
-              <li>Đăng xuất</li>
+              <li><a href='#'>Hồ sơ</a></li>
+              <li><a href='/' onClick={()=>setRole('')}>Đăng xuất</a></li>
             </ul>
           )}
         </div>
