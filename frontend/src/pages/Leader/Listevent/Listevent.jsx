@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react'; // thêm useContext
 import styles from './Listevent.module.css';
 import Table from '../../../components/Table/Table';
 import Search from '../../../components/Search/Search';
@@ -114,6 +114,8 @@ const Listevent = () => {
  
   const [searchText, setSearchText] = useState('');
   const [filterStatus, setFilterStatus] = useState('all');  // Set default value to 'all'
+  const { role } = useContext(AuthContext);
+
 
   const filteredData = originalData.filter(item => {
     const nameMatch = item['Tên sự kiện'].toLowerCase().includes(searchText.toLowerCase());

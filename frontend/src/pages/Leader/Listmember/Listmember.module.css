@@ -1,0 +1,27 @@
+.wrapper {
+    padding: 20px;
+  }
+  
+  .filterBar {
+    display: flex;
+    align-items: center;     
+    gap: 16px;
+    margin-bottom: 20px;
+    padding: 0 70px;  
+  }
+  
+  .searchInput {
+    padding: 6px 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 14px;
+    flex: 1;
+  }
+  
+  .dateInput {
+    padding: 6px 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 14px;
+  }
+  

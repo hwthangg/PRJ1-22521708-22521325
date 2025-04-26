@@ -14,6 +14,7 @@ import Message from "./pages/Leader/Message/Message";
 import Informationevent from "./pages/Leader/Informationevent/Informationevent";
 import Create_event from "./pages/Leader/Create_event/Create_event";
 import Listdocument from "./pages/Leader/Listdocument/Listdocument";
+import Listmember from "./pages/Leader/Listmember/Listmember";
 
 import "./App.css";
 import { useContext } from "react";
@@ -53,6 +54,7 @@ function App() {
           path="/members/activity-statistic"
           element={<ActivityStatistics />}
         />
+        <Route path="/listmember" element={<Listmember />} />
         <Route path="/events" element={<Listevent />} />
         <Route path="/events/:eventId" element={<Informationevent />} />
         <Route path="/documents" element={<Listdocument />} />
