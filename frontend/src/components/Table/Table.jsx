@@ -210,7 +210,7 @@ const Table = ({ columns, data }) => {
             <th>STT</th>
             {columns.map((col, index) => (
               <th key={index}>
-                {(col === 'Họ và tên' || col === 'Tên sự kiện') ? (
+                {(col === 'Họ và tên' || col === 'Tên sự kiện'|| col === 'Tên tài liệu') ? (
                   <div className={styles.headerCell}>
                     {col}
                     <input

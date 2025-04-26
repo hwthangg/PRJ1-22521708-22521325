@@ -116,12 +116,20 @@ th {
   font-weight: bold;
 }
 
-.headerCell {
+/* .headerCell {
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 8px;
+} */
+.headerCell {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  text-align: center;
 }
+
 
 .inlineCheckbox {
   margin-left: 8px;
@@ -174,7 +182,7 @@ th {
 
 .nameLink {
   flex: 1;
-  text-align: center;
+  text-align: left;
   cursor: pointer;
   color: #000;
 }

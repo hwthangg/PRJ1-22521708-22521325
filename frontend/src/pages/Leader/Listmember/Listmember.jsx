@@ -5,11 +5,12 @@ import Search from '../../../components/Search/Search';
 import Filter from '../../../components/Filter/Filter';
 import Add from '../../../components/Add/Add';
 import Delete from '../../../components/Delete/Delete';
+import FormAddmember from '../../../components/FormAddmember/FormAddmember';
 
 const Listmember = () => {
   const [searchValue, setSearchValue] = useState('');
   const [filterValue, setFilterValue] = useState('all');
-
+  const [showFormAdd, setShowFormAdd] = useState(false); 
   const columns = [
     'Họ và tên',
     'Giới tính',
@@ -28,12 +29,10 @@ const Listmember = () => {
       'Địa chỉ thường trú': '1/1 đường A, khu phố A, phường A, huyện A, tỉnh A',
       'Thông tin liên hệ': 'Email: dht@gmail.com\nSĐT: 0123456789',
     },
-    // Các dòng dữ liệu khác...
   ];
 
   return (
     <div className={styles.wrapper}>
-      {/* Dòng chứa Search, Filter, Add, Delete */}
       <div className={styles.filterBar}>
         <Search 
           value={searchValue} 
@@ -44,11 +43,15 @@ const Listmember = () => {
           selected={filterValue} 
           onChange={setFilterValue} 
         />
-        <Add onClick={() => console.log('Add button clicked')} />
+        <Add onClick={() => setShowFormAdd(true)} />
         <Delete onClick={() => console.log('Delete button clicked')} />
       </div>
 
       <Table columns={columns} data={data} />
+
+      {showFormAdd && (
+        <FormAddmember onClose={() => setShowFormAdd(false)} />
+      )}
     </div>
   );
 };
