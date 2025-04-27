@@ -4,8 +4,8 @@ import fileIcon from '../../assets/file.png';
 
 const Info_document = ({ document = {}, onClose }) => {
   const fileInputRef = useRef(null);
+  const [uploadedFile, setUploadedFile] = useState(null);
 
-  // State edit
   const [formData, setFormData] = useState({
     tenTaiLieu: '',
     loaiTaiLieu: '',
@@ -33,7 +33,8 @@ const Info_document = ({ document = {}, onClose }) => {
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      console.log(file.name);
+      setUploadedFile(file);
+      console.log('Tệp đã chọn:', file.name);
     }
   };
 
@@ -52,14 +53,15 @@ const Info_document = ({ document = {}, onClose }) => {
       'Ngày ban hành': formData.ngayBanHanh,
       'Nơi ban hành': formData.noiBanHanh,
       'Mô tả': formData.moTa,
+      'Tài liệu': uploadedFile ? uploadedFile.name : (document['Tải tài liệu'] || ''),
     };
     console.log('Cập nhật tài liệu với dữ liệu:', updatedDocument);
-    // TODO: Thêm logic gửi updatedDocument đi
+    // TODO: Gửi dữ liệu lên server hoặc xử lý cập nhật ở đây
   };
 
   const handleDeleteClick = () => {
     console.log('Xóa tài liệu');
-    // TODO: Thêm logic xóa tài liệu
+    // TODO: Thêm logic xóa tài liệu ở đây
   };
 
   if (!document) return <p>Chưa có tài liệu nào được chọn</p>;
@@ -83,66 +85,76 @@ const Info_document = ({ document = {}, onClose }) => {
               onChange={handleFileChange}
             />
             <img src={fileIcon} alt="PDF Icon" className={styles.pdfIcon} />
+            {uploadedFile ? (
+              <p className={styles.fileName}>{uploadedFile.name}</p>
+            ) : (
+              document['Tải tài liệu'] && <p className={styles.fileName}>{document['Tải tài liệu']}</p>
+            )}
           </div>
 
           {/* Info tài liệu */}
-          <div className={styles.infoSection}>
-            <div className={styles.row}>
-              <div className={styles.field}>
-                <label>Tên tài liệu</label>
-                <input
-                  type="text"
-                  name="tenTaiLieu"
-                  value={formData.tenTaiLieu}
-                  onChange={handleInputChange}
-                />
-              </div>
-            </div>
+{/* Info tài liệu */}
+<div className={styles.infoSection}>
+  {/* Dòng 1: Tên tài liệu */}
+  <div className={styles.row}>
+    <div className={styles.field}>
+      <label>Tên tài liệu</label>
+      <input
+        type="text"
+        name="tenTaiLieu"
+        value={formData.tenTaiLieu}
+        onChange={handleInputChange}
+      />
+    </div>
+  </div>
 
-            <div className={styles.row}>
-              <div className={styles.field}>
-                <label>Loại tài liệu</label>
-                <input
-                  type="text"
-                  name="loaiTaiLieu"
-                  value={formData.loaiTaiLieu}
-                  onChange={handleInputChange}
-                />
-              </div>
+  {/* Dòng 2: Loại tài liệu, Ngày ban hành, Nơi ban hành */}
+  <div className={styles.row}>
+    <div className={styles.field}>
+      <label>Loại tài liệu</label>
+      <input
+        type="text"
+        name="loaiTaiLieu"
+        value={formData.loaiTaiLieu}
+        onChange={handleInputChange}
+      />
+    </div>
 
-              <div className={styles.field}>
-                <label>Ngày ban hành</label>
-                <input
-                  type="text"
-                  name="ngayBanHanh"
-                  value={formData.ngayBanHanh}
-                  onChange={handleInputChange}
-                />
-              </div>
+    <div className={styles.field}>
+      <label>Ngày ban hành</label>
+      <input
+        type="date"
+        name="ngayBanHanh"
+        value={formData.ngayBanHanh}
+        onChange={handleInputChange}
+      />
+    </div>
 
-              <div className={styles.field}>
-                <label>Nơi ban hành</label>
-                <input
-                  type="text"
-                  name="noiBanHanh"
-                  value={formData.noiBanHanh}
-                  onChange={handleInputChange}
-                />
-              </div>
-            </div>
+    <div className={styles.field}>
+      <label>Nơi ban hành</label>
+      <input
+        type="text"
+        name="noiBanHanh"
+        value={formData.noiBanHanh}
+        onChange={handleInputChange}
+      />
+    </div>
+  </div>
 
-            <div className={styles.row}>
-              <div className={styles.field}>
-                <label>Mô tả tài liệu</label>
-                <textarea
-                  name="moTa"
-                  value={formData.moTa}
-                  onChange={handleInputChange}
-                  rows="5"
-                />
-              </div>
-            </div>
-          </div>
+  {/* Dòng 3: Mô tả */}
+  <div className={styles.row}>
+    <div className={styles.fieldFullWidth}>
+      <label>Mô tả tài liệu</label>
+      <textarea
+        name="moTa"
+        value={formData.moTa}
+        onChange={handleInputChange}
+        rows="5"
+      />
+    </div>
+  </div>
+</div>
+
         </div>
 
         <div className={styles.buttonGroup}>

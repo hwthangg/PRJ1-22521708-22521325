@@ -9,6 +9,7 @@
   justify-content: center;
   align-items: center;
   z-index: 999;
+  font-family: sans-serif;
 }
 
 .modal {
@@ -87,6 +88,7 @@
 
 .field {
   flex: 1;
+  min-width: 150px; 
   display: flex;
   flex-direction: column;
 }
@@ -154,4 +156,9 @@ textarea {
 
 .deleteButton:hover {
   background-color: #d63030;
+}
+.fieldFullWidth {
+  flex: 1 1 100%;
+  display: flex;
+  flex-direction: column;
 }
