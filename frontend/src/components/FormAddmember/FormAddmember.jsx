@@ -3,7 +3,9 @@ import styles from './FormAddmember.module.css';
 
 const FormAddmember = ({ onClose }) => {
   const fileInputRef = useRef(null);
-  const [avatar, setAvatar] = useState(null); // State to hold the selected avatar
+  const [avatar, setAvatar] = useState(null);
+  const [birthDateFocused, setBirthDateFocused] = useState(false);
+  const [joinDateFocused, setJoinDateFocused] = useState(false);
 
   const handleAvatarClick = () => {
     fileInputRef.current.click();
@@ -12,12 +14,11 @@ const FormAddmember = ({ onClose }) => {
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     if (file) {
-      // Set avatar to preview the selected file
       const fileReader = new FileReader();
       fileReader.onloadend = () => {
         setAvatar(fileReader.result);
       };
-      fileReader.readAsDataURL(file); // Convert the file to a base64 URL for image preview
+      fileReader.readAsDataURL(file);
     }
   };
 
@@ -35,7 +36,6 @@ const FormAddmember = ({ onClose }) => {
               onClick={handleAvatarClick}
               style={{ backgroundImage: avatar ? `url(${avatar})` : 'none' }}
             >
-              {/* Optional: Add an icon for camera */}
               {!avatar && <span className={styles.cameraIcon}>📷</span>}
             </div>
             <input
@@ -51,8 +51,16 @@ const FormAddmember = ({ onClose }) => {
             <div className={styles.row}>
               <input type="text" placeholder="Số thẻ đoàn" />
               <input type="text" placeholder="Họ tên đoàn viên" />
-              <input type="date" placeholder="Ngày sinh" />
+              <input
+                type={birthDateFocused ? "date" : "text"}
+                placeholder="Ngày sinh"
+                onFocus={() => setBirthDateFocused(true)}
+                onBlur={(e) => {
+                  if (!e.target.value) setBirthDateFocused(false);
+                }}
+              />
               <select>
+                <option value="">Giới tính</option>
                 <option>Nam</option>
                 <option>Nữ</option>
                 <option>Khác</option>
@@ -70,7 +78,14 @@ const FormAddmember = ({ onClose }) => {
               <input type="text" placeholder="Chức vụ" />
               <input type="email" placeholder="Email" />
               <input type="text" placeholder="Số điện thoại" />
-              <input type="date" placeholder="Ngày vào đoàn" />
+              <input
+                type={joinDateFocused ? "date" : "text"}
+                placeholder="Ngày vào đoàn"
+                onFocus={() => setJoinDateFocused(true)}
+                onBlur={(e) => {
+                  if (!e.target.value) setJoinDateFocused(false);
+                }}
+              />
             </div>
 
             <div className={styles.row}>
