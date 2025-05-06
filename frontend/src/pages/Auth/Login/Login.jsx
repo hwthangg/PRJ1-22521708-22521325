@@ -11,18 +11,17 @@ import socket from "../../../socket";
 
 
 function Login() {
-  const {ROLE:{setRole}} = useContext(AuthContext)
+  const {ROLE:{setRole}, ISLOGGED:{setIsLogged}} = useContext(AuthContext)
   const [keyAuth, setKeyAuth] = useState("");
   const [password, setPassword] = useState("");
   const [isVisiblePassword, setTogglePassword] = useState(false);
-  const [isLogged, setIsLogged] = useState()
   const navigate = useNavigate()
 
   const handleLogin = async(e) =>{
     e.preventDefault()
     const credentials = {keyAuth: keyAuth, password: password}
    
-    fetch('http://localhost:5000/api/users/login', {
+    fetch('http://localhost:5000/api/auth/login', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -31,16 +30,16 @@ function Login() {
       credentials: 'include'
     })
       .then(res => res.json())
-      .then(data => {
-        console.log(data);
-        if (data.chapterId) {
-          setIsLogged(data);
+      .then(response => {
+        console.log(response);
+        if (response.success) {
+          setIsLogged(true);
     
           // ⚠️ Dùng trực tiếp data thay vì đợi state cập nhật
-          if (data.role === 'admin') {
+          if (response.data.role === 'admin') {
             setRole('admin');
             navigate('/AdminDashboard');
-          } else if (data.role === 'leader') {
+          } else if (response.data.role === 'leader') {
             setRole('leader');
             navigate('/home');
           }

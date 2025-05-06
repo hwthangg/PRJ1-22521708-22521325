@@ -86,14 +86,14 @@ const Header = () => {
 
     socket.on("event_reminder", handleEventReminder)
 
-    fetch(`http://localhost:5000/api/chapters/me`, {
+    fetch(`http://localhost:5000/api/auth/me`, {
       method: "GET",
       credentials: "include",
     })
       .then((res) => res.json())
-      .then((data) => {
-        setChapter(data);
-        socket.emit("access", data._id);
+      .then((res) => {
+        setChapter(res.data);
+        socket.emit("access", res.data._id);
       });
 
 
