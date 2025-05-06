@@ -113,7 +113,7 @@ import Search from '../../../components/Search/Search';
 import Filter from '../../../components/Filter/Filter';
 import Add from '../../../components/Add/Add';
 import Delete from '../../../components/Delete/Delete';
-import FormAddmember from '../../../components/FormAddmember/FormAddmember'; // Nếu FormAddmember dùng cho thêm tài liệu thì để, không thì cần đổi
+import Formadddocument from '../../../components/Formadddocument/Formadddocument';
 
 const Listdocument = () => {
   const [searchValue, setSearchValue] = useState('');
@@ -185,7 +185,7 @@ const Listdocument = () => {
       <Table_doc columns={columns} data={data} />
 
       {showFormAdd && (
-        <FormAddmember onClose={() => setShowFormAdd(false)} />
+        <Formadddocument onClose={() => setShowFormAdd(false)} />
       )}
     </div>
   );
