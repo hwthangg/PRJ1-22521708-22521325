@@ -236,6 +236,28 @@ const UserController = () => {
     }
   };
 
+  const login = async(req, res) => {
+  const resa = req.body
+  console.log(resa.keyAuth)
+
+  const user = await User.findOne({email: resa.keyAuth})
+
+  if(!user){
+    res.send({message:' no'})
+    return
+  }
+
+  res.cookie('chapterId', String(user.chapterId))
+  res.json(user)
+  }
+
+  const logout = async(req, res) => {
+
+    res.clearCookie('chapterId');
+    res.send('1')
+
+  }
+
   // Trả về các hàm controller
   return {
     createUser,
@@ -243,7 +265,9 @@ const UserController = () => {
     getUserById,
     updateUserById,
     deletedUserById,
-    setChapterLeader
+    setChapterLeader,
+    login,
+    logout
   };
 };
 

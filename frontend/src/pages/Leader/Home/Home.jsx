@@ -4,6 +4,7 @@ import a1 from "../../../assets/a1.jpg";
 import a2 from "../../../assets/a2.jpg";
 import a3 from "../../../assets/a3.jpg";
 import { AuthContext } from "../../../../context/AuthContext";
+import socket from "../../../socket";
 
 const Home = () => {
   const {role, isLogged} = useContext(AuthContext)
@@ -30,6 +31,7 @@ const Home = () => {
 
   useEffect(()=>{
     console.log(`${role}`)
+    socket.emit('access', true)
   },[])
 
   return (

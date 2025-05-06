@@ -1,4 +1,4 @@
-  import React, { useState } from 'react';
+  import React, { useEffect, useState } from 'react';
 import styles from './message.module.css';
 import SidebarChat from '../../../components/SidebarChat/SidebarChat';
 import Chat from '../../../components/Chat/Chat';
@@ -28,19 +28,31 @@ const mockConversations = [
 ];
 
 function Message() {
-  const [selectedChatId, setSelectedChatId] = useState(mockConversations[0].id);
+  const [conversations, setConversations] = useState([])
+  const [selectedChatId, setSelectedChatId] = useState();
+  const [selectedChat, setSelectedChat] = useState();
   const [searchQuery, setSearchQuery] = useState(''); // State to hold the search query
 
   const handleSelectChat = (id) => {
-    setSelectedChatId(id);
+    setSelectedChatId(id)
+    setSelectedChat(conversations.find((chat) => chat._id === id))
+    console.log(selectedChat, 1)
   };
 
-  const selectedChat = mockConversations.find((chat) => chat.id === selectedChatId);
-
   // Filter conversations based on the search query
-  const filteredConversations = mockConversations.filter((chat) =>
+  const filteredConversations = conversations.filter((chat) =>
     chat.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+
+
+  useEffect(()=>{
+    fetch('http://localhost:5000/api/chapters', {
+      method: 'GET'
+    }).then(res => res.json()).then(data => setConversations(data.data.chapters))
+  },[selectedChatId])
+
+
 
   return (
     <div className={styles.container}>
@@ -54,18 +66,19 @@ function Message() {
         {/* Render the filtered conversations */}
         {filteredConversations.map((chat) => (
           <SidebarChat
-            key={chat.id}
+            key={chat._id}
             name={chat.name}
-            message={chat.message}
+            message={'chat.message'}
             avatar={chat.avatar}
-            isActive={chat.id === selectedChatId}
-            onClick={() => handleSelectChat(chat.id)}
+            isActive={chat._id === selectedChatId}
+            onClick={() => handleSelectChat(chat._id)}
           />
         ))}
       </div>
-      <div className={styles.chat}>
+      {selectedChatId ? (<><div className={styles.chat}>
         <Chat chat={selectedChat} />
-      </div>
+      </div></>) : <></>}
+      
     </div>
   );
 }

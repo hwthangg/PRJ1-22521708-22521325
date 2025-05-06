@@ -6,6 +6,7 @@ import { IoEyeOutline, IoEyeOffOutline } from "react-icons/io5";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../../../context/AuthContext";
+import socket from "../../../socket";
 
 
 
@@ -14,21 +15,42 @@ function Login() {
   const [keyAuth, setKeyAuth] = useState("");
   const [password, setPassword] = useState("");
   const [isVisiblePassword, setTogglePassword] = useState(false);
+  const [isLogged, setIsLogged] = useState()
   const navigate = useNavigate()
 
-  const handleLogin = (e) =>{
+  const handleLogin = async(e) =>{
     e.preventDefault()
     const credentials = {keyAuth: keyAuth, password: password}
    
+    fetch('http://localhost:5000/api/users/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(credentials),
+      credentials: 'include'
+    })
+      .then(res => res.json())
+      .then(data => {
+        console.log(data);
+        if (data.chapterId) {
+          setIsLogged(data);
+    
+          // ⚠️ Dùng trực tiếp data thay vì đợi state cập nhật
+          if (data.role === 'admin') {
+            setRole('admin');
+            navigate('/AdminDashboard');
+          } else if (data.role === 'leader') {
+            setRole('leader');
+            navigate('/home');
+          }
+        }
+      })
+      .catch(err => {
+        console.error('Login failed:', err);
+      });
+    
 
-    if(keyAuth == 'admin'){
-      setRole('admin')
-      navigate('/AdminDashboard')
-    }
-    else if(keyAuth == 'leader'){
-      setRole('leader')
-      navigate('/home')
-    }
 
 
     
