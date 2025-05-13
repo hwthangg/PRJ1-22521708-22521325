@@ -4,7 +4,7 @@ import SidebarAdmin from '../../components/SidebarAdmin/SidebarAdmin'
 function TestPage() {
   return (
     <div>
-      <SidebarAdmin/>
+   
     </div>
   )
 }

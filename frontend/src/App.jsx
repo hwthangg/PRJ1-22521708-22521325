@@ -15,6 +15,8 @@ import Informationevent from "./pages/Leader/Informationevent/Informationevent";
 import Create_event from "./pages/Leader/Create_event/Create_event";
 import Listdocument from "./pages/Leader/Listdocument/Listdocument";
 import Listmember from "./pages/Leader/Listmember/Listmember";
+import Listaccount from "./pages/Admin/Listaccount/Listaccount";
+import AdminLayout from "./components/Adminlayout/Adminlayout";
 
 import "./App.css";
 import { useContext } from "react";
@@ -22,6 +24,7 @@ import { AuthContext } from "../context/AuthContext";
 import Login from "./pages/Auth/Login/Login";
 import Home from "./pages/Leader/Home/Home";
 import Register from "./pages/Auth/Register/Register";
+import SidebarAdmin from "./components/SidebarAdmin/SidebarAdmin";
 
 function App() {
   const {
@@ -60,7 +63,11 @@ function App() {
         <Route path="/documents" element={<Listdocument />} />
 
         <Route path="/message" element={<Message />} />
-      </Routes>
+        <Route path="/admin/*" element={role === 'admin' ? <AdminLayout /> : <Login />}>
+          <Route path="listaccount" element={<Listaccount />} />
+          {/* Thêm các route khác cho admin ở đây */}
+        </Route>      </Routes>
+
     </BrowserRouter>
   );
 }
