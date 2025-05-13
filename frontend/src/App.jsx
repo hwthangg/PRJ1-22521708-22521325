@@ -25,6 +25,7 @@ import Login from "./pages/Auth/Login/Login";
 import Home from "./pages/Leader/Home/Home";
 import Register from "./pages/Auth/Register/Register";
 import SidebarAdmin from "./components/SidebarAdmin/SidebarAdmin";
+import Listunion from "./pages/Admin/Listunion/Listunion";
 
 function App() {
   const {
@@ -65,8 +66,10 @@ function App() {
         <Route path="/message" element={<Message />} />
         <Route path="/admin/*" element={role === 'admin' ? <AdminLayout /> : <Login />}>
           <Route path="listaccount" element={<Listaccount />} />
+          <Route path="listunion" element={<Listunion />} />
           {/* Thêm các route khác cho admin ở đây */}
-        </Route>      </Routes>
+        </Route>    
+      </Routes>
 
     </BrowserRouter>
   );
