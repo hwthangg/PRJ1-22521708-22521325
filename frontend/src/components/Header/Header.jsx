@@ -52,7 +52,7 @@ const Header = () => {
           </div>
           {activeMenu === 'nghiepvu' && (
             <ul className={styles.dropdownMenuNav}>
-              <li><a>Danh sách đoàn viên</a></li>
+              <li><a href='/listmember'>Danh sách đoàn viên</a></li>
               <li><a>Thêm đoàn viên</a></li>
               <li><a href='/members/receiving'>Tiếp nhận đoàn viên</a></li>
               <li><a>Đoàn viên chuyển sinh hoạt</a></li>
