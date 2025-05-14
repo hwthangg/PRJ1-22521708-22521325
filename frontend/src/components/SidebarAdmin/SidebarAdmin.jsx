@@ -31,8 +31,8 @@ const SidebarAdmin = () => {
           Quản lý tài khoản
         </button>
         <button
-          className={`${styles.menuItem} ${activeMenuItem === 'quanlychidoan' ? styles.active : ''}`}
-          onClick={() => handleNavigate('quanlychidoan', 'quanlychidoan')}
+          className={`${styles.menuItem} ${activeMenuItem === 'listunion' ? styles.active : ''}`}
+          onClick={() => handleNavigate('listunion', 'listunion')}
         >
           Quản lý chi đoàn
         </button>
