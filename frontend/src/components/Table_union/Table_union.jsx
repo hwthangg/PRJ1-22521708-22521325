@@ -44,14 +44,15 @@ const Table_union = ({ columns, data }) => {
 
   // Click chọn dòng (mở Info)
   const handleRowClick = (e, rowIndex) => {
+  if (columns.includes('Tên sự kiện')) {
+    navigate('/events/1');
+  } else if (columns.includes('Tên chi đoàn')) {
+    navigate('/admin/uniondetail');
+  } else if (e.target.type !== 'checkbox') {
+    setSelectedRow(rowIndex);
+  }
+};
 
-    if(columns.includes('Tên sự kiện')) {
-      navigate('/events/1')
-    }
-    else if (e.target.type !== 'checkbox') {
-      setSelectedRow(rowIndex);
-    }
-  };
 
   // Đóng Info
   const handleCloseInfo = () => {

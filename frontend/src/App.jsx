@@ -17,6 +17,7 @@ import Listdocument from "./pages/Leader/Listdocument/Listdocument";
 import Listmember from "./pages/Leader/Listmember/Listmember";
 import Listaccount from "./pages/Admin/Listaccount/Listaccount";
 import AdminLayout from "./components/Adminlayout/Adminlayout";
+import UnionDetail from "./pages/Admin/Uniondetail/Uniondetail";
 
 import "./App.css";
 import { useContext } from "react";
@@ -67,6 +68,7 @@ function App() {
         <Route path="/admin/*" element={role === 'admin' ? <AdminLayout /> : <Login />}>
           <Route path="listaccount" element={<Listaccount />} />
           <Route path="listunion" element={<Listunion />} />
+          <Route path="uniondetail" element={<UnionDetail />} />
           {/* Thêm các route khác cho admin ở đây */}
         </Route>    
       </Routes>
