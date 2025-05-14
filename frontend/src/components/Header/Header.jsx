@@ -67,7 +67,6 @@ const Header = () => {
           </div>
           {activeMenu === 'sukien' && (
             <ul className={styles.dropdownMenuNav}>
-              <li><a href='#'>Thêm sự kiện</a></li>
               <li><a href='/events'>Danh sách sự kiện</a></li>
               <li><a href='#'>Thống kê tham gia</a></li>
             </ul>

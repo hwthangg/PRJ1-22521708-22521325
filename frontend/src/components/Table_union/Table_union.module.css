@@ -47,7 +47,7 @@ th {
 
 .headerCheckbox {
   transform: scale(1.1);
-  margin-right: -70px;
+  margin-right: -82px;
 }
 
 .approvedBtn {
@@ -88,11 +88,13 @@ th {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  text-align: center;
 }
 
 .nameLink {
   flex: 1;
   text-align: center;
+  align-items: center;
   cursor: pointer;
   color: #000;
 }
@@ -165,4 +167,15 @@ th {
   align-items: center;
   gap: 4px;
   font-size: 14px;
+}
+
+.rowsPerPage select {
+  width: auto;
+  min-width: 80px;
+  border: 1px solid #ccc;
+  padding: 4px 8px;
+  border-radius: 4px;
+  background-color: #fff;
+  font-size: 14px;
+  text-align: center;
 }
