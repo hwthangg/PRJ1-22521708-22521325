@@ -18,6 +18,7 @@ import Listmember from "./pages/Leader/Listmember/Listmember";
 import Listaccount from "./pages/Admin/Listaccount/Listaccount";
 import AdminLayout from "./components/Adminlayout/Adminlayout";
 import UnionDetail from "./pages/Admin/Uniondetail/Uniondetail";
+import ChatwithAI from "./pages/Leader/ChatwithAI/ChatwithAI";
 
 import "./App.css";
 import { useContext } from "react";
@@ -65,6 +66,7 @@ function App() {
         <Route path="/documents" element={<Listdocument />} />
 
         <Route path="/message" element={<Message />} />
+        <Route path="/ChatwithAI" element={<ChatwithAI />} />
         <Route path="/admin/*" element={role === 'admin' ? <AdminLayout /> : <Login />}>
           <Route path="listaccount" element={<Listaccount />} />
           <Route path="listunion" element={<Listunion />} />
