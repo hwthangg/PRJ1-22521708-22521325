@@ -1,20 +1,15 @@
-import mongoose, { Schema } from "mongoose";
+import mongoose from 'mongoose';
+import mongoosePaginate from 'mongoose-paginate-v2';
 
-const ChapterSchema = new Schema(
-  {
-    name: { type: String, required: true },
-    address: { type: String, required: true },
-    affiliated: { type: String, required: true },
-    establishedDate: { type: Date, required: true },
-    status: {
-      type: String,
-      enum: ["activated", "deleted"],
-      default: "activated",
-    },
-  },
-  { timestamps: true }
-);
+const ChapterSchema = new mongoose.Schema({
+  status: { type: String, enum: ['active', 'banned'], default: 'active' },
+  name: { type: String, required: true },
+  affiliated: { type: String, required: true },
+  address: { type: String, required: true },
+  establishedDate: { type: Date, required: true }
+}, { timestamps: true });
 
-const Chapter = mongoose.model("Chapter", ChapterSchema);
+ChapterSchema.plugin(mongoosePaginate);
+const Chapter = mongoose.model('Chapter', ChapterSchema);
 
 export default Chapter;

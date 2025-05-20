@@ -6,7 +6,6 @@ import { IoEyeOutline, IoEyeOffOutline } from "react-icons/io5";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../../../context/AuthContext";
-import socket from "../../../socket";
 
 
 
@@ -17,42 +16,35 @@ function Login() {
   const [isVisiblePassword, setTogglePassword] = useState(false);
   const navigate = useNavigate()
 
-  const handleLogin = async(e) =>{
-    e.preventDefault()
-    const credentials = {keyAuth: keyAuth, password: password}
-   
-    fetch('http://localhost:5000/api/auth/login', {
-      method: 'POST',
+  const handleLogin = async() =>{
+    alert('login')
+    const credentials = {email: null, phone: null, password: null}
+    credentials.password = password
+    if(keyAuth.includes('@')){
+      credentials.email = keyAuth
+    }
+    else{
+      credentials.phone = keyAuth
+    }
+
+    console.log(JSON.stringify({credentials}))
+
+    const res = await fetch("http://localhost:5000/api/auth/login", {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json'
+        "Content-Type": "application/json",
       },
-      body: JSON.stringify(credentials),
-      credentials: 'include'
-    })
-      .then(res => res.json())
-      .then(response => {
-        console.log(response);
-        if (response.success) {
-          setIsLogged(true);
-    
-          // ⚠️ Dùng trực tiếp data thay vì đợi state cập nhật
-          if (response.data.role === 'admin') {
-            setRole('admin');
-            navigate('/AdminDashboard');
-          } else if (response.data.role === 'leader') {
-            setRole('leader');
-            navigate('/home');
-          }
-        }
-      })
-      .catch(err => {
-        console.error('Login failed:', err);
-      });
-    
+      body: JSON.stringify({ credentials }),
+    });
+
+    const data =  await res.json()
+    const account = data.data.account
+
+    if(account.role == 'member'){
+      navigate('/home')
+    }
 
 
-
-    
   }
 
   useEffect(()=>{
@@ -64,7 +56,7 @@ setRole('')
       <div className={styles.container_login}>
         <div className={styles.container_login_form}>
           <p className={styles.form_title}>ĐĂNG NHẬP</p>
-          <form onSubmit={handleLogin}>
+          <div>
             <label>Email hoặc số điện thoại</label>
             <div className={styles.input_field}>
               <FaRegUser size={20} />
@@ -100,14 +92,14 @@ setRole('')
             {/* <div className={styles.error}>Error!</div> */}
 
             <div className={styles.actions}>
-              <button type="submit">ĐĂNG NHẬP</button>
+              <button onClick={handleLogin}>ĐĂNG NHẬP</button>
               <a href="#">Quên mật khẩu?</a>
             </div>
 
             <div className={styles.register}>
               Bạn chưa có tài khoản? <a href="/register">Đăng ký ngay</a>
             </div>
-          </form>
+          </div>
         </div>
       </div>
       <div className={styles.container_image}></div>

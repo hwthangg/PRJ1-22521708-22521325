@@ -1,51 +1,21 @@
 import mongoose from 'mongoose';
+import mongoosePaginate from 'mongoose-paginate-v2';
 
 const EventSchema = new mongoose.Schema({
-  chapterId: {
-    type: mongoose.Types.ObjectId,
-    ref: 'Chapter',
-    required: true
-  },
-  title: {
-    type: String,
-    required: true
-  },
-  description: {
-    type: String,
-    required: true
-  },
-  tag: {
-    type: [String],
-    default: []
-  },
-  location: {
-    type: String,
-    required: true
-  },
-  startTime: {
-    type: Date,
-    required: true
-  },
-  requirement: {
-    type: String,
-    default: null
-  },
-  images: {
-    type: [String],
-    default: []
-  },
-  likes: {
-    type: Number,
-    default: 0
-  },
-  status: {
-    type: String,
-    enum: ['pending', 'ongoing', 'completed', 'deleted'],
-    default: 'pending'
-  }
-}, {
-  timestamps: true // createdAt và updatedAt
-});
+  status: { type: String, enum: ['active', 'cancelled'], default: 'active' },
+  chapterId: { type: mongoose.Schema.Types.ObjectId, ref: 'Chapter', required: true },
+  name: { type: String, required: true },
+  startedDate: { type: Date, required: true },
+  location: { type: String, required: true },
+  requirement: { type: String, required: true },
+  description: { type: String, required: true },
+  tags: [{ type: String, default: null }],
+  scope: { type: String, enum: ['public', 'chapter'], default: 'chapter' },
+  images: [{ type: String, default: null }],
+  likes: { type: Number, default: 0 }
+}, { timestamps: true });
 
+EventSchema.plugin(mongoosePaginate);
 const Event = mongoose.model('Event', EventSchema);
+
 export default Event;

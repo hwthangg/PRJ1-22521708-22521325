@@ -21,11 +21,13 @@ import { AuthContext } from "../context/AuthContext";
 import Login from "./pages/Auth/Login/Login";
 import Home from "./pages/Leader/Home/Home";
 import Register from "./pages/Auth/Register/Register";
+import Layout from "./pages/Layout";
 
 function App() {
   const {
     ROLE: { role },
   } = useContext(AuthContext);
+
   return (
     <BrowserRouter>
       <>
@@ -36,16 +38,16 @@ function App() {
     <Add />
   </div>
 </div> */}
-      </>
-      {role == "leader" && <Header />}
+
+        {/* {role == "leader" && <Header />}
       <Routes>
         <Route path="/" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <>
-          {/* <Route path="/leader" element={<Informationevent />} />
+        <> */}
+        {/* <Route path="/leader" element={<Informationevent />} />
         <Route path="/message" element={<Message />} />
         <Route path="/AdminDashboard" element={<AdminDashboard />} />*/}
-          <Route path="/test" element={<TestPage />} />
+        {/* <Route path="/test" element={<TestPage />} />
         </>
         <Route path="/home" element={<Home />} />
         <Route path="/members/receiving" element={<Listunionmember />} />
@@ -58,6 +60,15 @@ function App() {
         <Route path="/documents" element={<Listdocument />} />
 
         <Route path="/message" element={<Message />} />
+      </Routes> */}
+      </>
+
+      <Routes>
+        <Route path="/login" element={<Login />} />
+        <Route path="/" element={<Layout />}>
+        <Route path="/home" element={<AdminDashboard />} />
+        
+        </Route>
       </Routes>
     </BrowserRouter>
   );

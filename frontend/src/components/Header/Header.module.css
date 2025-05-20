@@ -19,7 +19,7 @@
   .nav {
     display: flex;
     align-items: center;
-    gap: 60px;
+    gap: 30px;
     font-weight: bold;
     font-size: 15px;
   }

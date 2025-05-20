@@ -1,12 +1,14 @@
 import express from 'express'
-import AuthController from '../controllers/auth.controller.js'
+import { AuthController } from '../controllers/index.js'
 
 
 const AuthRoutes = express.Router()
 
 AuthRoutes.post('/login', AuthController.login)
-AuthRoutes.get('/logout', AuthController.logout)
 AuthRoutes.post('/register', AuthController.register)
-AuthRoutes.get('/me', AuthController.getOwnedChapter)
+AuthRoutes.delete('/logout', AuthController.logout)
+AuthRoutes.get('/', AuthController.getProfile)
+AuthRoutes.put('/', AuthController.updateProfile)
+
 
 export default AuthRoutes

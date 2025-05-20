@@ -47,9 +47,10 @@ function Message() {
 
 
   useEffect(()=>{
-    fetch('http://localhost:5000/api/chapters', {
-      method: 'GET'
-    }).then(res => res.json()).then(data => setConversations(data.data.chapters))
+    fetch('http://localhost:5000/api/conversations', {
+      method: 'GET',
+      credentials: 'include'
+    }).then(res => res.json()).then(data => {console.log(data);setConversations(data.data)})
   },[selectedChatId])
 
 
