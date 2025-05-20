@@ -1,0 +1,82 @@
+.sidebar {
+    width: 250px;
+    height: 100vh;
+    background-color: #d8dcf7;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 20px 10px;
+    font-family: sans-serif;
+  }
+  
+  .header {
+    text-align: center;
+  }
+  
+  .logo {
+    width: 45%;
+    height: auto;
+    margin-bottom: 10px;
+  }
+  
+  .title {
+    font-size: 16px;
+    font-weight: bolder;
+    color: #3c4dff;
+    line-height: 1.4;
+  }
+  
+  .menu {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .menuItem {
+    padding: 12px 20px;
+    border: none;
+    background-color: transparent;
+    font-weight: bold;
+    text-align: left;
+    cursor: pointer;
+    border-bottom: 2px solid #000; 
+    transition: background 0.3s;
+    font-size: 15px;
+  }
+  
+  .menuItem:hover {
+    background-color: #e0e3fb;
+  }
+  
+  .active {
+    background-color: #d6d2f1; /* Màu nền của mục đang chọn */
+  }
+    
+  .footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #c5cae9;
+    padding: 10px 15px;
+    border-radius: 12px;
+  }
+  
+  .user {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: bold;
+  }
+  
+  .avatar {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+  }
+  
+  .settingsIcon {
+    font-size: 18px;
+    color: #333;
+    cursor: pointer;
+  }
+  

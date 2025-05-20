@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import styles from './Table.module.css';
+import styles from './Table_union.module.css';
 import Info from '../Info/Info';
 import { useNavigate } from 'react-router-dom';
 
-const Table = ({ columns, data }) => {
+const Table_union = ({ columns, data }) => {
   const [checkedRows, setCheckedRows] = useState(new Array(data.length).fill(false));
   const [selectedRow, setSelectedRow] = useState(null);
   const [rowsPerPage, setRowsPerPage] = useState(10); // ✅ Dùng state cho số dòng mỗi trang
@@ -44,14 +44,15 @@ const Table = ({ columns, data }) => {
 
   // Click chọn dòng (mở Info)
   const handleRowClick = (e, rowIndex) => {
+  if (columns.includes('Tên sự kiện')) {
+    navigate('/events/1');
+  } else if (columns.includes('Tên chi đoàn')) {
+    navigate('/admin/uniondetail');
+  } else if (e.target.type !== 'checkbox') {
+    setSelectedRow(rowIndex);
+  }
+};
 
-    if(columns.includes('Tên sự kiện')) {
-      navigate('/events/1')
-    }
-    else if (e.target.type !== 'checkbox') {
-      setSelectedRow(rowIndex);
-    }
-  };
 
   // Đóng Info
   const handleCloseInfo = () => {
@@ -87,7 +88,7 @@ const Table = ({ columns, data }) => {
             <th>STT</th>
             {columns.map((col, index) => (
               <th key={index}>
-                {(col === 'Họ và tên' || col === 'Tên sự kiện'|| col === 'Tên tài liệu') ? (
+                {(col === 'Họ và tên' || col === 'Tên sự kiện'|| col === 'Tên tài liệu'|| col === 'Tên chi đoàn') ? (
                   <div className={styles.headerCell}>
                     {col}
                     <input
@@ -112,7 +113,7 @@ const Table = ({ columns, data }) => {
       <td>{actualIndex + 1}</td>
       {columns.map((col, colIndex) => (
         <td key={colIndex}>
-          {(col === 'Họ và tên' || col === 'Tên sự kiện' || col === 'Tên tài liệu') ? (
+          {(col === 'Họ và tên' || col === 'Tên sự kiện' || col === 'Tên tài liệu'|| col === 'Tên chi đoàn') ? (
             <div className={styles.nameCell}>
               <span className={styles.nameLink}>{row[col]}</span>
               <input
@@ -217,4 +218,4 @@ const Table = ({ columns, data }) => {
     </div>
   );
 };
-export default Table;
+export default Table_union;

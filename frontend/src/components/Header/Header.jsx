@@ -121,7 +121,7 @@ const Header = () => {
           {activeMenu === "nghiepvu" && (
             <ul className={styles.dropdownMenuNav}>
               <li>
-                <a>Danh sách đoàn viên</a>
+                <a href='/listmember'>Danh sách đoàn viên</a>
               </li>
               <li>
                 <a>Thêm đoàn viên</a>
@@ -148,15 +148,8 @@ const Header = () => {
           </div>
           {activeMenu === "sukien" && (
             <ul className={styles.dropdownMenuNav}>
-              <li>
-                <a href="#">Thêm sự kiện</a>
-              </li>
-              <li>
-                <a href="/events">Danh sách sự kiện</a>
-              </li>
-              <li>
-                <a href="#">Thống kê tham gia</a>
-              </li>
+              <li><a href='/events'>Danh sách sự kiện</a></li>
+              <li><a href='#'>Thống kê tham gia</a></li>
             </ul>
           )}
         </div>

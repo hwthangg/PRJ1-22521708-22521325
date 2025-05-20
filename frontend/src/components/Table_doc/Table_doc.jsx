@@ -1,15 +1,13 @@
 import React, { useState } from 'react';
-import styles from './Table.module.css';
+import styles from './Table_doc.module.css';
 import Info from '../Info/Info';
-import { useNavigate } from 'react-router-dom';
+import Info_document from '../Info_document/Info_document';
 
-const Table = ({ columns, data }) => {
+const Table_doc = ({ columns, data }) => {
   const [checkedRows, setCheckedRows] = useState(new Array(data.length).fill(false));
   const [selectedRow, setSelectedRow] = useState(null);
   const [rowsPerPage, setRowsPerPage] = useState(10); // ✅ Dùng state cho số dòng mỗi trang
   const [currentPage, setCurrentPage] = useState(1);  // ✅ State cho trang hiện tại
-
-  const navigate = useNavigate()
 
   // Tính tổng số trang
   const totalPages = Math.ceil(data.length / rowsPerPage);
@@ -44,14 +42,11 @@ const Table = ({ columns, data }) => {
 
   // Click chọn dòng (mở Info)
   const handleRowClick = (e, rowIndex) => {
-
-    if(columns.includes('Tên sự kiện')) {
-      navigate('/events/1')
-    }
-    else if (e.target.type !== 'checkbox') {
+    if (e.target.type !== 'checkbox') { // Không click vào checkbox mới mở Info
       setSelectedRow(rowIndex);
     }
   };
+  
 
   // Đóng Info
   const handleCloseInfo = () => {
@@ -211,10 +206,10 @@ const Table = ({ columns, data }) => {
 
       {selectedRow !== null && (
         <div className={styles.infoModal}>
-          <Info onClose={handleCloseInfo} />
+          <Info_document onClose={handleCloseInfo} />
         </div>
       )}
     </div>
   );
 };
-export default Table;
+export default Table_doc;

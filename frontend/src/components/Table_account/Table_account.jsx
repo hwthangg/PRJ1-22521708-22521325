@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import styles from './Table.module.css';
+import styles from './Table_account.module.css';
 import Info from '../Info/Info';
 import { useNavigate } from 'react-router-dom';
 
-const Table = ({ columns, data }) => {
+const Table_account = ({ columns, data }) => {
   const [checkedRows, setCheckedRows] = useState(new Array(data.length).fill(false));
   const [selectedRow, setSelectedRow] = useState(null);
   const [rowsPerPage, setRowsPerPage] = useState(10); // ✅ Dùng state cho số dòng mỗi trang
@@ -217,4 +217,4 @@ const Table = ({ columns, data }) => {
     </div>
   );
 };
-export default Table;
+export default Table_account;
