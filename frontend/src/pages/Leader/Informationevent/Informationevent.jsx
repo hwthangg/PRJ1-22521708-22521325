@@ -14,7 +14,7 @@ const Informationevent = () => {
     <div className={styles.container}>
       <Sidebar_infoevent />
       <div className={styles.content}>
-        <Info_event />
+        <Info_event eventId={eventId} />
       </div>
     </div>
   );

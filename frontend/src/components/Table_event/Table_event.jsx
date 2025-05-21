@@ -219,15 +219,17 @@
 // };
 // export default Table;
 import React, { useState } from 'react';
-import styles from './Table.module.css';
-import Info from '../Info/Info';
-import { useNavigate } from 'react-router-dom';
+import styles from './Table_event.module.css';
+import Info_event from '../Info_event/Info_event';
+import { useNavigate, useLocation  } from 'react-router-dom';
 
-const Table = ({ columns, data }) => {
+const Table_event = ({ columns, data }) => {
   const [checkedRows, setCheckedRows] = useState(new Array(data.length).fill(false));
-  const [selectedRowData, setSelectedRowData] = useState(null); 
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
+
+  const location = useLocation();
+  console.log(location.pathname);
 
   const navigate = useNavigate();
 
@@ -256,18 +258,15 @@ const Table = ({ columns, data }) => {
     setCheckedRows(updated);
   };
 
-  const handleRowClick = (e, rowIndex) => {
-    if (columns.includes('Tên sự kiện')) {
-      navigate('/events/1');
-    } else if (e.target.type !== 'checkbox') {
-      const rowData = data[rowIndex]; // ✅ lấy dữ liệu của dòng
-      setSelectedRowData(rowData);
+const handleRowClick = (e, rowIndex) => {
+  if (e.target.type !== 'checkbox') {
+    const rowData = data[rowIndex];
+    if (rowData?.id) {
+      navigate(`/events/${rowData.id}`);
     }
-  };
+  }
+};
 
-  const handleCloseInfo = () => {
-    setSelectedRowData(null);
-  };
 
   const renderStatus = (text) => {
     if (text.includes('Tiếp nhận') && text.includes('Từ chối')) {
@@ -402,14 +401,8 @@ const Table = ({ columns, data }) => {
           </select>
         </div>
       </div>
-
-      {selectedRowData && (
-        <div className={styles.infoModal}>
-          <Info onClose={handleCloseInfo} data={selectedRowData} /> 
-        </div>
-      )}
     </div>
   );
 };
 
-export default Table;
+export default Table_event;
