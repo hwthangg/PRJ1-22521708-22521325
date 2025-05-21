@@ -1,6 +1,7 @@
 import React, { useState, useContext } from 'react'; 
 import styles from './Listevent.module.css';
 import Table from '../../../components/Table/Table';
+import Table_event from '../../../components/Table_event/Table_event';
 import Search from '../../../components/Search/Search';
 import Filter from '../../../components/Filter/Filter';
 import Add from '../../../components/Add/Add';
@@ -12,7 +13,7 @@ const columns = ['Tên sự kiện', 'Trạng thái', 'Thời gian tổ chức',
 const originalData = [
   {
     id: 1,
-    'Tên sự kiện': 'Chương trình Mùa hè xanh',
+    'Tên sự kiện': 'Chương trình chuyển đổi số',
     'Trạng thái': 'Chờ',
     'Thời gian tổ chức': '12/12/2025',
     'Địa điểm tổ chức': '1/1 đường A, khu phố A, phường A, huyện A, tỉnh A',
@@ -25,30 +26,6 @@ const originalData = [
     'Thời gian tổ chức': '12/12/2025',
     'Địa điểm tổ chức': '1/1 đường A, khu phố A, phường A, huyện A, tỉnh A',
     'Điểm danh': <a href="#">Bắt đầu điểm danh</a>,
-  },
-  {
-    id: 3,
-    'Tên sự kiện': 'Chương trình Mùa hè xanh',
-    'Trạng thái': 'Hoàn thành',
-    'Thời gian tổ chức': '12/12/2025',
-    'Địa điểm tổ chức': '1/1 đường A, khu phố A, phường A, huyện A, tỉnh A',
-    'Điểm danh': <a href="#">Xem người tham gia</a>,
-  },
-  {
-    id: 4,
-    'Tên sự kiện': 'Chương trình Mùa hè xanh',
-    'Trạng thái': 'Hoàn thành',
-    'Thời gian tổ chức': '12/12/2025',
-    'Địa điểm tổ chức': '1/1 đường A, khu phố A, phường A, huyện A, tỉnh A',
-    'Điểm danh': <a href="#">Xem người tham gia</a>,
-  },
-  {
-    id: 5,
-    'Tên sự kiện': 'Chương trình Mùa hè xanh',
-    'Trạng thái': 'Hoàn thành',
-    'Thời gian tổ chức': '12/12/2025',
-    'Địa điểm tổ chức': '1/1 đường A, khu phố A, phường A, huyện A, tỉnh A',
-    'Điểm danh': <a href="#">Xem người tham gia</a>,
   },
 ];
 
@@ -82,7 +59,7 @@ const Listevent = () => {
           fixed={true}
         />
       </div>
-      <Table columns={columns} data={filteredData} />
+      <Table_event columns={columns} data={filteredData} />
     </div>
   );
 };
