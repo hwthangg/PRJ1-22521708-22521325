@@ -11,6 +11,7 @@ const columns = ['Tên sự kiện', 'Trạng thái', 'Thời gian tổ chức',
 
 const originalData = [
   {
+    id: 1,
     'Tên sự kiện': 'Chương trình Mùa hè xanh',
     'Trạng thái': 'Chờ',
     'Thời gian tổ chức': '12/12/2025',
@@ -18,6 +19,7 @@ const originalData = [
     'Điểm danh': '',
   },
   {
+    id: 2,
     'Tên sự kiện': 'Chương trình Mùa hè xanh',
     'Trạng thái': 'Đang diễn ra',
     'Thời gian tổ chức': '12/12/2025',
@@ -25,6 +27,7 @@ const originalData = [
     'Điểm danh': <a href="#">Bắt đầu điểm danh</a>,
   },
   {
+    id: 3,
     'Tên sự kiện': 'Chương trình Mùa hè xanh',
     'Trạng thái': 'Hoàn thành',
     'Thời gian tổ chức': '12/12/2025',
@@ -32,6 +35,7 @@ const originalData = [
     'Điểm danh': <a href="#">Xem người tham gia</a>,
   },
   {
+    id: 4,
     'Tên sự kiện': 'Chương trình Mùa hè xanh',
     'Trạng thái': 'Hoàn thành',
     'Thời gian tổ chức': '12/12/2025',
@@ -39,69 +43,7 @@ const originalData = [
     'Điểm danh': <a href="#">Xem người tham gia</a>,
   },
   {
-    'Tên sự kiện': 'Chương trình Mùa hè xanh',
-    'Trạng thái': 'Hoàn thành',
-    'Thời gian tổ chức': '12/12/2025',
-    'Địa điểm tổ chức': '1/1 đường A, khu phố A, phường A, huyện A, tỉnh A',
-    'Điểm danh': <a href="#">Xem người tham gia</a>,
-  },
-  {
-    'Tên sự kiện': 'Chương trình Mùa hè xanh',
-    'Trạng thái': 'Hoàn thành',
-    'Thời gian tổ chức': '12/12/2025',
-    'Địa điểm tổ chức': '1/1 đường A, khu phố A, phường A, huyện A, tỉnh A',
-    'Điểm danh': <a href="#">Xem người tham gia</a>,
-  },
-  {
-    'Tên sự kiện': 'Chương trình Mùa hè xanh',
-    'Trạng thái': 'Hoàn thành',
-    'Thời gian tổ chức': '12/12/2025',
-    'Địa điểm tổ chức': '1/1 đường A, khu phố A, phường A, huyện A, tỉnh A',
-    'Điểm danh': <a href="#">Xem người tham gia</a>,
-  },
-  {
-    'Tên sự kiện': 'Chương trình Mùa hè xanh',
-    'Trạng thái': 'Hoàn thành',
-    'Thời gian tổ chức': '12/12/2025',
-    'Địa điểm tổ chức': '1/1 đường A, khu phố A, phường A, huyện A, tỉnh A',
-    'Điểm danh': <a href="#">Xem người tham gia</a>,
-  },
-  {
-    'Tên sự kiện': 'Chương trình Mùa hè xanh',
-    'Trạng thái': 'Hoàn thành',
-    'Thời gian tổ chức': '12/12/2025',
-    'Địa điểm tổ chức': '1/1 đường A, khu phố A, phường A, huyện A, tỉnh A',
-    'Điểm danh': <a href="#">Xem người tham gia</a>,
-  },
-  {
-    'Tên sự kiện': 'Chương trình Mùa hè xanh',
-    'Trạng thái': 'Hoàn thành',
-    'Thời gian tổ chức': '12/12/2025',
-    'Địa điểm tổ chức': '1/1 đường A, khu phố A, phường A, huyện A, tỉnh A',
-    'Điểm danh': <a href="#">Xem người tham gia</a>,
-  },
-  {
-    'Tên sự kiện': 'Chương trình Mùa hè xanh',
-    'Trạng thái': 'Hoàn thành',
-    'Thời gian tổ chức': '12/12/2025',
-    'Địa điểm tổ chức': '1/1 đường A, khu phố A, phường A, huyện A, tỉnh A',
-    'Điểm danh': <a href="#">Xem người tham gia</a>,
-  },
-  {
-    'Tên sự kiện': 'Chương trình Mùa hè xanh',
-    'Trạng thái': 'Hoàn thành',
-    'Thời gian tổ chức': '12/12/2025',
-    'Địa điểm tổ chức': '1/1 đường A, khu phố A, phường A, huyện A, tỉnh A',
-    'Điểm danh': <a href="#">Xem người tham gia</a>,
-  },
-  {
-    'Tên sự kiện': 'Chương trình Mùa hè xanh',
-    'Trạng thái': 'Hoàn thành',
-    'Thời gian tổ chức': '12/12/2025',
-    'Địa điểm tổ chức': '1/1 đường A, khu phố A, phường A, huyện A, tỉnh A',
-    'Điểm danh': <a href="#">Xem người tham gia</a>,
-  },
-  {
+    id: 5,
     'Tên sự kiện': 'Chương trình Mùa hè xanh',
     'Trạng thái': 'Hoàn thành',
     'Thời gian tổ chức': '12/12/2025',
@@ -111,11 +53,9 @@ const originalData = [
 ];
 
 const Listevent = () => {
- 
   const [searchText, setSearchText] = useState('');
-  const [filterStatus, setFilterStatus] = useState('all');  // Set default value to 'all'
+  const [filterStatus, setFilterStatus] = useState('all'); 
   const { role } = useContext(AuthContext);
-
 
   const filteredData = originalData.filter(item => {
     const nameMatch = item['Tên sự kiện'].toLowerCase().includes(searchText.toLowerCase());
@@ -138,10 +78,9 @@ const Listevent = () => {
         />
         <Add onClick={() => console.log('Add button clicked')} />
         <ChatAI
-  onClick={() => console.log(`ChatAi button clicked ${role}`)}
-  fixed={true}
-/>
-
+          onClick={() => console.log(`ChatAi button clicked ${role}`)}
+          fixed={true}
+        />
       </div>
       <Table columns={columns} data={filteredData} />
     </div>

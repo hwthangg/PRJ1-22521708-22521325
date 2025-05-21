@@ -80,6 +80,15 @@ const Listmember = () => {
       'Địa chỉ thường trú': '1/1 đường A, khu phố A, phường A, huyện A, tỉnh A',
       'Thông tin liên hệ': 'Email: dht@gmail.com\nSĐT: 0123456789',
     },
+    {
+      id: 2,
+      'Họ và tên': 'Trần Phương Vy',
+      'Giới tính': 'Nữ',
+      'Ngày sinh': '11/01/2004',
+      'Chức vụ': 'Phó bí thư',
+      'Địa chỉ thường trú': '1/1 đường A, khu phố A, phường A, huyện A, tỉnh A',
+      'Thông tin liên hệ': 'Email: dht@gmail.com\nSĐT: 0123456789',
+    },
   ]);
 
   const columns = [

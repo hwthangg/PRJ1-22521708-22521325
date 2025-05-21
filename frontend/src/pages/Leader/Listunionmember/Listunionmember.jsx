@@ -11,36 +11,40 @@ const Listunionmember = () => {
     'Trạng thái'
   ];
 
-  const data = [
-    {
-      'Họ và tên': 'Đặng Hữu Thắng',
-      'Ngày yêu cầu': '25/10/2004',
-      'Chi đoàn yêu cầu chuyển sinh hoạt': 'Chi đoàn KP A',
-      'Nội dung chuyển sinh hoạt': 'Xét chuyển sinh hoạt do chuyển hộ khẩu',
-      'Trạng thái': 'Đã tiếp nhận',
-    },
-    {
-      'Họ và tên': 'Đặng Hữu Thắng',
-      'Ngày yêu cầu': '25/10/2004',
-      'Chi đoàn yêu cầu chuyển sinh hoạt': 'Chi đoàn KP B',
-      'Nội dung chuyển sinh hoạt': 'Xét chuyển sinh hoạt do chuyển hộ khẩu',
-      'Trạng thái': 'Tiếp nhận Từ chối',
-    },
-    {
-      'Họ và tên': 'Đặng Hữu Thắng',
-      'Ngày yêu cầu': '25/10/2004',
-      'Chi đoàn yêu cầu chuyển sinh hoạt': 'Chi đoàn KP B',
-      'Nội dung chuyển sinh hoạt': 'Xét chuyển sinh hoạt do chuyển hộ khẩu',
-      'Trạng thái': 'Tiếp nhận Từ chối',
-    },
-    {
-      'Họ và tên': 'Đặng Hữu Thắng',
-      'Ngày yêu cầu': '25/10/2004',
-      'Chi đoàn yêu cầu chuyển sinh hoạt': 'Chi đoàn D',
-      'Nội dung chuyển sinh hoạt': 'Xét chuyển sinh hoạt do chuyển hộ khẩu',
-      'Trạng thái': 'Tiếp nhận Từ chối',
-    },
-  ];
+const data = [
+  {
+    id: 1,
+    'Họ và tên': 'Đặng Hữu Thắng',
+    'Ngày yêu cầu': '25/10/2004',
+    'Chi đoàn yêu cầu chuyển sinh hoạt': 'Chi đoàn KP A',
+    'Nội dung chuyển sinh hoạt': 'Xét chuyển sinh hoạt do chuyển hộ khẩu',
+    'Trạng thái': 'Đã tiếp nhận',
+  },
+  {
+    id: 2,
+    'Họ và tên': 'Trần Phương Vy',
+    'Ngày yêu cầu': '25/10/2004',
+    'Chi đoàn yêu cầu chuyển sinh hoạt': 'Chi đoàn KP B',
+    'Nội dung chuyển sinh hoạt': 'Xét chuyển sinh hoạt do chuyển hộ khẩu',
+    'Trạng thái': 'Tiếp nhận Từ chối',
+  },
+  {
+    id: 3,
+    'Họ và tên': 'Đặng Hữu Thắng',
+    'Ngày yêu cầu': '25/10/2004',
+    'Chi đoàn yêu cầu chuyển sinh hoạt': 'Chi đoàn KP B',
+    'Nội dung chuyển sinh hoạt': 'Xét chuyển sinh hoạt do chuyển hộ khẩu',
+    'Trạng thái': 'Tiếp nhận Từ chối',
+  },
+  {
+    id: 4,
+    'Họ và tên': 'Đặng Hữu Thắng',
+    'Ngày yêu cầu': '25/10/2004',
+    'Chi đoàn yêu cầu chuyển sinh hoạt': 'Chi đoàn D',
+    'Nội dung chuyển sinh hoạt': 'Xét chuyển sinh hoạt do chuyển hộ khẩu',
+    'Trạng thái': 'Tiếp nhận Từ chối',
+  },
+];
 
   return (
     <div className={styles.wrapper}>
