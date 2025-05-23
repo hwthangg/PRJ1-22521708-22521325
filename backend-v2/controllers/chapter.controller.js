@@ -8,7 +8,7 @@ const ChapterController = () => {
     console.log(`${logPrefix} Start with data:`, req.body);
 
     try {
-      const input = req.body.chapter;
+      const input = req.body;
 
        if (
         !input.name ||
