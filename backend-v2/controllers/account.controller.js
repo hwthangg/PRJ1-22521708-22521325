@@ -65,6 +65,7 @@ const AccountController = () => {
 
         // Tạo và lưu member
         const newMember = new Member({
+          status: 'active',
           chapterId: input.chapterId,
           cardId: input.cardId,
           position: input.position,
@@ -140,12 +141,12 @@ const AccountController = () => {
       }
 
       // Lọc theo status nếu có
-      if (!status || status !== "all") {
+      if (status && status !== "all") {
         filter.status = status;
       }
 
       // Lọc theo role nếu có
-      if (!role || role !== "all") {
+      if (role && role !== "all") {
         filter.role = role;
       }
 
