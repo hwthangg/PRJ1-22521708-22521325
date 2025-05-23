@@ -1,12 +1,13 @@
 import express from "express";
 import { EventController } from "../controllers/index.js";
+import uploadMultiple from "../middlewares/uploadMultiple.js";
 
 const EventRoutes = express.Router();
 
-EventRoutes.post("/", EventController.createEvent);
+EventRoutes.post("/", uploadMultiple('images'), EventController.createEvent);
 EventRoutes.get("/", EventController.getEventsInPage);
 EventRoutes.get("/:eventId", EventController.getEventById);
-EventRoutes.put("/:eventId", EventController.updateEventById);
+EventRoutes.put("/:eventId",uploadMultiple('images'), EventController.updateEventById);
 EventRoutes.patch("/:eventId", EventController.changeEventStatus);
 EventRoutes.patch("/:eventId/like", EventController.likeEvent);
 EventRoutes.post("/:eventId/register", EventController.registerEvent);

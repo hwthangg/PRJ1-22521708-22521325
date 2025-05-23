@@ -8,9 +8,6 @@ import { AuthContext } from "../../../context/AuthContext";
 import socket from "../../socket";
 
 const Header = () => {
-  const {
-    ROLE: { setRole },
-  } = useContext(AuthContext);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [activeMenu, setActiveMenu] = useState(null);
   const navRef = useRef(null);
@@ -41,32 +38,33 @@ const Header = () => {
   };
 
   const handleLogout = async () => {
-    setRole("");
-    socket.disconnect();
-    fetch("http://localhost:5000/api/users/logout", {
-      method: "POST",
-      credentials: "include",
-    });
+    // socket.disconnect();
+    // fetch("http://localhost:5000/api/users/logout", {
+    //   method: "POST",
+    //   credentials: "include",
+    // });
   };
   
   useEffect(() => {
-    const fetchNotifications = async () => {
-      const res = await fetch('http://localhost:5000/api/notifications', {
-        method: 'GET',
-        credentials:'include'
-      });
-      const data = await res.json();
-      setNotifications(prev => [...prev, ...data]);
-    };
+    // const fetchNotifications = async () => {
+    //   const res = await fetch('http://localhost:5000/api/notifications', {
+    //     method: 'GET',
+    //     credentials:'include'
+    //   });
+    //   const data = await res.json();
+    //   setNotifications(prev => [...prev, ...data]);
+    // };
   
     const fetchUser = async () => {
-      const res = await fetch(`http://localhost:5000/api/auth/me`, {
+      const res = await fetch(`http://localhost:5000/api/auth`, {
         method: "GET",
         credentials: "include",
       });
       const data = await res.json();
-      setChapter(data.data);
-      socket.emit("access", data.data._id);
+      console.log(data.data)
+      setChapter(data.data.managerOf);
+      console.log(chapter)
+      // socket.emit("access", data.data._id);
     };
   
     const handleClickOutside = (event) => {
@@ -82,22 +80,22 @@ const Header = () => {
     };
   
     const handleEventReminder = (data) => {
-      setUnreadCount(prev => prev + 1);
-      setNotifications(prev => [data, ...prev]);
-      console.log("📢 Sự kiện sắp diễn ra:", data);
-      // TODO: hiện toast hoặc thông báo ở đây
+      // setUnreadCount(prev => prev + 1);
+      // setNotifications(prev => [data, ...prev]);
+      // console.log("📢 Sự kiện sắp diễn ra:", data);
+      // // TODO: hiện toast hoặc thông báo ở đây
     };
   
     document.addEventListener("mousedown", handleClickOutside);
-    if (socket && !socket.connected) socket.connect();
-    socket.on("event_reminder", handleEventReminder);
+    // if (socket && !socket.connected) socket.connect();
+    // socket.on("event_reminder", handleEventReminder);
   
-    fetchNotifications();
+    // fetchNotifications();
     fetchUser();
   
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
-      socket.off("event_reminder", handleEventReminder);
+      // socket.off("event_reminder", handleEventReminder);
     };
   }, []);
   

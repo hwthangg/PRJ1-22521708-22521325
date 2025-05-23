@@ -7,6 +7,8 @@ import { configDotenv } from "dotenv";
 import { AccountRoutes, AuthRoutes, ChapterRoutes, DocumentRoutes } from "./routes/index.js";
 import { connectDB } from "./configs/index.js";
 import EventRoutes from "./routes/event.route.js";
+import MemberRoutes from "./routes/member.route.js";
+import { sendInvite } from "./sockets/notifications.socket.js";
 
 
 connectDB()
@@ -17,9 +19,11 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: '*',
-  },
-});
+    origin: "http://localhost:5173", // hoặc dùng array nếu nhiều domain
+    methods: ["GET", "POST"],
+    credentials: true                // 🔥 QUAN TRỌNG
+  }
+})
 
 app.use(cors({
   origin: 'http://localhost:5173', // React app
@@ -27,12 +31,6 @@ app.use(cors({
 }));
 app.use(express.json());
 
-app.use(
-  cors({
-    origin: "http://localhost:5173", // ⚠️ KHÔNG được để '*'
-    credentials: true, // ⚠️ BẮT BUỘC khi dùng cookie
-  })
-);
 
 app.use(cookieParser());
 
@@ -45,19 +43,15 @@ app.use('/api/chapters', ChapterRoutes)
 app.use('/api/auth', AuthRoutes)
 app.use('/api/documents', DocumentRoutes)
 app.use('/api/events', EventRoutes)
+app.use('/api/members', MemberRoutes)
 
-
-
-io.on('connection', (socket) => {
+io.on('connection', (socket, io) => {
   console.log('✅ Client connected:', socket.id);
-
-  // Gọi các module xử lý socket
-  registerChatSocket(socket, io);
-  registerNotificationSocket(socket, io);
+  sendInvite(socket,io)
 
   socket.on('disconnect', () => {
-    console.log('❌ Client disconnected:', socket.id);
+  console.log('❌ Client disconnected:', socket.id);
   });
 });
 
-app.listen(PORT, () => console.log(`Server: http://localhost:${PORT}`));
+server.listen(PORT, () => console.log(`Server: http://localhost:${PORT}`));

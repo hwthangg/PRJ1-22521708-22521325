@@ -9,22 +9,32 @@ const DocumentController = () => {
    */
   const createDocument = async (req, res) => {
     const logPrefix = "[DocumentController][createDocument]";
-    console.log(`${logPrefix} Start with data:`, req.body);
+    console.log(`${logPrefix} Start with data:`, req.file);
 
     try {
-      const input = req.body.document;
+      const input = req.body;
       
       const decode = verifyToken(req.cookies.token)
       const accountId = decode.id
       const account = await Account.findById(accountId)
       const chapterId = account.managerOf
 
-      // Validate chapter exists
-      const chapter = await Chapter.findById(chapterId);
-      if (!chapter) {
-        return response(res, 404, "CHAPTER_NOT_FOUND");
+      if (
+        !input.docId        ||
+        !input.name         ||
+        !input.issuer       ||
+        !input.issuedAt     ||
+        !input.description  ||
+        !req.file.path      
+ 
+
+      ) {
+        return response(res, 400, "MISSING_CHAPTER_DATA");
       }
 
+      if(req.file.mimetype != 'application/pdf'){
+ return response(res, 400, "ERROR_FORMAT_DOCUMENT");
+      }
       // Check for duplicate docId within the same chapter
       const existingDoc = await Document.findOne({ 
         chapterId: chapterId,
@@ -43,9 +53,9 @@ const DocumentController = () => {
         type: input.type || 'Khác',
         scope: input.scope || 'chapter',
         issuer: input.issuer,
-        issuedDate: input.issuedDate,
+        issuedAt: new Date(input.issuedAt),
         description: input.description,
-        file: input.file
+        file: req.file.path
       });
 
       const savedDocument = await newDocument.save();
@@ -55,14 +65,6 @@ const DocumentController = () => {
 
     } catch (error) {
       console.error(`${logPrefix} Error:`, error);
-
-      if (error.name === 'ValidationError') {
-        const errors = Object.values(error.errors).map(err => ({
-          field: err.path,
-          message: err.message
-        }));
-        return response(res, 400, "VALIDATION_ERROR", { errors });
-      }
 
       return response(res, 500, "SERVER_ERROR");
     }
@@ -80,16 +82,19 @@ const DocumentController = () => {
     // Get user's chapter info from token
     const decode = verifyToken(req.cookies.token);
     const accountId = decode.id;
-    const account = await Account.findById(accountId).populate('infoMember');
-    const userChapterId = account.role === 'member' ? account.infoMember?.chapterId : account.managerOf;
-
+    const account = await Account.findById(accountId);
+    
+    const userChapterId = account.role == 'manager' ? account.managerOf : account.infoMember;
+    const allowedScope = account.role == 'member' ? ['chapter'] : ['chapter', 'private']
+    console.log(userChapterId, allowedScope, account, )
     const {
       page = 1,
       limit = 10,
       search = "",
       type,
-      sortBy = "issuedDate",
-      sortOrder = "desc",
+      scope,
+      sortBy = "_id",
+      sortOrder = "asc",
     } = req.query;
 
     // Build filter to get:
@@ -97,7 +102,7 @@ const DocumentController = () => {
     // 2. Documents from user's chapter (chapterId = userChapterId)
     const filter = {
       $or: [
-        { scope: 'public' },
+        { scope: {$in: allowedScope} },
         { chapterId: userChapterId }
       ]
     };
@@ -114,6 +119,7 @@ const DocumentController = () => {
     }
 
     if (type) filter.type = type;
+    if (scope) filter.type = scope;
    filter.status = 'active';
 
     // Pagination options
@@ -121,7 +127,7 @@ const DocumentController = () => {
       page: parseInt(page),
       limit: parseInt(limit),
       sort: { [sortBy]: sortOrder === "asc" ? 1 : -1 },
-      populate: { path: 'chapterId', select: 'name' },
+      select: "_id docId name scope type issuer issuedAt",
       lean: true
     };
 
@@ -154,7 +160,7 @@ const DocumentController = () => {
 
     try {
       const document = await Document.findById(req.params.documentId)
-        .populate('chapterId', 'name affiliated');
+        .populate('chapterId', '_id name');
 
       if (!document) {
         console.warn(`${logPrefix} Document not found`);
@@ -166,11 +172,6 @@ const DocumentController = () => {
 
     } catch (error) {
       console.error(`${logPrefix} Error:`, error);
-
-      if (error.name === 'CastError') {
-        return response(res, 400, "INVALID_ID");
-      }
-
       return response(res, 500, "SERVER_ERROR");
     }
   };
@@ -181,53 +182,69 @@ const DocumentController = () => {
    */
   const updateDocumentById = async (req, res) => {
     const logPrefix = "[DocumentController][updateDocumentById]";
-    console.log(`${logPrefix} Start update for:`, req.params.documentId);
+    console.log(`${logPrefix} Start update for:`, req.params.documentId, req.body, req.file);
 
-    try {
-      const { documentId } = req.params;
-      const input = req.body.document;
+       try {
+      const input = req.body;
+      
+      const decode = verifyToken(req.cookies.token)
+      const accountId = decode.id
+      const account = await Account.findById(accountId)
+      const chapterId = account.managerOf
 
-      // Find and update document
-      const document = await Document.findById(documentId);
-      if (!document) {
-        console.warn(`${logPrefix} Document not found`);
-        return response(res, 404, "DOCUMENT_NOT_FOUND");
+      if (
+        !input.docId        ||
+        !input.name         ||
+        !input.issuer       ||
+        !input.issuedAt     ||
+        !input.description    
+ 
+
+      ) {
+        return response(res, 400, "MISSING_CHAPTER_DATA");
       }
 
-      // Check for duplicate docId if changing docId
-      if (input.docId && input.docId !== document.docId) {
-        const existing = await Document.findOne({
-          chapterId: document.chapterId,
-          docId: input.docId
-        });
-        if (existing) {
-          return response(res, 409, "DOCUMENT_ID_EXISTS");
-        }
+
+      if(req.file &&  req.file.mimetype != 'application/pdf'){
+ return response(res, 400, "ERROR_FORMAT_DOCUMENT");
+      }
+      // Check for duplicate docId within the same chapter
+      const existingDoc = await Document.findOne({ 
+        chapterId: chapterId,
+        docId: input.docId 
+      });
+      if (existingDoc && existingDoc._id.toString() != req.params.documentId.toString()) {
+        console.warn(`${logPrefix} Document ID ${input.docId} already exists in this chapter`);
+        return response(res, 409, "DOCUMENT_ID_EXISTS");
       }
 
-      // Apply updates
-      const updateFields = ["docId", "name", "type", "scope", "issuer", "issuedDate", "description", "file"];
-      updateFields.forEach(field => {
-        if (input[field] !== undefined) {
-          document[field] = input[field];
-        }
+      // Create new document
+      const updatingDocument = new Document({
+        chapterId: chapterId,
+        docId: input.docId,
+        name: input.name,
+        type: input.type || 'Khác',
+        scope: input.scope || 'chapter',
+        issuer: input.issuer,
+        issuedAt: new Date(input.issuedAt),
+        description: input.description,
       });
 
-      await document.save();
-      console.log(`${logPrefix} Document updated successfully`);
+      if(req.file){
+        updatingDocument.file = req.file.path
+      }
 
-      return response(res, 200, "DOCUMENT_UPDATED", document);
+      updatingDocument._id = req.params.documentId
+
+      const savedDocument = await updatingDocument.save()
+
+      
+      console.log(`${logPrefix} Document created successfully`, savedDocument._id);
+      
+      return response(res, 201, "DOCUMENT_CREATED", savedDocument);
 
     } catch (error) {
       console.error(`${logPrefix} Error:`, error);
-
-      if (error.name === 'ValidationError') {
-        const errors = Object.values(error.errors).map(err => ({
-          field: err.path,
-          message: err.message
-        }));
-        return response(res, 400, "VALIDATION_ERROR", { errors });
-      }
 
       return response(res, 500, "SERVER_ERROR");
     }

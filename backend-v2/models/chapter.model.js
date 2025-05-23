@@ -6,7 +6,7 @@ const ChapterSchema = new mongoose.Schema({
   name: { type: String, required: true },
   affiliated: { type: String, required: true },
   address: { type: String, required: true },
-  establishedDate: { type: Date, required: true }
+  establishedAt: { type: Date, required: true }
 }, { timestamps: true });
 
 ChapterSchema.plugin(mongoosePaginate);

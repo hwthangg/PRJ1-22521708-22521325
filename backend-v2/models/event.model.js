@@ -5,7 +5,7 @@ const EventSchema = new mongoose.Schema({
   status: { type: String, enum: ['active', 'cancelled'], default: 'active' },
   chapterId: { type: mongoose.Schema.Types.ObjectId, ref: 'Chapter', required: true },
   name: { type: String, required: true },
-  startedDate: { type: Date, required: true },
+  startedAt: { type: Date, required: true },
   location: { type: String, required: true },
   requirement: { type: String, required: true },
   description: { type: String, required: true },

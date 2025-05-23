@@ -1,10 +1,10 @@
 import React from "react";
-import Society from "../../components/Society/Society";
-import a1 from "../../assets/a1.jpg";
-import a2 from "../../assets/a2.jpg";
-import a3 from "../../assets/a3.jpg";
+import Society from "../../../components/Society/Society.jsx"
+import a1 from "../../../assets/a1.jpg";
+import a2 from "../../../assets/a2.jpg";
+import a3 from "../../../assets/a3.jpg";
 
-const AdminDashboard = () => {
+const News = () => {
   const sites = [
     {
       name: "",
@@ -37,4 +37,4 @@ const AdminDashboard = () => {
   );
 };
 
-export default AdminDashboard;
+export default News;

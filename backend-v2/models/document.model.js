@@ -7,9 +7,9 @@ const DocumentSchema = new mongoose.Schema({
   docId:{ type: String, required: true },
   name: { type: String, required: true },
   type: { type: String, enum: ['Nghị quyết', 'Biên bản', 'Báo cáo', 'Tài liệu sinh hoạt', 'Khác'], default: 'Khác' },
-  scope: { type: String, enum: ['public', 'chapter'], default: 'chapter' },
+  scope: { type: String, enum: ['private', 'chapter'], default: 'chapter' },
   issuer: { type: String, required: true },
-  issuedDate: { type: Date, required: true },
+  issuedAt: { type: Date, required: true },
   description: { type: String, required: true },
   file: { type: String, required: true }
 }, { timestamps: true });

@@ -1,5 +1,5 @@
-import { Member, Chapter } from "../models/index.js";
-import { response, validateMember } from "../utils/index.js";
+import { Member, Chapter, Account } from "../models/index.js";
+import { response, validateMember, verifyToken } from "../utils/index.js";
 
 const MemberController = () => {
   /**
@@ -11,20 +11,24 @@ const MemberController = () => {
     console.log(`${logPrefix} Start with query:`, req.query);
 
     try {
+      const decode = verifyToken(req.cookies.token);
+      const accountId = decode.id;
+      const account = await Account.findById(accountId);
+      const chapterId = account.managerOf;
+
       const {
         page = 1,
         limit = 10,
-        chapterId,
         position,
         status,
         search = "",
-        sortBy = "createdAt",
+        sortBy = "_id",
         sortOrder = "desc",
       } = req.query;
 
       // Build filter
       const filter = {};
-      if (chapterId) filter.chapterId = chapterId;
+      filter.chapterId = chapterId;
       if (position) filter.position = position;
       if (status) filter.status = status;
 
@@ -43,16 +47,20 @@ const MemberController = () => {
         page: parseInt(page),
         limit: parseInt(limit),
         sort: { [sortBy]: sortOrder === "asc" ? 1 : -1 },
-        populate: "chapterId",
+        select: "_id",
         lean: true,
       };
 
       // Execute query
-      const result = await Member.paginate(filter, options);
-      console.log(`${logPrefix} Found ${result.docs.length} members`);
+      const members = await Member.paginate(filter, options);
+      console.log(members);
+
+      const result = await Account.find({ infoMember: { $in: members.docs } })
+        .populate("infoMember")
+        .select("-password");
 
       return response(res, 200, "MEMBERS_FETCHED", {
-        members: result.docs,
+        members: result,
         pagination: {
           currentPage: result.page,
           totalPages: result.totalPages,
@@ -83,49 +91,54 @@ const MemberController = () => {
         console.warn(`${logPrefix} Member not found`);
         return response(res, 404, "MEMBER_NOT_FOUND");
       }
-
+      const account = await Account.findOne({ infoMember: member._id });
       console.log(`${logPrefix} Member found`);
-      return response(res, 200, "MEMBER_FETCHED", member);
+      return response(res, 200, "MEMBER_FETCHED", { account, member });
     } catch (error) {
       console.error(`${logPrefix} Error:`, error);
-
-      if (error.name === "CastError") {
-        return response(res, 400, "INVALID_ID");
-      }
-
       return response(res, 500, "SERVER_ERROR");
     }
   };
 
-  /**
-   * Cập nhật thông tin member
-   * Endpoint: PUT /members/:memberId
-   */
   const updateMemberById = async (req, res) => {
     const logPrefix = "[MemberController][updateMemberById]";
     console.log(`${logPrefix} Start update for:`, req.params.memberId);
 
     try {
       const { memberId } = req.params;
-      const input = req.body;
-
-      // Validate input
-      if (!(await validateMember(input, true, memberId))) {
-        console.warn(`${logPrefix} Validation failed`);
-        return response(res, 400, "INVALID_MEMBER_DATA");
-      }
+      const input = req.body.member;
 
       // Find and update member
-      const member = await Member.findById(memberId);
-      if (!member) {
+      const currentMember = await Member.findById(memberId);
+      if (!currentMember) {
         console.warn(`${logPrefix} Member not found`);
         return response(res, 404, "MEMBER_NOT_FOUND");
       }
+      const existingMember = await Member.findOne({ cardId: input.cardId });
+      if (
+        existingMember &&
+        existingMember._id.toString() != currentMember._id.toString()
+      ) {
+        console.warn(`${logPrefix} Validation failed: cardId has duplicated`);
+        return response(res, 400, "INVALID_MEMBER_DATA");
+      }
+
+      const updatingMember = new Member({
+        cardId: input.cardId,
+        position: input.position,
+        joinedAt: new Date(input.joinedAt),
+        address: input.address,
+        hometown: input.hometown,
+        ethnicity: input.ethnicity,
+        religion: input.religion,
+        eduLevel: input.eduLevel,
+      });
 
       // Apply updates
       const updateFields = [
+        "cardId",
         "position",
-        "joinedDate",
+        "joinedAt",
         "address",
         "hometown",
         "ethnicity",
@@ -134,15 +147,13 @@ const MemberController = () => {
       ];
 
       updateFields.forEach((field) => {
-        if (input[field] !== undefined) {
-          member[field] = input[field];
-        }
+        currentMember[field] = updatingMember[field];
       });
 
-      const updatedMember = await member.save();
+      await currentMember.save();
       console.log(`${logPrefix} Member updated successfully`);
 
-      return response(res, 200, "MEMBER_UPDATED", updatedMember);
+      return response(res, 200, "MEMBER_UPDATED", currentMember);
     } catch (error) {
       console.error(`${logPrefix} Error:`, error);
 

@@ -5,7 +5,7 @@ const AccountSchema = new mongoose.Schema({
   status: { type: String, enum: ['active', 'banned', 'waiting'], default: 'waiting' },
   email: { type: String, required: true },
   phone: { type: String, required: true },
-  password: { type: String, required: true },
+  password: { type: String},
   avatar: { type: String, default: null },
   fullname: { type: String, required: true },
   birthday: { type: Date, required: true },

@@ -1,52 +1,64 @@
-import { Event, Chapter, Account, EventRegistration, Comment, EventFavorite } from "../models/index.js";
+import { populate } from "dotenv";
+import { Event, Chapter, Account, EventRegistration, Comment, EventFavorite, Member } from "../models/index.js";
 import { response, verifyToken } from "../utils/index.js";
 
 const EventController = () => {
   /**
    * Create new event
    * POST /events
-   * Request body: { name, startedDate, location, requirement, description, tags, scope, images }
+   * Request body: { name, startedAt, location, requirement, description, tags, scope, images }
    */
   const createEvent = async (req, res) => {
     const logPrefix = "[EventController][createEvent]";
-    console.log(`${logPrefix} Start with data:`, req.body);
+    console.log(`${logPrefix} Start with data:`, req.body, req.files);
 
     try {
-      const input = req.body.event;
+      const input = req.body;
       
       const decode = verifyToken(req.cookies.token);
       const accountId = decode.id;
       const account = await Account.findById(accountId);
       const chapterId = account.managerOf;
 
-      // Validate chapter exists
-      const chapter = await Chapter.findById(chapterId);
-      if (!chapter) {
-        return response(res, 404, "CHAPTER_NOT_FOUND");
+      if(
+        !input.name ||
+        !input.startedAt ||
+        !input.location ||
+        !input.requirement ||
+        !input.description ||
+        !input.tags ||
+        !input.scope
+      ){
+        return response(res, 409, "MISSING_EVENT_DATA");
       }
+
  // Check for duplicate docId within the same chapter
       const existingDoc = await Event.findOne({ 
         chapterId: chapterId,
         name: input.name,
-        startedDate: input.startedDate
+        startedAt: input.startedAt
       });
       if (existingDoc) {
-        console.warn(`${logPrefix} Event ${input.name} starts at ${input.startedDate} already exists in this chapter`);
+        console.warn(`${logPrefix} Event ${input.name} starts at ${input.startedAt} already exists in this chapter`);
         return response(res, 409, "EVENT_EXISTS");
       }
+
+      const inputImages = req.files.map(file => file.path)
+      console.log(inputImages)
       // Create new event
       const newEvent = new Event({
         chapterId: chapterId,
         name: input.name,
-        startedDate: input.startedDate,
+        startedAt: new Date(input.startedAt),
         location: input.location,
         requirement: input.requirement,
         description: input.description,
-        tags: input.tags || [],
+        tags: input.tags.trim().split(",") || [],
         scope: input.scope || 'chapter',
-        images: input.images || []
+        images: inputImages
       });
 
+      console.log(newEvent)
       const savedEvent = await newEvent.save();
       console.log(`${logPrefix} Event created successfully`, savedEvent._id);
       
@@ -78,8 +90,8 @@ const EventController = () => {
         limit = 10,
         search = "",
         scope,
-        sortBy = "startedDate",
-        sortOrder = "desc",
+        sortBy = "startedAt",
+        sortOrder = "asc",
       } = req.query;
 
       // Build filter to get:
@@ -173,68 +185,70 @@ const EventController = () => {
    */
   const updateEventById = async (req, res) => {
     const logPrefix = "[EventController][updateEventById]";
-    console.log(`${logPrefix} Start update for:`, req.params.eventId);
+    console.log(`${logPrefix} Start update for:`, req.params.eventId, req.body);
 
     try {
-      const { eventId } = req.params;
-      const input = req.body.event;
+      const input = req.body;
       const decode = verifyToken(req.cookies.token);
       const accountId = decode.id;
       const account = await Account.findById(accountId);
       const chapterId = account.managerOf;
-      // Find and update event
-      const event = await Event.findById(eventId);
-      if (!event) {
-        console.warn(`${logPrefix} Event not found`);
-        return response(res, 404, "EVENT_NOT_FOUND");
+      const eventId = req.params.eventId
+
+      if(
+        !input.name ||
+        !input.startedAt ||
+        !input.location ||
+        !input.requirement ||
+        !input.description ||
+        !input.tags ||
+        !input.scope
+      ){
+        return response(res, 409, "MISSING_EVENT_DATA");
       }
 
-      // Check for duplicate docId within the same chapter
+ // Check for duplicate docId within the same chapter
       const existingDoc = await Event.findOne({ 
-        _id: { $ne: eventId },
         chapterId: chapterId,
         name: input.name,
-        startedDate: input.startedDate
+        startedAt: input.startedAt
       });
-      if (existingDoc) {
-        console.warn(`${logPrefix} Event ${input.name} starts at ${input.startedDate} already exists in this chapter`);
+      if (existingDoc && existingDoc._id.toString() != eventId.toString()) {
+        console.warn(`${logPrefix} Event ${input.name} starts at ${input.startedAt} already exists in this chapter`);
         return response(res, 409, "EVENT_EXISTS");
       }
 
-      // Apply updates
-      const updateFields = [
-        "name", 
-        "startedDate", 
-        "location", 
-        "requirement", 
-        "description", 
-        "tags", 
-        "scope", 
-        "images"
-      ];
-      
-      updateFields.forEach(field => {
-        if (input[field] !== undefined) {
-          event[field] = input[field];
-        }
+      const inputImages = req.files.map(file => file.path)
+      console.log(inputImages)
+      // Create new event
+      const updatingEvent = new Event({
+        chapterId: chapterId,
+        name: input.name,
+        startedAt: new Date(input.startedAt),
+        location: input.location,
+        requirement: input.requirement,
+        description: input.description,
+        tags: input.tags.trim().split(",") || [],
+        scope: input.scope || 'chapter',
       });
 
-      await event.save();
-      console.log(`${logPrefix} Event updated successfully`);
 
-      return response(res, 200, "EVENT_UPDATED", event);
+      const currentEvent = await Event.findById(eventId)
+      const allowedFields = ['name', 'startedAt', 'location', 'requirement', 'description', 'tags', 'scope']
+for(const field of allowedFields){
+  currentEvent[field] = updatingEvent[field]
+}
+      if(inputImages.length > 0){
+        currentEvent.images = inputImages
+      }
+
+      const savedEvent = (await currentEvent.save());
+      console.log(`${logPrefix} Event created successfully`, savedEvent._id);
+      
+      return response(res, 201, "EVENT_CREATED", savedEvent);
 
     } catch (error) {
       console.error(`${logPrefix} Error:`, error);
-
-      if (error.name === 'ValidationError') {
-        const errors = Object.values(error.errors).map(err => ({
-          field: err.path,
-          message: err.message
-        }));
-        return response(res, 400, "VALIDATION_ERROR", { errors });
-      }
-
       return response(res, 500, "SERVER_ERROR");
     }
   };
@@ -367,7 +381,7 @@ const favorite = new EventFavorite({accountId: accountId, eventId: event._id})
       eventId: req.params.eventId,
       memberId: accountId,
       chapterId: userChapterId,
-      registeredAt: new Date()
+      registeredAt: new Date() 
     });
 
     await registration.save();
@@ -419,7 +433,7 @@ const getRegistrationsInPage = async (req, res) => {
 
         if (search) {
             filter.$or = [
-                { 'memberId.name': { $regex: search, $options: "i" } },
+                { 'memberId.fullname': { $regex: search, $options: "i" } },
                 { 'memberId.email': { $regex: search, $options: "i" } }
             ];
         }
@@ -429,6 +443,7 @@ const getRegistrationsInPage = async (req, res) => {
             page: parseInt(page),
             limit: parseInt(limit),
             sort: { [sortBy]: sortOrder === "asc" ? 1 : -1 },
+            populate:{path:'memberId'},
             lean: true
         };
 
@@ -436,28 +451,29 @@ const getRegistrationsInPage = async (req, res) => {
         const result = await EventRegistration.paginate(filter, options);
         console.log(`${logPrefix} Found ${result.docs.length} registrations`);
 
-        // Lấy tất cả memberIds từ kết quả
-        const memberIds = result.docs.map(reg => reg.memberId._id);
+     
+       const registrations = await Promise.all(
+  result.docs.map(async (item) => {
+    const registration = { _id: item._id, status: item.status };
 
-        // Lấy tất cả accounts liên quan trong một query duy nhất
-        const accounts = await Account.find({ 
-            infoMember: { $in: memberIds } 
-        }).populate('infoMember')
+    const account = await Account.findById(item.memberId);
+    const infoMember = await Member.findById(account.infoMember).populate('chapterId', '_id name position');
 
-        // Tạo map để truy cập nhanh account theo memberId
-        const accountMap = {};
-        accounts.forEach(acc => {
-            accountMap[acc.infoMember._id.toString()] = acc;
-        });
+          
+          registration['memberName'] = account.fullname
+          registration['memberAvatar'] = account.avatar
+          registration['memberCardId'] = infoMember.cardId
+          registration['memberPosition'] = infoMember.position
+          registration['memberAvatar'] = account.avatar
+          registration['memberChapter'] = infoMember.chapterId.name
 
-        // Kết hợp thông tin
-        const registrationsWithAccounts = result.docs.map(reg => ({
-            ...reg,
-            account: accountMap[reg.memberId._id.toString()] || null
-        }));
+          return registration
+        }))
+       console.log(registrations)
+   
 
         return response(res, 200, "REGISTRATIONS_FETCHED", {
-            registrations: registrationsWithAccounts,
+            registrations: registrations,
             pagination: {
                 currentPage: result.page,
                 totalPages: result.totalPages,

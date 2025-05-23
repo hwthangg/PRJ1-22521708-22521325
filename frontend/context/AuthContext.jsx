@@ -5,14 +5,9 @@ export const AuthContext = createContext(); // Giá trị mặc định là unde
 
 
 export const AuthProvider = ({ children }) => {
-  const [role, setRole] = useState("");
   const [isLogged, setIsLogged] = useState(false);
 
   useEffect(()=>{
-    const storedRole = sessionStorage.getItem('role')
-    if(storedRole){
-      setRole(storedRole)
-    }
     const storedIsLogged = sessionStorage.getItem('isLogged')
     if(storedIsLogged){
       setIsLogged(storedIsLogged)
@@ -20,12 +15,11 @@ export const AuthProvider = ({ children }) => {
   },[])
 
   useEffect(()=>{
-    sessionStorage.setItem('role', role)
     sessionStorage.setItem('isLogged', isLogged)
-  },[role])
+  },[isLogged])
 
   return (
-    <AuthContext.Provider value={{ ROLE: {role, setRole}, ISLOGGED: {isLogged, setIsLogged}}}>
+    <AuthContext.Provider value={{ISLOGGED: {isLogged, setIsLogged}}}>
       {children}
     </AuthContext.Provider>
   );
