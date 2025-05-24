@@ -256,7 +256,7 @@ const AccountController = () => {
 
         if (input.cardId != "") {
           const existingMember = await Member.findOne({ cardId: input.cardId });
-          if (existingMember && currentMember._id != existingMember._id) {
+          if (existingMember && currentMember._id.toString() != existingMember._id.toString()) {
             return response(res, 400, "INVALID_MEMBER_DATA");
           }
         }

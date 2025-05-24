@@ -1,17 +1,20 @@
 import { v2 as cloudinary } from "cloudinary";
 import { CloudinaryStorage } from "multer-storage-cloudinary";
 
+import dotenv from 'dotenv';
+
+dotenv.config();
+
 cloudinary.config({
-  cloud_name: "djnjcux2c",
-  api_key: "839363645916928",
-  api_secret: "_TMCp6VDkpcsaFcqUORz_km7ON8",
+  cloud_name: process.env.CLOUD_NAME,
+  api_key: process.env.CLOUD_KEY,
+  api_secret: process.env.CLOUD_SECRET,
 });
 
 const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: {
-    folder: "QLDV",
-    allowed_formats: ["jpg", "png", "jpeg", "webp", "pdf"],
+    folder: "QLDV"
   },
 });
-export { cloudinary, storage };
+export default cloudinary
