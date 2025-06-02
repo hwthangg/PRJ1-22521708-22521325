@@ -47,6 +47,7 @@ function Accounts() {
           totalPages={totalPages}
           setCurrentPage={setCurrentPage}
         />
+        
       </div>
     </div>
   );
