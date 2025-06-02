@@ -1,0 +1,115 @@
+/* Register.module.css */
+
+.wrapper {
+  box-sizing: border-box;
+  display: flex;
+  width: 100%;
+}
+
+.formSection {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.formBox {
+  display: flex;
+  padding: 0 10px 0 10px;
+  border-radius: 20px;
+  flex-direction: column;
+ width: 100%;
+}
+
+.label {
+  margin-bottom: 5px;
+  font-weight: 550;
+  color: #0d47a1;
+}
+
+.fieldWrapper {
+  border: 2px solid #0d47a1;
+  padding: 10px;
+  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row;
+  margin-bottom: 20px;
+  height: 30px;
+}
+
+.input {
+  all: unset;
+  width: 100%;
+  margin-left: 15px;
+  caret-color: black;
+  color: #0d47a1;
+}
+
+.passwordToggle {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-left: 10px;
+  cursor: pointer;
+}
+
+.submitBtn {
+  all:unset;
+  padding: 10px 60px;
+  border-radius: 10px;
+  background-color: #0d47a1;
+  cursor: pointer;
+}
+
+.submitBtn:hover {
+  background-color: #1565c0;
+}
+
+.submitText {
+  font-size: large;
+  font-weight: bold;
+  color: white;
+}
+
+.forgotPwd {
+  all: unset;
+  font-weight: 550;
+  cursor: pointer;
+}
+
+.registerPrompt {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+
+.registerLink {
+  all: unset;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.bannerSection {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.bannerImg {
+  object-fit: cover;
+  width: 50vw;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+}
+
+@media screen and (max-width: 768px) {
+  .bannerSection {
+    display: none;
+  }
+}

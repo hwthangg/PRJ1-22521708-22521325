@@ -1,0 +1,63 @@
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css"; // Import CSS cho toast
+
+// Các import khác
+import "./App.css";
+import Login from "./pages/Auth/Login/Login";
+import Register from "./pages/Auth/Register/Register";
+import Accounts from "./pages/Main/Admin/Accounts/Accounts";
+import Layout from "./pages/Main/Layout";
+
+
+function App() {
+  return (
+    <>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/qldv" element={<Layout />}>
+          <Route path="admin/accounts" element={<Accounts/>}/>
+        
+          </Route>
+          <>
+            {/* <Route path="/admin" element={<Layout />}>
+      <Route path="accounts" element={<Accounts />} />
+      <Route path="chapters" element={<Chapters />} />
+      <Route path="request-accounts" element={<RequestAccounts />} />
+      <Route path="chat" element={<Chat />} />
+    </Route>
+
+    <Route path="/manager" element={<Layout />}>
+      <Route path="news" element={<News />} />
+      <Route path="members" element={<Members />} />
+      <Route path="request-members" element={<RequestMembers />} />
+      <Route path="events" element={<Events />} />
+      <Route path="events/:eventId" element={<EventDetails />} />
+      <Route path="documents" element={<Documents />} />
+      <Route path="documents/:documentId" element={<DocumentDetails />} />
+      <Route path="statistic" element={<Statistic />} />
+      <Route path="chat" element={<ChatManager />} />
+    </Route>
+
+    <Route path="/chat" element={<Chate />} /> */}
+          </>
+        </Routes>
+      </BrowserRouter>
+
+      {/* ToastContainer nằm ngoài BrowserRouter để luôn sẵn sàng hiển thị */}
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        pauseOnHover
+        theme="colored"
+      />
+    </>
+  );
+}
+
+export default App;

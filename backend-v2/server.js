@@ -1,14 +1,17 @@
 import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
+import cookie from 'cookie'
 import http from 'http';
 import { Server } from 'socket.io';
 import { configDotenv } from "dotenv";
-import { AccountRoutes, AuthRoutes, ChapterRoutes, DocumentRoutes } from "./routes/index.js";
+import { AccountRoutes, AuthRoutes, ChapterRoutes, DocumentRoutes, MessageRoutes } from "./routes/index.js";
 import { connectDB } from "./configs/index.js";
 import EventRoutes from "./routes/event.route.js";
 import MemberRoutes from "./routes/member.route.js";
 import { sendInvite } from "./sockets/notifications.socket.js";
+import { verifyToken } from "./utils/handleToken.js";
+import { on } from "events";
 
 
 connectDB()
@@ -21,7 +24,9 @@ const io = new Server(server, {
   cors: {
     origin: "http://localhost:5173", // hoặc dùng array nếu nhiều domain
     methods: ["GET", "POST"],
-    credentials: true                // 🔥 QUAN TRỌNG
+    credentials: true,
+    path: '/socket.io'
+    // 🔥 QUAN TRỌNG
   }
 })
 
@@ -44,14 +49,30 @@ app.use('/api/auth', AuthRoutes)
 app.use('/api/documents', DocumentRoutes)
 app.use('/api/events', EventRoutes)
 app.use('/api/members', MemberRoutes)
+app.use('/api/messages', MessageRoutes)
+// --- Namespace: /admin ---
+let onlChatUsers = []
+io.on('connection', (socket) => {
+  console.log('Account connected:', socket.id);
+  const cookies = cookie.parse(socket.handshake.headers.cookie || '');
 
-io.on('connection', (socket, io) => {
-  console.log('✅ Client connected:', socket.id);
-  sendInvite(socket,io)
+  const accountId = verifyToken(cookies.token).id
+
+  onlChatUsers[`${accountId}`] = socket.id
+
+  console.log(onlChatUsers)
+
+  socket.on('chat', (send) => {
+    console.log(onlChatUsers[send.partner])
+    io.to(onlChatUsers[send.partner]).emit('chat', { senderId: send.me, message: send.text, status: "unread" })
+  })
+
 
   socket.on('disconnect', () => {
-  console.log('❌ Client disconnected:', socket.id);
+    console.log('Account disconnected:', socket.id);
   });
 });
+
+
 
 server.listen(PORT, () => console.log(`Server: http://localhost:${PORT}`));

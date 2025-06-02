@@ -1,0 +1,154 @@
+.container {
+  box-sizing: border-box;
+  display: flex;
+  min-height: 100vh;
+}
+
+.mainContent {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px 60px 40px 40px;
+}
+
+.registerForm {
+  display: flex;
+  padding: 40px;
+  flex: 1;
+  border-radius: 20px;
+  flex-direction: column;
+  border: 2px solid #0d47a1;
+}
+
+.avatarSection {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.avatarImage {
+  width: 160px;
+  aspect-ratio: 1 / 1;
+  border-radius: 100%;
+  box-shadow: 0 0 5px #9e9e9e;
+}
+
+.avatarInput {
+  all: unset;
+  display: none;
+}
+
+.avatarButton {
+  border: 1px solid;
+  padding: 15px;
+  border-radius: 10px;
+  cursor: pointer;
+  background-color: #0d47a1;
+  color: white;
+  font-weight: bold;
+}
+
+.avatarButton:hover {
+  background-color: #3d85c6;
+}
+
+.inputLabel {
+  margin-bottom: 5px;
+  font-weight: 550;
+  color: #0d47a1;
+}
+
+.inputContainer {
+  border: 2px solid #0d47a1;
+  padding: 10px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  height: 30px;
+  margin-bottom: 20px;
+}
+
+.inputField {
+  all: unset;
+  width: 100%;
+  margin-left: 15px;
+  caret-color: black;
+  color: #0d47a1;
+}
+
+.rowContainer {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  gap: 30px;
+}
+
+.column {
+  flex: 1;
+}
+
+.selectField {
+  flex: 1;
+  border: none;
+  outline: none;
+  color: #0d47a1;
+  padding-left: 10px;
+}
+
+.passwordToggle {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-left: 10px;
+  cursor: pointer;
+}
+
+.registerButton {
+  margin-top: 10px;
+  font-weight: bold;
+  padding: 15px;
+  border-radius: 10px;
+  background-color: #0d47a1;
+  color: #fff;
+  cursor: pointer;
+  border: none;
+}
+
+.registerButton:hover {
+  background-color: #3d85c6;
+}
+
+.loginLink {
+  margin-top: 15px;
+  font-weight: bold;
+  color: #0d47a1;
+  text-decoration: none;
+  cursor: pointer;
+  display: inline-block;
+  text-align: center;
+}
+
+.bannerContainer {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+.bannerImage {
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  right: 0;
+}
+
+@media (max-width: 768px) {
+  .bannerContainer {
+    display: none;
+  }
+}

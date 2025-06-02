@@ -156,6 +156,7 @@ const AccountController = () => {
         sort: {
           [sortBy]: sortOrder === "asc" ? 1 : -1,
         },
+        populate: {path:'managerOf'}
       };
 
       const result = await Account.paginate(filter, options);
@@ -211,7 +212,7 @@ const AccountController = () => {
   // Cập nhật tài khoản
   const updateAccountById = async (req, res) => {
     const logPrefix = "[AccountController][updateAccount]";
-    // console.log(`${logPrefix} Start update for:`, req.params.accountId, req.body);
+    console.log(`${logPrefix} Start update for:`, req.params.accountId, req.body);
 
     try {
       const input = req.body;
@@ -242,7 +243,7 @@ const AccountController = () => {
       }
 
       // Gán lại avatar nếu có file mới
-      if (input.avatar != "") {
+      if (file && input.avatar != "" ) {
         currentAccount.avatar = file.path;
       }
 
@@ -292,7 +293,7 @@ const AccountController = () => {
   // Đổi trạng thái tài khoản (active/inactive)
   const changeAccountStatus = async (req, res) => {
     const logPrefix = "[AccountController][changeStatus]";
-    // console.log(`${logPrefix} Request:`, req.params, req.body);
+    console.log(`${logPrefix} Request:`, req.params, req.body);
 
     try {
       const accountId = req.params.accountId;
@@ -303,6 +304,12 @@ const AccountController = () => {
       // Nếu không thay đổi trạng thái
       if (account.status === status) {
         return response(res, 200, "STATUS_UNCHANGED");
+      }
+
+      if(account.infoMember && (status == 'banned' || status == 'active')){
+        const member = await Member.findById(account.infoMember);
+        member.status = status
+        await member.save()
       }
 
       // Cập nhật trạng thái

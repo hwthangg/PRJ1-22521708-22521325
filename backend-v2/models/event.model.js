@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 import mongoosePaginate from 'mongoose-paginate-v2';
 
 const EventSchema = new mongoose.Schema({
-  status: { type: String, enum: ['active', 'cancelled'], default: 'active' },
+  status: { type: String, enum: ['completed', 'active', 'canceled', 'pending'], default: 'pending' },
   chapterId: { type: mongoose.Schema.Types.ObjectId, ref: 'Chapter', required: true },
   name: { type: String, required: true },
   startedAt: { type: Date, required: true },

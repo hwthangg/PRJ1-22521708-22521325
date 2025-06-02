@@ -147,7 +147,7 @@ const AuthController = () => {
       const token = generateToken(account);
       res.cookie("token", token, { httpOnly: false });
 
-      return response(res, 200, "LOGIN_SUCCESS", { token });
+      return response(res, 200, "LOGIN_SUCCESS", { token, role:account.role });
     } catch (error) {
       console.error(`${logPrefix} Error:`, error);
       return response(res, 500, "SERVER_ERROR");

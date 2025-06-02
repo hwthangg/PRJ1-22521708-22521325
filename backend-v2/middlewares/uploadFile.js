@@ -6,7 +6,8 @@ const fileStorage = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: {
     folder: 'QLDV/files',
-    resource_type: 'raw', // Bắt buộc để upload file không phải ảnh/video
+    allowed_formats: ['pdf'],
+    resource_type: 'raw',
   },
 });
 

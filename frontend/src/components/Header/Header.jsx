@@ -5,7 +5,7 @@ import logodoan from "../../assets/logodoan.png";
 import bellIcon from "../../assets/bellicon.png";
 import notifyIcon from "../../assets/notifyicon.png";
 import { AuthContext } from "../../../context/AuthContext";
-import socket from "../../socket";
+
 
 const Header = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -45,60 +45,7 @@ const Header = () => {
     // });
   };
   
-  useEffect(() => {
-    // const fetchNotifications = async () => {
-    //   const res = await fetch('http://localhost:5000/api/notifications', {
-    //     method: 'GET',
-    //     credentials:'include'
-    //   });
-    //   const data = await res.json();
-    //   setNotifications(prev => [...prev, ...data]);
-    // };
-  
-    const fetchUser = async () => {
-      const res = await fetch(`http://localhost:5000/api/auth`, {
-        method: "GET",
-        credentials: "include",
-      });
-      const data = await res.json();
-      console.log(data.data)
-      setChapter(data.data.managerOf);
-      console.log(chapter)
-      // socket.emit("access", data.data._id);
-    };
-  
-    const handleClickOutside = (event) => {
-      if (
-        navRef.current &&
-        !navRef.current.contains(event.target) &&
-        accountRef.current &&
-        !accountRef.current.contains(event.target)
-      ) {
-        setActiveMenu(null);
-        setIsDropdownOpen(false);
-      }
-    };
-  
-    const handleEventReminder = (data) => {
-      // setUnreadCount(prev => prev + 1);
-      // setNotifications(prev => [data, ...prev]);
-      // console.log("📢 Sự kiện sắp diễn ra:", data);
-      // // TODO: hiện toast hoặc thông báo ở đây
-    };
-  
-    document.addEventListener("mousedown", handleClickOutside);
-    // if (socket && !socket.connected) socket.connect();
-    // socket.on("event_reminder", handleEventReminder);
-  
-    // fetchNotifications();
-    fetchUser();
-  
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-      // socket.off("event_reminder", handleEventReminder);
-    };
-  }, []);
-  
+ 
 
   return (
     <header className={styles.header}>

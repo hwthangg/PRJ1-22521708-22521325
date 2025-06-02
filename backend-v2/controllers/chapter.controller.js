@@ -144,6 +144,7 @@ const ChapterController = () => {
       const documents = await Document.find({ chapterId: chapter._id });
       const events = await Event.find({ chapterId: chapter._id });
       const members = await Member.find({ chapterId: chapter._id });
+      const manager = await Account.find({managerOf: chapter._id})
 
       if (!chapter) {
         console.warn(`${logPrefix} Chapter not found`);
@@ -155,6 +156,7 @@ const ChapterController = () => {
         documents: documents,
         events: events,
         members: members,
+        manager: manager
       });
     } catch (error) {
       console.error(`${logPrefix} Error:`, error);

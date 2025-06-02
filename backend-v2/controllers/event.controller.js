@@ -247,9 +247,9 @@ const EventController = () => {
       }
 
       const savedEvent = await currentEvent.save();
-      console.log(`${logPrefix} Event created successfully`, savedEvent._id);
+      console.log(`${logPrefix} Event updated successfully`, savedEvent._id);
 
-      return response(res, 201, "EVENT_CREATED", savedEvent);
+      return response(res, 201, "EVENT_UPDATED", savedEvent);
     } catch (error) {
       console.error(`${logPrefix} Error:`, error);
       return response(res, 500, "SERVER_ERROR");
@@ -268,12 +268,7 @@ const EventController = () => {
       const { eventId } = req.params;
       const { status } = req.body;
 
-      // Validate status
-      const validStatuses = ["active", "cancelled"];
-      if (!validStatuses.includes(status)) {
-        console.warn(`${logPrefix} Invalid status: ${status}`);
-        return response(res, 400, "INVALID_STATUS", { validStatuses });
-      }
+      
 
       // Find event
       const event = await Event.findById(eventId);
