@@ -1,4 +1,4 @@
-import { config as configDotenv } from "dotenv";
+import { configDotenv } from "dotenv";
 
 configDotenv();
 
@@ -6,7 +6,7 @@ import mongoose from "mongoose";
 
 const DB_CONNECT_STRING = process.env.DB_CONNECT_STRING;
 
-export const connectDB = async () => {
+export const connectMongoDB = async () => {
   try {
     await mongoose.connect(DB_CONNECT_STRING);
     
