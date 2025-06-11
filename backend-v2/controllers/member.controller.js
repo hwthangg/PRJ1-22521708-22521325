@@ -23,7 +23,7 @@ const MemberController = () => {
       } = req.query;
 
       // Tạo bộ lọc dữ liệu
-      const filter = { chapterId };
+      const filter = { memberOf: chapterId };
       if (position !== "all") filter.position = position;
       if (status !== "all") filter.status = status;
       if (search) {
@@ -40,14 +40,28 @@ const MemberController = () => {
         page: parseInt(page),
         limit: parseInt(limit),
         sort: { [sortBy]: sortOrder === "asc" ? 1 : -1 },
+        select: '_id'
       };
 
-      const members = await Member.paginate(filter, options);
+     const members = await Member.paginate(filter, options);
+const memberIds = members.docs.map(item => item._id); // Giữ nguyên ObjectId
+console.log("Member IDs:", memberIds);
 
-      // Tìm account liên kết với member
-      const result = await Account.find({
-        infoMember: { $in: members.docs },
-      }).populate("infoMember");
+const accounts = await Account.find({
+  infoMember: { $in: memberIds },
+})
+
+const result = await Promise.all(accounts.map(async(item)=>{
+  const member = await Member.findById(item.infoMember).select('-_id').lean();
+
+  
+          return {
+            ...item.toObject(), // Đảm bảo item là object thuần
+            ...member
+          };
+}))
+
+console.log("Accounts with member info:", result);
 
       return response(res, 200, "MEMBERS_FETCHED", {
         members: result,

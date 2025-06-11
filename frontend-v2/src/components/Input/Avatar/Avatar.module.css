@@ -1,0 +1,33 @@
+.container{
+  display: flex;
+
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+
+}
+
+.avatar{
+  display: flex;
+
+}
+
+.avatar img{
+  width: 180px;
+  aspect-ratio: 1/1;
+  border-radius: 1000px;
+  object-fit: cover;
+  box-shadow: 0 0 5px var(--eff-shadow);
+}
+
+.changeImgBtn{
+  padding: 10px;
+  border-radius: 10px;
+  background-color: var(--normal-blue);
+  color: white;
+}
+
+.changeImgBtn:hover{
+    box-shadow: 0 0 5px var(--eff-shadow);
+}

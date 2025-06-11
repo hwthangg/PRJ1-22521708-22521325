@@ -10,6 +10,8 @@ top: 0;
 left: 0;
 background-color: var(--dark-blue) ;
 justify-content: space-between;
+border-top-right-radius: 120px;
+
 }
 
 .navContainer{

@@ -14,6 +14,19 @@ function UserSection({ user }) {
     ]
   )
   const navigate = useNavigate()
+  const logout = async()=>{
+    try {
+      const res = await fetch('http://localhost:5000/api/auth/logout',{
+        method:'DELETE',
+        credentials:'include'
+      })
+      navigate('/')
+    } catch (error) {
+      console.log(error)
+      toast.error('Có lỗi xảy ra')
+    }
+    
+  }
   const handleClickNotification = async(item)=>{
     try {
       if(item.type == 'event'){
@@ -37,8 +50,8 @@ function UserSection({ user }) {
           <img src={user.avatar || avatar} />
           <p>{user.fullname}</p>
           <div className={styles.profileOptions} style={showProfileOptions ? {}:{display:'none'}}>
-            <button><FaUser/><>Trang cá nhân</></button>
-            <button><FaSignOutAlt/><>Đăng xuất</></button>
+            {/* <button><FaUser/><>Trang cá nhân</></button> */}
+            <button onClick={()=>logout()}><FaSignOutAlt/><>Đăng xuất</></button>
           </div>
         </div>
         <div className={styles.notification}>

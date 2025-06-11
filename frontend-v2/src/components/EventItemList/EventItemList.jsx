@@ -104,7 +104,7 @@ const EventItemList = ({ event, formatVietnameseDate }) => {
       </div>
 
       {/* Images */}
-      <div
+      {event.images.length > 0 ?<><div
         style={{
           display: "flex",
           gap: "10px",
@@ -114,7 +114,7 @@ const EventItemList = ({ event, formatVietnameseDate }) => {
           marginBottom: "12px",
         }}
       >
-        {event.images.map((item, index) => (
+        { event.images.map((item, index) => (
           <img
             key={index}
             src={item}
@@ -125,7 +125,8 @@ const EventItemList = ({ event, formatVietnameseDate }) => {
             }}
           />
         ))}
-      </div>
+      </div></>:<></>}
+      
 
       {/* Actions */}
       <div

@@ -7,52 +7,48 @@ import { response, validateChapter } from "../utils/index.js";
 const ChapterController = () => {
   // Hàm tạo một chapter mới
   const createChapter = async (req, res) => {
-    const logPrefix = "[ChapterController][createChapter]";
-    console.log(`${logPrefix} Start with data:`, req.body);
+
 
     try {
-      const input = req.body;
+      console.log('Call: create chapter')
+      const body = req.body;
 
       // Kiểm tra đầu vào - các trường bắt buộc
       if (
-        !input.name ||
-        !input.affiliated ||
-        !input.address ||
-        !input.establishedAt
+        !body.name ||
+        !body.affiliated ||
+        !body.address ||
+        !body.establishedAt
       ) {
-        return response(res, 400, "MISSING_CHAPTER_DATA");
+        res.json({ message: 'missing data' })
       }
 
       // Kiểm tra xem chapter đã tồn tại chưa (dựa trên tên, liên kết, địa chỉ)
-      const existingChapter = await Chapter.findOne({
-        name: input.name,
-        affiliated: input.affiliated,
-        address: input.address,
+      const duplicate = await Chapter.findOne({
+        name: body.name,
+        affiliated: body.affiliated,
+        address: body.address,
       });
-      if (existingChapter) {
-        console.warn(`${logPrefix} Validation failed: Chapter has existed`);
-        return response(res, 400, "INVALID_CHAPTER_DATA");
+      if (duplicate) {
+        res.json({ message: 'duplicated chapter' })
       }
 
       // Tạo một chapter mới
       const chapter = new Chapter({
-        name: input.name,
-        affiliated: input.affiliated,
-        address: input.address,
-        establishedAt: input.establishedAt,
+        name: body.name,
+        affiliated: body.affiliated,
+        address: body.address,
+        establishedAt: body.establishedAt,
       });
 
       // Lưu chapter vào database
-      const savedChapter = await chapter.save();
-      console.log(
-        `${logPrefix} Chapter created successfully`,
-        savedChapter._id
-      );
+      await chapter.save();
 
-      return response(res, 201, "CHAPTER_CREATED", savedChapter);
+
+      res.json({ message: 'create chapter successfully', data: chapter })
     } catch (error) {
-      console.error(`${logPrefix} Error:`, error);
-      return response(res, 500, "SERVER_ERROR");
+      console.error(error);
+      res.json(error)
     }
   };
 
@@ -97,13 +93,15 @@ const ChapterController = () => {
       // Với mỗi chapter, tìm thêm thông tin người quản lý
       const result = await Promise.all(
         chapters.docs.map(async (item) => {
-          const result = {};
-          result["infoChapter"] = item;
-          const manager = await Account.findOne({ managerOf: item._id });
-          result["infoManager"] = manager;
-          return result;
+          const manager = await Account.findOne({ managerOf: item._id }).select('-_id').lean();
+
+          return {
+            ...item.toObject(), // Đảm bảo item là object thuần
+            ...manager
+          };
         })
       );
+
 
       // Trả về dữ liệu kèm thông tin phân trang
       return response(res, 200, "CHAPTERS_FETCHED", {
@@ -116,8 +114,8 @@ const ChapterController = () => {
         },
       });
     } catch (error) {
-      console.error(`${logPrefix} Error:`, error);
-      return response(res, 500, "SERVER_ERROR");
+      console.error(error);
+      res.json(error)
     }
   };
 
@@ -135,88 +133,75 @@ const ChapterController = () => {
 
   // Hàm lấy thông tin chi tiết của một chapter theo ID
   const getChapterById = async (req, res) => {
-    const logPrefix = "[ChapterController][getChapterById]";
-    console.log(`${logPrefix} Request for chapter:`, req.params.chapterId);
 
     try {
+      console.log('Call: get chapter by id')
       // Tìm chapter theo ID
-      const chapter = await Chapter.findById(req.params.chapterId);
-      const documents = await Document.find({ chapterId: chapter._id });
-      const events = await Event.find({ chapterId: chapter._id });
-      const members = await Member.find({ chapterId: chapter._id });
-      const manager = await Account.find({managerOf: chapter._id})
+      const { id } = req.params
+      const chapter = await Chapter.findById(id);
+const manager = await Account.findOne({managerOf: id}).select('-_id')
 
-      if (!chapter) {
-        console.warn(`${logPrefix} Chapter not found`);
-        return response(res, 404, "CHAPTER_NOT_FOUND");
-      }
+const result = {
+      ...chapter.toObject(),
+      ...(manager ? manager.toObject() : {}), // tránh lỗi nếu không tìm thấy manager
+    };
+    
 
-      return response(res, 200, "CHAPTER_FETCHED", {
-        general: chapter,
-        documents: documents,
-        events: events,
-        members: members,
-        manager: manager
-      });
+      return res.json({
+        message: 'get chapter successfully', data: result
+        
+          
+        
+      })
+
+
     } catch (error) {
-      console.error(`${logPrefix} Error:`, error);
-
-      if (error.name === "CastError") {
-        return response(res, 400, "INVALID_ID");
-      }
-
-      return response(res, 500, "SERVER_ERROR");
+      console.log(error)
+      return res.json(error)
     }
   };
 
   // Hàm cập nhật thông tin chapter
   const updateChapterById = async (req, res) => {
-    const logPrefix = "[ChapterController][updateChapterById]";
-    console.log(
-      `${logPrefix} Start update for:`,
-      req.params.chapterId,
-      req.body
-    );
 
     try {
-      const input = req.body;
-      const chapterId = req.params.chapterId;
+      const body = req.body;
+      const {id} = req.params;
 
-      const currentChapter = await Chapter.findById(chapterId);
+      const chapter = await Chapter.findById(id);
 
       // Kiểm tra trùng lặp thông tin
-      const existingChapter = await Chapter.findOne({
-        name: input.name,
-        affiliated: input.affiliated,
-        address: input.address,
+      const duplicate = await Chapter.findOne({
+        name: body.name,
+        affiliated: body.affiliated,
+        address: body.address,
       });
 
       if (
-        existingChapter &&
-        existingChapter._id.toString() != chapterId.toString()
+        duplicate &&
+        duplicate._id.toString() == id
       ) {
-        console.warn(`${logPrefix} Validation failed: Chapter has existed`);
-        return response(res, 400, "INVALID_CHAPTER_DATA");
+        return res.json({message:'missing data'})
       }
 
+      const update = new Chapter(body)
+      console.log(update,body)
+      
       // Cập nhật các trường được phép
-      const allowedFields = ["name", "affiliated", "address", "establishedAt"];
+      const allowedFields = ["name", "affiliated", "address", "establishedAt", 'status'];
       for (const field of allowedFields) {
-        if (input[field] != "" && input[field] != null) {
-          currentChapter[field] = input[field];
+        if (update[field] != null) {
+          chapter[field] = update[field];
         }
       }
 
-      const savedChapter = await currentChapter.save();
-      console.log(
-        `${logPrefix} Chapter updated successfully`,
-        savedChapter._id
-      );
+     await chapter.save();
+    const result = await Chapter.findById(id)
 
-      return response(res, 201, "CHAPTER_CREATED", savedChapter);
+      return res.json({message:'update chapter successfully', data:result})
     } catch (error) {
-      console.error(`${logPrefix} Error:`, error);
-      return response(res, 500, "SERVER_ERROR");
+      console.error(error);
+      return res.json(error)
     }
   };
 

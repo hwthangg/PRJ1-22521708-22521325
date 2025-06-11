@@ -1,20 +1,21 @@
 import React, { lazy, useEffect, useState } from "react";
 import Table from "../../../../components/Table/Table";
 import Pagination from "../../../../components/Pagination/Pagination";
-import styles from "./Accounts.module.css";
+import styles from "./Members.module.css";
 import TextInput from "../../../../components/Input/TextInput/TextInput";
 import Dropdown from "../../../../components/Input/Dropdown/Dropdown";
 import { IoAddCircle} from "react-icons/io5";
 import AccountForm from "../../../../components/Form/AccountForm/AccountForm";
 
-function Accounts() {
+function Members() {
   const [data, setData] = useState([]);
   const [showAddForm, setShowAddForm] = useState(false)
-  const roleOptions = [
+  const positionOptions = [
     { value: "all", label: "Tất cả" },
-    { value: "admin", label: "Quản trị viên" },
-    { value: "manager", label: "Quản lý chi đoàn" },
-    { value: "member", label: "Đoàn viên" },
+    { value: "Bí thư", label: "Bí thư" },
+    { value: "Phó Bí thư", label: "Phó Bí thư" },
+    { value: "Ủy viên BCH", label: "Ủy viên BCH" },
+    { value: "Đoàn viên", label: "Đoàn viên" },
   ];
   const statusOptions = [
     { value: "all", label: "Tất cả" },
@@ -27,15 +28,15 @@ function Accounts() {
 
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState("all");
-  const [role, setRole] = useState("all");
+  const [position, setPosition] = useState("all");
 
   const chooseFilter = (e) => {
   const { name, value } = e.target;
   console.log(name)
 
   switch (name) {
-    case "role":
-      setRole(value);
+    case "position":
+      setPosition(value);
       break;
     case "status":
       setStatus(value);
@@ -48,29 +49,31 @@ function Accounts() {
   }
 };
   useEffect(() => {
-    const fetchAccounts = async () => {
+    const fetchMembers = async () => {
       try {
         const res = await fetch(
-          `http://localhost:5000/api/accounts?page=${currentPage}&limit=5&search=${search}&status=${status}&role=${role}&sortBy=createdAt&sortOrder=asc`,
+          `http://localhost:5000/api/members?page=${currentPage}&limit=5&search=${search}&status=${status}&position=${position}&sortBy=createdAt&sortOrder=asc`,
           {
             method: "GET",
             headers: {
               "Content-Type": "application/json",
             },
+            credentials:'include'
           }
         );
 
         const result = await res.json();
-        setData(result.data.accounts);
+        console.log(result)
+        setData(result.data.members);
         setTotalPages(result.data.pagination.totalPages);
       } catch (error) {
         console.error("Error fetching accounts:", error);
       }
     };
 
-    fetchAccounts();
+    fetchMembers();
     console.log(search);
-  }, [search, status, role, currentPage]);
+  }, [search, status, position, currentPage]);
   return (
     <div className={styles.container}>
       <div className={styles.toolsContainer}>
@@ -85,11 +88,11 @@ function Accounts() {
         />
         <Dropdown
        
-          name="role"
-          value={role}
+          name="position"
+          value={position}
           onChangeValue={chooseFilter}
-          label={"Phân quyền"}
-          options={roleOptions}
+          label={"Chức vụ"}
+          options={positionOptions}
         />
         <Dropdown
           name="status"
@@ -99,11 +102,11 @@ function Accounts() {
           options={statusOptions}
         />
 
-        <button className={styles.addBtn} onClick={()=>{setShowAddForm(true)}} ><IoAddCircle size={40}/></button>
+        
       </div>
       <div className={styles.tableWrapper}>
         {" "}
-        <Table name="account" data={data} startIndex={(currentPage - 1) * 5} />
+        <Table name="member" data={data} startIndex={(currentPage - 1) * 5} />
         <Pagination
           currentPage={currentPage}
           totalPages={totalPages}
@@ -115,4 +118,4 @@ function Accounts() {
   );
 }
 
-export default Accounts;
+export default Members;

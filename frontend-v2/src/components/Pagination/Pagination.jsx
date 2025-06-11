@@ -1,17 +1,18 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "./Pagination.module.css";
 import {
   TbSquareRoundedChevronsLeftFilled,
   TbSquareRoundedChevronsRightFilled,
 } from "react-icons/tb";
 
-const Pagination = ({
-  currentPage,
-  totalPages,
-  setCurrentPage,
-}) => {
+const Pagination = ({ currentPage, totalPages, setCurrentPage }) => {
   const [hoverBack, setHoverBack] = useState(false);
-    const [hoverNext, setHoverNext] = useState(false);
+  const [hoverNext, setHoverNext] = useState(false);
+  useEffect(() => {
+    if (currentPage > totalPages) {
+      setCurrentPage(1);
+    }
+  }, [totalPages]);
   return (
     <div className={styles.container}>
       {/* Previous Button */}

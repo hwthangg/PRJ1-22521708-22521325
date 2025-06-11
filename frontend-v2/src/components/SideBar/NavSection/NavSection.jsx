@@ -6,7 +6,6 @@ export default function NavSection({ user }) {
   const adminNavList = [
     { navLabel: "Danh sách tài khoản", route: "/admin/accounts" },
     { navLabel: "Danh sách chi đoàn", route: "/admin/chapters" },
-    { navLabel: "Yêu cầu phê duyệt", route: "/admin/requests" },
     
   ];
 
@@ -15,7 +14,6 @@ export default function NavSection({ user }) {
     { navLabel: "Danh sách đoàn viên", route: "/manager/members" },
     { navLabel: "Danh sách sự kiện", route: "/manager/events" },
     { navLabel: "Danh sách tài liệu", route: "manager/documents" },
-    { navLabel: "Yêu cầu phê duyệt", route: "/manager/requests" },
     { navLabel: "Báo cáo thống kê", route: "/manager/statistic" },
   ];
 

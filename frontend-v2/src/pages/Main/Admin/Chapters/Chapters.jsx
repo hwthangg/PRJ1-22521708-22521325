@@ -1,57 +1,49 @@
 import React, { lazy, useEffect, useState } from "react";
 import Table from "../../../../components/Table/Table";
 import Pagination from "../../../../components/Pagination/Pagination";
-import styles from "./Accounts.module.css";
+import styles from "./Chapters.module.css";
 import TextInput from "../../../../components/Input/TextInput/TextInput";
 import Dropdown from "../../../../components/Input/Dropdown/Dropdown";
 import { IoAddCircle} from "react-icons/io5";
 import AccountForm from "../../../../components/Form/AccountForm/AccountForm";
+import ChapterForm from "../../../../components/Form/ChapterForm/ChapterForm";
 
-function Accounts() {
+function Chapters() {
   const [data, setData] = useState([]);
   const [showAddForm, setShowAddForm] = useState(false)
-  const roleOptions = [
-    { value: "all", label: "Tất cả" },
-    { value: "admin", label: "Quản trị viên" },
-    { value: "manager", label: "Quản lý chi đoàn" },
-    { value: "member", label: "Đoàn viên" },
-  ];
+
   const statusOptions = [
     { value: "all", label: "Tất cả" },
     { value: "active", label: "Hoạt động" },
-    { value: "banned", label: "Khóa" },
-     { value: "waiting", label: "Chờ phê duyệt" },
+    { value: "banned", label: "Khóa" }
   ];
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
 
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState("all");
-  const [role, setRole] = useState("all");
+
 
   const chooseFilter = (e) => {
   const { name, value } = e.target;
   console.log(name)
 
   switch (name) {
-    case "role":
-      setRole(value);
-      break;
+
     case "status":
       setStatus(value);
       break;
        case "search":
       setSearch(value);
       break;
-    default:
-      break;
+
   }
 };
   useEffect(() => {
-    const fetchAccounts = async () => {
+    const fetchChapters = async () => {
       try {
         const res = await fetch(
-          `http://localhost:5000/api/accounts?page=${currentPage}&limit=5&search=${search}&status=${status}&role=${role}&sortBy=createdAt&sortOrder=asc`,
+          `http://localhost:5000/api/chapters?page=${currentPage}&limit=5&search=${search}&status=${status}&sortBy=createdAt&sortOrder=asc`,
           {
             method: "GET",
             headers: {
@@ -61,16 +53,17 @@ function Accounts() {
         );
 
         const result = await res.json();
-        setData(result.data.accounts);
+        console.log(result)
+        setData(result.data.chapters);
         setTotalPages(result.data.pagination.totalPages);
       } catch (error) {
         console.error("Error fetching accounts:", error);
       }
     };
 
-    fetchAccounts();
+    fetchChapters();
     console.log(search);
-  }, [search, status, role, currentPage]);
+  }, [search, status, currentPage]);
   return (
     <div className={styles.container}>
       <div className={styles.toolsContainer}>
@@ -81,16 +74,9 @@ function Accounts() {
           name="search"
           value={search}
           onChangeValue={chooseFilter}
-          placeholder="Nhập thông tin tài khoản cần tìm"
+          placeholder="Nhập thông tin chi đoàn cần tìm"
         />
-        <Dropdown
        
-          name="role"
-          value={role}
-          onChangeValue={chooseFilter}
-          label={"Phân quyền"}
-          options={roleOptions}
-        />
         <Dropdown
           name="status"
           value={status}
@@ -103,16 +89,16 @@ function Accounts() {
       </div>
       <div className={styles.tableWrapper}>
         {" "}
-        <Table name="account" data={data} startIndex={(currentPage - 1) * 5} />
+        <Table name="chapter" data={data} startIndex={(currentPage - 1) * 5} />
         <Pagination
           currentPage={currentPage}
           totalPages={totalPages}
           setCurrentPage={setCurrentPage}
         />
       </div>
-      {showAddForm ? <><AccountForm setOpen={setShowAddForm}/></>:<></>}
+      {showAddForm ? <><ChapterForm setOpen={setShowAddForm}/></>:<></>}
     </div>
   );
 }
 
-export default Accounts;
+export default Chapters;

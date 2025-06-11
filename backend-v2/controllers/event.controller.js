@@ -101,6 +101,7 @@ const EventController = () => {
         search,
         status,
         scope,
+        chapterId,
         sortBy = "startedAt",
         sortOrder = "asc",
       } = req.query;
@@ -131,6 +132,9 @@ const EventController = () => {
       }
       if (status && status != "all") {
         filter.status = status;
+      }
+      if (chapterId){
+        filter.chapterId = userChapterId
       }
 
       // Pagination options

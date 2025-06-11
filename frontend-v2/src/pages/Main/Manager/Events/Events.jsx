@@ -1,76 +1,78 @@
 import React, { lazy, useEffect, useState } from "react";
 import Table from "../../../../components/Table/Table";
 import Pagination from "../../../../components/Pagination/Pagination";
-import styles from "./Accounts.module.css";
+import styles from "./Events.module.css";
 import TextInput from "../../../../components/Input/TextInput/TextInput";
 import Dropdown from "../../../../components/Input/Dropdown/Dropdown";
-import { IoAddCircle} from "react-icons/io5";
+import { IoAddCircle } from "react-icons/io5";
 import AccountForm from "../../../../components/Form/AccountForm/AccountForm";
 
-function Accounts() {
+function Events() {
   const [data, setData] = useState([]);
-  const [showAddForm, setShowAddForm] = useState(false)
-  const roleOptions = [
+  const [showAddForm, setShowAddForm] = useState(false);
+  const scopeOptions = [
     { value: "all", label: "Tất cả" },
-    { value: "admin", label: "Quản trị viên" },
-    { value: "manager", label: "Quản lý chi đoàn" },
-    { value: "member", label: "Đoàn viên" },
+    { value: "public", label: "Công khai" },
+    { value: "chapter", label: "Chi đoàn" },
   ];
   const statusOptions = [
     { value: "all", label: "Tất cả" },
-    { value: "active", label: "Hoạt động" },
-    { value: "banned", label: "Khóa" },
-     { value: "waiting", label: "Chờ phê duyệt" },
+    { value: "completed", label: "Hoàn thành" },
+    { value: "doing", label: "Đang diễn ra" },
+    { value: "canceled", label: "Hủy bỏ" },
+    { value: "pending", label: "Sắp diễn ra" },
   ];
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
 
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState("all");
-  const [role, setRole] = useState("all");
+  const [scope, setScope] = useState("all");
 
   const chooseFilter = (e) => {
-  const { name, value } = e.target;
-  console.log(name)
+    const { name, value } = e.target;
+    console.log(name);
 
-  switch (name) {
-    case "role":
-      setRole(value);
-      break;
-    case "status":
-      setStatus(value);
-      break;
-       case "search":
-      setSearch(value);
-      break;
-    default:
-      break;
-  }
-};
+    switch (name) {
+      case "scope":
+        setScope(value);
+        break;
+      case "status":
+        setStatus(value);
+        break;
+      case "search":
+        setSearch(value);
+        break;
+      default:
+        break;
+    }
+  };
   useEffect(() => {
-    const fetchAccounts = async () => {
+    const fetchMembers = async () => {
       try {
         const res = await fetch(
-          `http://localhost:5000/api/accounts?page=${currentPage}&limit=5&search=${search}&status=${status}&role=${role}&sortBy=createdAt&sortOrder=asc`,
+          `http://localhost:5000/api/events?page=${currentPage}&limit=5&search=${search}&status=${status}&scope=${scope}&chapterId=1&sortBy=createdAt&sortOrder=asc`,
           {
             method: "GET",
             headers: {
               "Content-Type": "application/json",
             },
+            credentials: "include",
           }
         );
 
         const result = await res.json();
-        setData(result.data.accounts);
+        console.log(result);
+        setData(result.data.events);
         setTotalPages(result.data.pagination.totalPages);
       } catch (error) {
         console.error("Error fetching accounts:", error);
       }
     };
 
-    fetchAccounts();
+    fetchMembers();
     console.log(search);
-  }, [search, status, role, currentPage]);
+  }, [search, status, scope, currentPage]);
   return (
     <div className={styles.container}>
       <div className={styles.toolsContainer}>
@@ -84,12 +86,11 @@ function Accounts() {
           placeholder="Nhập thông tin tài khoản cần tìm"
         />
         <Dropdown
-       
-          name="role"
-          value={role}
+          name="scope"
+          value={scope}
           onChangeValue={chooseFilter}
-          label={"Phân quyền"}
-          options={roleOptions}
+          label={"Quy mô"}
+          options={scopeOptions}
         />
         <Dropdown
           name="status"
@@ -98,21 +99,33 @@ function Accounts() {
           label={"Trạng thái"}
           options={statusOptions}
         />
-
-        <button className={styles.addBtn} onClick={()=>{setShowAddForm(true)}} ><IoAddCircle size={40}/></button>
+        <button
+          className={styles.addBtn}
+          onClick={() => {
+            setShowAddForm(true);
+          }}
+        >
+          <IoAddCircle size={40} />
+        </button>
       </div>
       <div className={styles.tableWrapper}>
         {" "}
-        <Table name="account" data={data} startIndex={(currentPage - 1) * 5} />
+        <Table name="event" data={data} startIndex={(currentPage - 1) * 5} />
         <Pagination
           currentPage={currentPage}
           totalPages={totalPages}
           setCurrentPage={setCurrentPage}
         />
       </div>
-      {showAddForm ? <><AccountForm setOpen={setShowAddForm}/></>:<></>}
+      {showAddForm ? (
+        <>
+          <AccountForm setOpen={setShowAddForm} />
+        </>
+      ) : (
+        <></>
+      )}
     </div>
   );
 }
 
-export default Accounts;
+export default Events;
