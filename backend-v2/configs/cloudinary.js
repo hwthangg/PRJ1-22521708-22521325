@@ -1,5 +1,4 @@
 import { v2 as cloudinary } from "cloudinary";
-import { CloudinaryStorage } from "multer-storage-cloudinary";
 
 import dotenv from 'dotenv';
 
@@ -11,10 +10,4 @@ cloudinary.config({
   api_secret: process.env.CLOUD_SECRET,
 });
 
-const storage = new CloudinaryStorage({
-  cloudinary: cloudinary,
-  params: {
-    folder: "QLDV"
-  },
-});
 export default cloudinary
