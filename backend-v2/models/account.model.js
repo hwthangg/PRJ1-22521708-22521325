@@ -1,23 +1,23 @@
-import mongoose from 'mongoose';
+import mongoose, {Schema} from 'mongoose';
 import mongoosePaginate from 'mongoose-paginate-v2';
 
-const AccountSchema = new mongoose.Schema({
-  status: { type: String, enum: ['active', 'banned', 'waiting'], default: 'waiting' },
-  email: { type: String, required: true },
-  phone: { type: String, required: true },
-  password: { type: String,  select: false},
+const AccountSchema = new Schema({
+  email: { type: String, default: null },
+  phone: { type: String, default: null },
   avatar: { type: String, default: null },
-  fullname: { type: String, required: true },
-  birthday: { type: Date, required: true },
-  gender: { type: String, enum: ['Nam', 'Nữ'], default: 'Nam' },
-  role: { type: String, enum: ['admin', 'manager', 'member'], default: 'member' },
-  infoMember: { type: mongoose.Schema.Types.ObjectId, ref: 'Member', default: null },
-  managerOf: { type: mongoose.Schema.Types.ObjectId, ref: 'Chapter', default: null }
-}, { timestamps: true });
-
+  fullname: { type: String, default: null },
+  birthday: { type: Date, default: null },
+  gender: { type: String, enum: ['male', 'female'], default: null },
+  password: { type: String, required: true },
+  role: { type: String, enum: ['admin', 'manager', 'member'], default: null },
+  infoMember: { type: Schema.Types.ObjectId, ref: 'Member', default: null },
+  managerOf: { type: Schema.Types.ObjectId, ref: 'Chapter', default: null },
+  status: { type: String, enum: ['active', 'locked', 'pending'], default: null },
+}, {
+  timestamps: true
+});
 AccountSchema.plugin(mongoosePaginate);
 
 const Account = mongoose.model('Account', AccountSchema);
-
 
 export default Account;

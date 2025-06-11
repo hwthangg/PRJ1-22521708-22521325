@@ -1,19 +1,29 @@
-import mongoose from 'mongoose';
+import mongoose, {Schema} from 'mongoose';
 import mongoosePaginate from 'mongoose-paginate-v2';
 
-const EventSchema = new mongoose.Schema({
-  status: { type: String, enum: ['completed', 'active', 'canceled', 'pending'], default: 'pending' },
-  chapterId: { type: mongoose.Schema.Types.ObjectId, ref: 'Chapter', required: true },
-  name: { type: String, required: true },
-  startedAt: { type: Date, required: true },
-  location: { type: String, required: true },
-  requirement: { type: String, required: true },
-  description: { type: String, required: true },
-  tags: [{ type: String, default: null }],
-  scope: { type: String, enum: ['public', 'chapter'], default: 'chapter' },
-  images: [{ type: String, default: null }],
-  likes: { type: Number, default: 0 }
-}, { timestamps: true });
+
+const EventSchema = new Schema({
+  chapterId: { type: Schema.Types.ObjectId, ref: 'Chapter', default: null },
+  name: { type: String, default: null},
+  startedAt: { type: Date, default: null },
+  location: { type: String, default: null },
+  description: { type: String, default: null },
+  tags: [{ type: Schema.Types.ObjectId, ref: 'EventTag', default: null }],
+  scope: {
+    type: String,
+    enum: ['public', 'chapter'],
+    default: null
+  },
+  images: [{ type: Object, default: null }],
+  likes: { type: Number, default: 0 },
+  status: {
+    type: String,
+    enum: ['completed', 'doing', 'pending', 'canceled'],
+    default: null
+  }
+}, {
+  timestamps: true
+});
 
 EventSchema.plugin(mongoosePaginate);
 const Event = mongoose.model('Event', EventSchema);

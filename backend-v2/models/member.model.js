@@ -1,21 +1,24 @@
-import mongoose from 'mongoose';
-import mongoosePaginate from 'mongoose-paginate-v2';
+import mongoose, {Schema} from 'mongoose';
 
-const MemberSchema = new mongoose.Schema({
-  status: { type: String, enum: ['active', 'banned', 'waiting'], default: 'waiting' },
-  chapterId: { type: mongoose.Schema.Types.ObjectId, ref: 'Chapter' },
-  position: { type: String, enum: ['Bí thư', 'Phó Bí thư', 'Ủy viên BCH', 'Đoàn viên'], default: 'Đoàn viên' },
-  cardId:{ type: String, required: true },
-  joinedAt: { type: Date, required: true },
-  address: { type: String, required: true },
-  hometown: { type: String, required: true },
-  ethnicity: { type: String, required: true },
-  religion: { type: String, required: true },
-  eduLevel: { type: String, required: true }
-}, { timestamps: true });
+const MemberSchema = new Schema({
+  chapterId: { type: Schema.Types.ObjectId, ref: 'Chapter', default: null },
+  position: {
+    type: String,
+    enum: ['secretary', 'deputy_secretary', 'committee_member', 'member'],
+    default: null
+  },
+  cardCode: { type: String, default: null },
+  joinedAt: { type: Date, default: null },
+  address: { type: String, default: null },
+  hometown: { type: String, default: null },
+  ethnicity: { type: String, default: null },
+  religion: { type: String, default: null },
+  eduLevel: { type: String, default: null }
+}, {
+  timestamps: true 
+});
 
 
-MemberSchema.plugin(mongoosePaginate);
 const Member = mongoose.model('Member', MemberSchema);
 
 export default Member;

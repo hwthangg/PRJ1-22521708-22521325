@@ -1,13 +1,21 @@
 import mongoose from 'mongoose';
 import mongoosePaginate from 'mongoose-paginate-v2';
 
-const EventRegistrationSchema = new mongoose.Schema({
-  status: { type: String, enum: ['attended', 'registered'], default: 'registered' },
-  eventId: { type: mongoose.Schema.Types.ObjectId, ref: 'Event', required: true },
-  memberId: { type: mongoose.Schema.Types.ObjectId, ref: 'Account', required: true }
-}, { timestamps: true });
+const { Schema, model } = mongoose;
+
+const EventRegistrationSchema = new Schema({
+  accountId: { type: Schema.Types.ObjectId, ref: 'Account', default: null },
+  eventId: { type: Schema.Types.ObjectId, ref: 'Event', default: null },
+  status: {
+    type: String,
+    enum: ['registered', 'attended'],
+    default: null
+  }
+}, {
+  timestamps: true
+});
 
 EventRegistrationSchema.plugin(mongoosePaginate);
-const EventRegistration = mongoose.model('EventRegistration', EventRegistrationSchema);
 
+const EventRegistration = model('EventRegistration', EventRegistrationSchema);
 export default EventRegistration;
