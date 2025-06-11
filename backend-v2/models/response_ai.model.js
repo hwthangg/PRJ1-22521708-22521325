@@ -1,10 +1,9 @@
 import mongoose from 'mongoose';
 
 const ResponseAISchema = new mongoose.Schema({
-  status: { type: String, enum: ['unread', 'read'], default: 'unread' },
-  accountId: { type: mongoose.Schema.Types.ObjectId, ref: 'Account', required: true },
-  requirement: { type: String, required: true },
-  response: { type: String, required: true }
+  accountId: { type: mongoose.Schema.Types.ObjectId, ref: 'Account', default: null },
+  requirement: { type: String, default: null },
+  response: { type: String, default: null }
 }, { timestamps: true });
 
 const ResponseAI = mongoose.model('ResponseAI', ResponseAISchema);
