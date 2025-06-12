@@ -1,397 +1,409 @@
-import React, { useEffect, useState } from "react";
-import {
-  FaIdCard,
-  FaBook,
-  FaHouseUser,
-  FaRegUser,
-  FaUserFriends,
-  FaUsers,
-  FaUserTag,
-} from "react-icons/fa";
-import { LuLock, LuEye, LuEyeOff } from "react-icons/lu";
-import { MdEmail, MdOutlineFamilyRestroom, MdPhone } from "react-icons/md";
-import banner from "../../../assets/banner.png";
-import avatar from "../../../assets/avatar.png";
-import { NavLink, useNavigate } from "react-router-dom";
+import React, { useState } from "react";
 import styles from "./Register.module.css";
+import logo from "../../../assets/logo.webp";
+import { FiEye, FiEyeOff } from "react-icons/fi";
+import { toast } from "react-toastify";
+import { NavLink, useNavigate } from "react-router-dom";
 
-function Register() {
-  const navigate = useNavigate();
-  const [formData, setFormData] = useState({});
-  const [avatarFile, setAvatarFile] = useState();
-  const [togglePassword, setTogglePassword] = useState(true);
-  const [chapters, setChapters] = useState([]);
+export default function Register() {
+  const navigate = useNavigate()
+  const [account, setAccount] = useState({
+    email: "",
+    phone: "",
+    fullname: "",
+    birthday: "",
+    gender: "male",
+    password: "",
+    role: "manager",
+  });
 
-  useEffect(() => {
-    const fetchChapters = async () => {
-      try {
-        const res = await fetch("http://localhost:5000/api/chapters/all", {
-          method: "GET",
-          headers: { "Content-Type": "application/json" },
-        });
-        const data = await res.json();
-        setChapters(data.data.chapters);
-      } catch (error) {
-        console.error("Lỗi khi lấy danh sách chi đoàn:", error);
-      }
-    };
-    fetchChapters();
-  }, []);
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const RenderChapters = () =>
-    chapters.map((item) => (
-      <option key={item._id} value={item._id}>
-        {item.name}
-      </option>
-    ));
-
-  const handleAvatarChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const imageUrl = URL.createObjectURL(file);
-      setFormData((prev) => ({ ...prev, avatar: file }));
-      setAvatarFile(imageUrl);
-    }
-  };
+  const [chapters, setChapters] = useState([
+    { value: "665f2f94aa8e74600f317d7a", name: "chi đoàn 1" },
+  ]);
+  const [roleInfo, setRoleInfo] = useState({
+    managerOf: chapters[0].value,
+    memberOf: "",
+    cardCode: "",
+    position: "member",
+    address: "",
+    hometown: "",
+    ethnicity: "",
+    religion: "",
+    eduLevel: "",
+    joinDate: "",
+  });
+  const [togglePassword, setTogglePassword] = useState(false);
 
   const handleRegister = async () => {
     try {
-      const formDataToSend = new FormData();
-      Object.entries(formData).forEach(([key, value]) => {
-        formDataToSend.append(key, value);
-      });
+      const form = {
+        ...account,
+        ...roleInfo,
+      };
 
-      const res = await fetch("http://localhost:5000/api/auth/register", {
-        method: "POST",
-        body: formDataToSend,
-      });
-      const data = await res.json();
-      console.log("Response:", data);
-      if (data.success) {
-        navigate("/");
+      // Validate từng field
+      {
+        if (!form.fullname.trim()) {
+          return toast.error("Vui lòng nhập họ tên");
+        }
+        if (!form.email.trim()) {
+          return toast.error("Vui lòng nhập email");
+        }
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(form.email)) {
+          return toast.error("Email không hợp lệ");
+        }
+        if (!form.phone.trim()) {
+          return toast.error("Vui lòng nhập số điện thoại");
+        }
+        const phoneRegex = /^(0|\+84)\d{9}$/;
+        if (!phoneRegex.test(form.phone)) {
+          return toast.error("Số điện thoại không hợp lệ");
+        }
+        if (!form.password || form.password.length < 6) {
+          return toast.error("Mật khẩu phải có ít nhất 6 ký tự");
+        }
+        if (!form.birthday) {
+          return toast.error("Vui lòng chọn ngày sinh");
+        }
+        if (!form.gender) {
+          return toast.error("Vui lòng chọn giới tính");
+        }
+
+        // Validate theo role
+        if (form.role === "manager") {
+          if (!form.managerOf.trim()) {
+            return toast.error("Vui lòng chọn chi đoàn quản lý");
+          }
+        } else if (form.role === "member") {
+          if (!form.memberOf.trim()) {
+            return toast.error("Vui lòng chọn chi đoàn tham gia");
+          }
+          if (!form.cardCode.trim()) {
+            return toast.error("Vui lòng nhập mã thẻ đoàn");
+          }
+          if (!form.position.trim()) {
+            return toast.error("Vui lòng chọn chức vụ");
+          }
+          if (!form.address.trim()) {
+            return toast.error("Vui lòng nhập địa chỉ");
+          }
+          if (!form.hometown.trim()) {
+            return toast.error("Vui lòng nhập quê quán");
+          }
+          if (!form.ethnicity.trim()) {
+            return toast.error("Vui lòng nhập dân tộc");
+          }
+          if (!form.religion.trim()) {
+            return toast.error("Vui lòng nhập tôn giáo");
+          }
+          if (!form.eduLevel.trim()) {
+            return toast.error("Vui lòng nhập trình độ học vấn");
+          }
+        }
       }
+
+      // Nếu mọi thứ hợp lệ
+      const res = await fetch(
+        `${import.meta.env.VITE_APP_SERVER_URL}/api/auth/register`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ account, roleInfo }),
+        }
+      );
+      const data = await res.json();
+      console.log(data);
+
+      console.log("Form to submit:", JSON.stringify({ account, roleInfo }));
+      toast.success("Đăng ký thành công");
+      navigate('/')
+      // TODO: gửi form đến server
     } catch (error) {
-      console.error("Error:", error);
+      console.error(error);
+      toast.error("Đã có lỗi xảy ra");
     }
   };
 
-  useEffect(() => {
-    console.log(formData);
-  }, [formData]);
+  const handleAccountChange = (key, value) => {
+    setAccount((prev) => ({ ...prev, [key]: value }));
+  };
+
+  const handleRoleInfoChange = (key, value) => {
+    setRoleInfo((prev) => ({ ...prev, [key]: value }));
+  };
 
   return (
     <div className={styles.container}>
-      <div className={styles.mainContent}>
-        <div className={styles.registerForm}>
-          {/* Avatar Section */}
-          <div className={styles.avatarSection}>
-            <img
-              src={avatarFile || avatar}
-              alt="avatar"
-              className={styles.avatarImage}
-            />
+      <div className={styles.logoContainer}>
+        <img src={logo} />
+        <p>HỆ THỐNG QUẢN LÝ ĐOÀN VIÊN</p>
+      </div>
+      <div className={styles.formContainer}>
+        {/* Tài khoản chung */}
+        <div className={styles.inputContainer}>
+          <label htmlFor="email">Email</label>
+          <input
+            type="email"
+            id="email"
+            placeholder="Nhập email để đăng ký"
+            value={account.email}
+            onChange={(e) => handleAccountChange("email", e.target.value)}
+          />
+        </div>
+        <div className={styles.inputContainer}>
+          <label htmlFor="phone">Số điện thoại</label>
+          <input
+            type="text"
+            id="phone"
+            placeholder="Nhập số điện thoại"
+            value={account.phone}
+            onChange={(e) => handleAccountChange("phone", e.target.value)}
+          />
+        </div>
+        <div className={styles.inputContainer}>
+          <label htmlFor="fullname">Họ và tên</label>
+          <input
+            type="text"
+            id="fullname"
+            placeholder="Nhập họ và tên"
+            value={account.fullname}
+            onChange={(e) => handleAccountChange("fullname", e.target.value)}
+          />
+        </div>
+        <div className={styles.inputGroup}>
+          <div className={styles.inputContainer}>
+            <label htmlFor="birthday">Ngày sinh</label>
             <input
-              type="file"
-              accept="image/*"
-              id="avatar"
-              name="avatar"
-              onChange={handleAvatarChange}
-              className={styles.avatarInput}
+              type="date"
+              id="birthday"
+              value={account.birthday}
+              onChange={(e) => handleAccountChange("birthday", e.target.value)}
             />
-            <div className={styles.avatarButton}>
-              <label htmlFor="avatar" style={{ cursor: "pointer" }}>
-                Chọn ảnh đại diện
-              </label>
+          </div>
+          <div className={styles.inputContainer}>
+            <label htmlFor="gender">Giới tính</label>
+            <div className={styles.inputSelect}>
+              <select
+                id="gender"
+                value={account.gender}
+                onChange={(e) => handleAccountChange("gender", e.target.value)}
+              >
+                <option value="male">Nam</option>
+                <option value="female">Nữ</option>
+              </select>
             </div>
           </div>
-
-          {/* Email Field */}
-          <p className={styles.inputLabel}>Email</p>
-          <div className={styles.inputContainer}>
-            <MdEmail size={30} color="#0d47a1" />
-            <input
-              type="email"
-              placeholder="Nhập email đăng nhập"
-              name="email"
-              value={formData.email || ''}
-              onChange={handleChange}
-              className={styles.inputField}
-            />
+        </div>
+        <div className={styles.inputContainer} style={{ position: "relative" }}>
+          <label htmlFor="password">Mật khẩu</label>
+          <input
+            type={togglePassword ? "text" : "password"}
+            id="password"
+            placeholder="Nhập mật khẩu"
+            value={account.password}
+            onChange={(e) => handleAccountChange("password", e.target.value)}
+            style={{ paddingRight: 60 }}
+          />
+          <div
+            onClick={() => setTogglePassword((prev) => !prev)}
+            style={{
+              position: "absolute",
+              right: 20,
+              bottom: 12,
+              cursor: "pointer",
+            }}
+          >
+            {togglePassword ? (
+              <FiEyeOff color="#3c78d8" size={20} />
+            ) : (
+              <FiEye color="#3c78d8" size={20} />
+            )}
           </div>
+        </div>
 
-          {/* Phone Field */}
-          <p className={styles.inputLabel}>Số điện thoại</p>
-          <div className={styles.inputContainer}>
-            <MdPhone size={30} color="#0d47a1" />
-            <input
-              type="tel"
-              placeholder="Nhập số điện thoại"
-              name="phone"
-              value={formData.phone || ''}
-              onChange={handleChange}
-              className={styles.inputField}
-            />
-          </div>
-
-          {/* Fullname Field */}
-          <p className={styles.inputLabel}>Họ và tên</p>
-          <div className={styles.inputContainer}>
-            <FaRegUser size={25} color="#0d47a1" />
-            <input
-              type="text"
-              placeholder="Nhập họ và tên"
-              name="fullname"
-              value={formData.fullname || ''}
-              onChange={handleChange}
-              className={styles.inputField}
-            />
-          </div>
-
-          {/* Birthday and Gender Row */}
-          <div className={styles.rowContainer}>
-            {/* Birthday Field */}
-            <div className={styles.column}>
-              <p className={styles.inputLabel}>Ngày sinh</p>
-              <div className={styles.inputContainer}>
-                <input
-                  type="date"
-                  name="birthday"
-                  value={formData.birthday || ''}
-                  onChange={handleChange}
-                  className={styles.inputField}
-                />
-              </div>
-            </div>
-
-            {/* Gender Field */}
-            <div className={styles.column}>
-              <p className={styles.inputLabel}>Giới tính</p>
-              <div className={styles.inputContainer}>
-                <select
-                  name="gender"
-                  value={formData.gender || ''}
-                  onChange={handleChange}
-                  className={styles.selectField}
-                >
-                  <option value="" disabled>Chọn giới tính</option>
-                  <option value="male">Nam</option>
-                  <option value="female">Nữ</option>
-                </select>
-              </div>
-            </div>
-          </div>
-
-          {/* Password Field */}
-          <p className={styles.inputLabel}>Mật khẩu</p>
-          <div className={styles.inputContainer}>
-            <LuLock size={30} color="#0d47a1" />
-            <input
-              placeholder="Nhập mật khẩu của bạn"
-              type={togglePassword ? "password" : "text"}
-              name="password"
-              value={formData.password || ''}
-              onChange={handleChange}
-              className={styles.inputField}
-            />
-            <div 
-              onClick={() => setTogglePassword((prev) => !prev)}
-              className={styles.passwordToggle}
-            >
-              {togglePassword ? (
-                <LuEye size={25} color="#0d47a1" />
-              ) : (
-                <LuEyeOff size={25} color="#0d47a1" />
-              )}
-            </div>
-          </div>
-
-          {/* Role Field */}
-          <p className={styles.inputLabel}>Vai trò</p>
-          <div className={styles.inputContainer}>
+        {/* Vai trò */}
+        <div className={styles.inputContainer}>
+          <label htmlFor="role">Chọn vai trò</label>
+          <div className={styles.inputSelect}>
             <select
-              name="role"
-              value={formData.role || ''}
-              onChange={handleChange}
-              className={styles.selectField}
+              id="role"
+              value={account.role}
+              onChange={(e) => handleAccountChange("role", e.target.value)}
             >
-              <option value="" disabled>Chọn vai trò</option>
+              <option value="manager">Quản lý chi đoàn</option>
               <option value="member">Đoàn viên</option>
-              <option value="manager">Quản lý</option>
             </select>
           </div>
-
-          {/* Member-specific fields */}
-          {formData.role === "member" ? (
-            <>
-              <p className={styles.inputLabel}>Chi đoàn sinh hoạt</p>
-              <div className={styles.inputContainer}>
-                <select
-                  name="chapterId"
-                  value={formData.chapterId || ''}
-                  onChange={handleChange}
-                  className={styles.selectField}
-                >
-                  <option value="" disabled>Chọn chi đoàn</option>
-                  <RenderChapters />
-                </select>
-              </div>
-
-              <p className={styles.inputLabel}>Số thẻ đoàn viên</p>
-              <div className={styles.inputContainer}>
-                <FaIdCard size={25} color="#0d47a1" />
-                <input
-                  type="text"
-                  placeholder="Nhập số thẻ đoàn viên"
-                  name="cardId"
-                  value={formData.cardId || ''}
-                  onChange={handleChange}
-                  className={styles.inputField}
-                />
-              </div>
-
-              <div className={styles.rowContainer}>
-                <div className={styles.column}>
-                  <p className={styles.inputLabel}>Chức vụ</p>
-                  <div className={styles.inputContainer}>
-                    <FaUserTag size={25} color="#0d47a1" />
-                    <select
-                      name="position"
-                      value={formData.position || ''}
-                      onChange={handleChange}
-                      className={styles.selectField}
-                    >
-                      <option value="" disabled>Chọn chức vụ</option>
-                      <option value="Bí thư">Bí thư</option>
-                      <option value="Phó Bí thư">Phó Bí thư</option>
-                      <option value="Ủy viên BCH">Ủy viên BCH</option>
-                      <option value="Đoàn viên">Đoàn viên</option>
-                    </select>
-                  </div>
-                </div>
-
-                <div className={styles.column}>
-                  <p className={styles.inputLabel}>Ngày vào đoàn</p>
-                  <div className={styles.inputContainer}>
-                    <input
-                      type="date"
-                      name="joinedAt"
-                      value={formData.joinedAt || ''}
-                      onChange={handleChange}
-                      className={styles.inputField}
-                    />
-                  </div>
-                </div>
-              </div>
-
-              <p className={styles.inputLabel}>Địa chỉ</p>
-              <div className={styles.inputContainer}>
-                <FaHouseUser size={25} color="#0d47a1" />
-                <input
-                  type="text"
-                  placeholder="Nhập địa chỉ"
-                  name="address"
-                  value={formData.address || ''}
-                  onChange={handleChange}
-                  className={styles.inputField}
-                />
-              </div>
-
-              <p className={styles.inputLabel}>Quê quán</p>
-              <div className={styles.inputContainer}>
-                <FaUsers size={25} color="#0d47a1" />
-                <input
-                  type="text"
-                  placeholder="Nhập quê quán"
-                  name="hometown"
-                  value={formData.hometown || ''}
-                  onChange={handleChange}
-                  className={styles.inputField}
-                />
-              </div>
-
-              <p className={styles.inputLabel}>Dân tộc</p>
-              <div className={styles.inputContainer}>
-                <FaUserFriends size={25} color="#0d47a1" />
-                <input
-                  type="text"
-                  placeholder="Nhập dân tộc"
-                  name="ethnicity"
-                  value={formData.ethnicity || ''}
-                  onChange={handleChange}
-                  className={styles.inputField}
-                />
-              </div>
-
-              <p className={styles.inputLabel}>Tôn giáo</p>
-              <div className={styles.inputContainer}>
-                <MdOutlineFamilyRestroom size={25} color="#0d47a1" />
-                <input
-                  type="text"
-                  placeholder="Nhập tôn giáo"
-                  name="religion"
-                  value={formData.religion || ''}
-                  onChange={handleChange}
-                  className={styles.inputField}
-                />
-              </div>
-
-              <p className={styles.inputLabel}>Trình độ học vấn</p>
-              <div className={styles.inputContainer}>
-                <FaBook size={25} color="#0d47a1" />
-                <input
-                  type="text"
-                  placeholder="Nhập trình độ học vấn"
-                  name="eduLevel"
-                  value={formData.eduLevel || ''}
-                  onChange={handleChange}
-                  className={styles.inputField}
-                />
-              </div>
-            </>
-          ) : (
-            <>
-              <p className={styles.inputLabel}>Chi đoàn quản lý</p>
-              <div className={styles.inputContainer}>
-                <select
-                  name="chapterId"
-                  value={formData.chapterId || ''}
-                  onChange={handleChange}
-                  className={styles.selectField}
-                >
-                  <option value="" disabled>Chọn chi đoàn</option>
-                  <RenderChapters />
-                </select>
-              </div>
-            </>
-          )}
-
-          {/* Register Button */}
-          <button
-            onClick={handleRegister}
-            type="submit"
-            className={styles.registerButton}
-          >
-            Đăng ký
-          </button>
-
-          {/* Login Link */}
-          <NavLink to="/" className={styles.loginLink}>
-            Đã có tài khoản? <ins>Đăng nhập ngay</ins>
-          </NavLink>
         </div>
-      </div>
 
-      {/* Banner Section */}
-      <div className={styles.bannerContainer}>
-        <img src={banner} alt="Banner" className={styles.bannerImage} />
+        {/* Quản lý chi đoàn */}
+        {account.role === "manager" && (
+          <div className={styles.inputContainer}>
+            <label htmlFor="managerOf">Chi đoàn quản lý</label>
+            <div className={styles.inputSelect}>
+              <select
+                id="managerOf"
+                value={roleInfo.managerOf}
+                onChange={(e) =>
+                  handleRoleInfoChange("managerOf", e.target.value)
+                }
+              >
+                {chapters.map((item, index) => (
+                  <option key={index} value={item.value}>
+                    {item.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+        )}
+
+        {/* Thông tin đoàn viên */}
+        {account.role === "member" && (
+          <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+            <div className={styles.inputContainer}>
+              <label htmlFor="memberOf">Chi đoàn sinh hoạt</label>
+              <div className={styles.inputSelect}>
+                <select
+                  id="memberOf"
+                  value={roleInfo.memberOf}
+                  onChange={(e) =>
+                    handleRoleInfoChange("memberOf", e.target.value)
+                  }
+                >
+                   {chapters.map((item, index) => (
+                  <option key={index} value={item.value}>
+                    {item.name}
+                  </option>
+                ))}
+                </select>
+              </div>
+            </div>
+
+            <div className={styles.inputGroup}>
+              <div className={styles.inputContainer}>
+                <label htmlFor="cardCode">Số thẻ đoàn</label>
+                <input
+                  type="text"
+                  id="cardCode"
+                  placeholder="Nhập số thẻ đoàn"
+                  value={roleInfo.cardCode}
+                  onChange={(e) =>
+                    handleRoleInfoChange("cardCode", e.target.value)
+                  }
+                />
+              </div>
+              <div className={styles.inputContainer}>
+                <label htmlFor="joinDate">Ngày vào đoàn</label>
+                <input
+                  type="date"
+                  id="joinDate"
+                  value={roleInfo.joinDate}
+                  onChange={(e) =>
+                    handleRoleInfoChange("joinDate", e.target.value)
+                  }
+                />
+              </div>
+            </div>
+
+            <div className={styles.inputContainer}>
+              <label htmlFor="position">Chức vụ</label>
+              <div className={styles.inputSelect}>
+                <select
+                  id="position"
+                  value={roleInfo.position}
+                  onChange={(e) =>
+                    handleRoleInfoChange("position", e.target.value)
+                  }
+                >
+                  <option value="secretary">Bí thư</option>
+                  <option value="deputy_secretary">Phó Bí thư</option>
+                  <option value="committee_member">Ủy viên BCH</option>
+                  <option value="member">Đoàn viên</option>
+                </select>
+              </div>
+            </div>
+
+            <div className={styles.inputContainer}>
+              <label htmlFor="address">Địa chỉ</label>
+              <input
+                type="text"
+                id="address"
+                placeholder="Nhập địa chỉ"
+                value={roleInfo.address}
+                onChange={(e) =>
+                  handleRoleInfoChange("address", e.target.value)
+                }
+              />
+            </div>
+
+            <div className={styles.inputContainer}>
+              <label htmlFor="hometown">Quê quán</label>
+              <input
+                type="text"
+                id="hometown"
+                placeholder="Nhập quê quán"
+                value={roleInfo.hometown}
+                onChange={(e) =>
+                  handleRoleInfoChange("hometown", e.target.value)
+                }
+              />
+            </div>
+
+            <div className={styles.inputGroup}>
+              <div className={styles.inputContainer}>
+                <label htmlFor="ethnicity">Dân tộc</label>
+                <input
+                  type="text"
+                  id="ethnicity"
+                  placeholder="Nhập dân tộc"
+                  value={roleInfo.ethnicity}
+                  onChange={(e) =>
+                    handleRoleInfoChange("ethnicity", e.target.value)
+                  }
+                />
+              </div>
+              <div className={styles.inputContainer}>
+                <label htmlFor="religion">Tôn giáo</label>
+                <input
+                  type="text"
+                  id="religion"
+                  placeholder="Nhập tôn giáo"
+                  value={roleInfo.religion}
+                  onChange={(e) =>
+                    handleRoleInfoChange("religion", e.target.value)
+                  }
+                />
+              </div>
+            </div>
+
+            <div className={styles.inputContainer}>
+              <label htmlFor="eduLevel">Trình độ học vấn</label>
+              <input
+                type="text"
+                id="eduLevel"
+                placeholder="Nhập trình độ học vấn"
+                value={roleInfo.eduLevel}
+                onChange={(e) =>
+                  handleRoleInfoChange("eduLevel", e.target.value)
+                }
+              />
+            </div>
+          </div>
+        )}
+
+        <div className={styles.buttonContainer}>
+          <button onClick={handleRegister}>Đăng ký</button>
+        </div>
+
+        <div className={styles.hyperlink}>
+          <p>Bạn đã có tài khoản.</p>
+          <NavLink to="/">Đăng nhập ngay</NavLink>
+        </div>
       </div>
     </div>
   );
 }
-
-export default Register;

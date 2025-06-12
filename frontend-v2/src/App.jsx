@@ -30,26 +30,6 @@ function App() {
              <Route path="statistic" element={<Statistic />} />
           </Route>
           <>
-            {/* <Route path="/admin" element={<Layout />}>
-      <Route path="accounts" element={<Accounts />} />
-      <Route path="chapters" element={<Chapters />} />
-      <Route path="request-accounts" element={<RequestAccounts />} />
-      <Route path="chat" element={<Chat />} />
-    </Route>
-
-    <Route path="/manager" element={<Layout />}>
-      <Route path="news" element={<News />} />
-      <Route path="members" element={<Members />} />
-      <Route path="request-members" element={<RequestMembers />} />
-      <Route path="events" element={<Events />} />
-      <Route path="events/:eventId" element={<EventDetails />} />
-      <Route path="documents" element={<Documents />} />
-      <Route path="documents/:documentId" element={<DocumentDetails />} />
-      <Route path="statistic" element={<Statistic />} />
-      <Route path="chat" element={<ChatManager />} />
-    </Route>
-
-    <Route path="/chat" element={<Chate />} /> */}
           </>
         </Routes>
       </BrowserRouter>
