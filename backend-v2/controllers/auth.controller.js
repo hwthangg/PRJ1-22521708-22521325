@@ -2,7 +2,7 @@ import { transporter } from "../configs/mailer.js";
 import Account from "../models/account.model.js";
 import Member from "../models/member.model.js";
 import { accountFields, memberFields } from "../utils/field.js";
-import { hashPassword } from "../utils/hash.js";
+import { comparePassword, hashPassword } from "../utils/hash.js";
 import { regexValidators } from "../utils/regex.js";
 import { sendResponse } from "../utils/response.js";
 import { signToken, verifyToken } from "../utils/token.js";
@@ -15,10 +15,9 @@ const AuthController = () => {
 
       const { token } = req.query
       const form = req.body
-
+      console.log(form)
       if (!token) {
         const { account, roleInfo } = form
-        
 
         //checkDuplicatedAccount
         console.log(account.password)
@@ -59,7 +58,7 @@ const AuthController = () => {
         }
 
         if (account.role == 'manager') {
-          const duplicatedManagerOf = await Account.findOne({ managerOf: roleInfo.chapterId })
+          const duplicatedManagerOf = await Account.findOne({ managerOf: roleInfo.managerOf })
           if (duplicatedManagerOf) {
             return sendResponse(res, 400, 'Chi đoàn này đã có người quản lý.')
           }
@@ -70,7 +69,7 @@ const AuthController = () => {
         const confirm = signToken(form)
         await transporter.sendMail({
           from: '"Ứng dụng QLDV" <your_email@gmail.com>',
-          to: 'hwthang.2510@gmail.com',
+          to: account.email,
           subject: 'Xác nhận tài khoản QLDV',
           html: `
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; border: 1px solid #ddd; padding: 20px; border-radius: 8px;">
@@ -97,129 +96,57 @@ const AuthController = () => {
 
       const decode = verifyToken(token)
       const { account, roleInfo } = decode
-console.log(account)
+      console.log(account)
       const accountdb = new Account(account)
-      if(account.role == 'member'){
+      if (account.role == 'member') {
         var memberdb = new Member(roleInfo)
-      
+
       }
-      if(account.role == 'manager'){
-        accountdb.managerOf = roleInfo.chapterId
+      if (account.role == 'manager') {
+        accountdb.managerOf = roleInfo.managerOf
       }
 
       accountdb.status = 'pending'
-     
+
       console.log(accountdb.password)
       await accountdb.save()
- await memberdb.save()
+      if (memberdb) { await memberdb.save() }
       return sendResponse(res, 200, 'Đăng ký tài khoản thành công. Chờ phê duyệt')
 
     } catch (error) {
       console.log(error)
       return sendResponse(res, 500, 'Lỗi đăng ký. Hãy thử lại')
     }
-    // try {
-    //   const input = req.body;
-    //   const file = req.file;
 
-    //   // Kiểm tra các trường bắt buộc
-    //   if (
-    //     !input.email ||
-    //     !input.phone ||
-    //     !input.fullname ||
-    //     !input.birthday ||
-    //     !input.gender ||
-    //     !input.role ||
-    //     !input.password
-    //   ) {
-    //     return response(res, 400, "MISSING_ACCOUNT_DATA");
-    //   }
-
-    //   // Kiểm tra email đã tồn tại hay chưa
-    //   const existingAccount = await Account.findOne({ email: input.email });
-    //   if (existingAccount) {
-    //     console.warn(`${logPrefix} Validation failed: Email has registered`);
-    //     return response(res, 400, "INVALID_ACCOUNT_DATA");
-    //   }
-
-    //   // Tạo một tài khoản mới
-    //   const newAccount = new Account({
-    //     email: input.email,
-    //     phone: input.phone,
-    //     fullname: input.fullname,
-    //     birthday: new Date(input.birthday),
-    //     gender: input.gender,
-    //     role: input.role,
-    //     password: await bcrypt.hash(input.password, 10), // Mã hóa mật khẩu
-    //   });
-
-    //   // Gán avatar nếu người dùng có upload
-    //   if (file) {
-    //     newAccount.avatar = file.path;
-    //   }
-
-    //   // Nếu tài khoản là member -> tạo đối tượng member riêng
-    //   if (input.role === "member") {
-    //     if (
-    //       !input.chapterId || !input.cardId || !input.position ||
-    //       !input.joinedAt || !input.address || !input.hometown ||
-    //       !input.ethnicity || !input.religion || !input.eduLevel
-    //     ) {
-    //       return response(res, 400, "MISSING_MEMBER_DATA");
-    //     }
-
-    //     // Kiểm tra trùng mã thẻ
-    //     const existingMember = await Member.findOne({ cardId: input.cardId });
-    //     if (existingMember) {
-    //       return response(res, 400, "INVALID_MEMBER_DATA");
-    //     }
-
-    //     // Tạo member mới
-    //     const newMember = new Member({
-    //       chapterId: input.chapterId,
-    //       cardId: input.cardId,
-    //       position: input.position,
-    //       joinedAt: input.joinedAt,
-    //       address: input.address,
-    //       hometown: input.hometown,
-    //       ethnicity: input.ethnicity,
-    //       religion: input.religion,
-    //       eduLevel: input.eduLevel,
-    //     });
-
-    //     await newMember.save();
-    //     newAccount.infoMember = newMember._id; // Gắn member vào account
-    //   }
-
-    //   // Nếu tài khoản là manager -> kiểm tra chi đoàn đã có người quản lý chưa
-    //   if (input.role === "manager") {
-    //     if (!input.chapterId) {
-    //       return response(res, 400, "MISSING_MANAGER_DATA");
-    //     }
-
-    //     const existingManager = await Account.findOne({ managerOf: input.chapterId });
-    //     if (existingManager) {
-    //       return response(res, 400, "INVALID_MANAGER_DATA");
-    //     }
-
-    //     newAccount.managerOf = input.chapterId;
-    //   }
-
-    //   newAccount.status = "waiting"; // Tài khoản tạo mới có trạng thái mặc định là "waiting"
-    //   await newAccount.save();
-
-    //   // Truy vấn lại để lấy đầy đủ thông tin
-    //   const savedAccount = await Account.findById(newAccount._id)
-    //     .populate("infoMember")
-    //     .populate("managerOf");
-
-    //   return response(res, 201, "ACCOUNT_CREATED", savedAccount);
-    // } catch (error) {
-    //   console.error(`${logPrefix} Error:`, error);
-    //   return response(res, 500, "SERVER_ERROR");
-    // }
   };
 
+  const login = async (req, res) => {
+    try {
+      const { email, password } = req.body
+
+      const account = await Account.findOne({ email: email })
+      if (!account) {
+        return sendResponse(res, 404, 'Lỗi đăng nhập. Không tìm thấy tài khoản')
+      }
+
+      if (!await comparePassword(password, account.password)) {
+        return sendResponse(res, 404, 'Lỗi đăng nhập. Mật khẩu không đúng')
+      }
+
+      if (account.status != 'active') {
+        return sendResponse(res, 403, 'Bạn chưa có quyền truy cập')
+      }
+
+      const token = signToken({accountId: account._id})
+
+      return sendResponse(res, 200, 'Đăng nhập thành công', token)
+
+
+    } catch (error) {
+      console.log(error)
+      return sendResponse(res, 500, 'Lỗi đăng ký. Hãy thử lại')
+    }
+  }
   // // Hàm đăng nhập
   // const login = async (req, res) => {
   //   const logPrefix = "[AuthController][login]";
@@ -374,7 +301,7 @@ console.log(account)
 
   return {
     register,
-    // login,
+    login,
     // logout,
     // getProfile,
     // updateProfile,

@@ -1,7 +1,7 @@
 import mongoose, {Schema} from 'mongoose';
 
 const MemberSchema = new Schema({
-  chapterId: { type: Schema.Types.ObjectId, ref: 'Chapter', default: null },
+  memberOf: { type: Schema.Types.ObjectId, ref: 'Chapter', default: null },
   position: {
     type: String,
     enum: ['secretary', 'deputy_secretary', 'committee_member', 'member'],

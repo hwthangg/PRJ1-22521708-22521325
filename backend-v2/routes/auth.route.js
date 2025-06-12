@@ -4,7 +4,7 @@ import AuthController from '../controllers/auth.controller.js';
 
 const AuthRoutes = express.Router()
 
-// AuthRoutes.post('/login', AuthController.login)
+AuthRoutes.post('/login', AuthController.login)
 AuthRoutes.post('/register', AuthController.register)
 AuthRoutes.get('/confirm-register', AuthController.register)
 // AuthRoutes.delete('/', AuthController.logout)
