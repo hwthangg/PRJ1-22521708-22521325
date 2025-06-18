@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import styles from "./ChatBot.module.css";
-
-const OPENAI_API_KEY = "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"; // ⚠️ Thay bằng API key thực
+; // ⚠️ Thay bằng API key thực
 
 export default function ChatBot() {
   const [open, setOpen] = useState(false);
@@ -26,7 +25,7 @@ export default function ChatBot() {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${OPENAI_API_KEY}`,
+          Authorization: `Bearer ${import.meta.env.VITE_APP_OPENAI_API_KEY}`,
         },
         body: JSON.stringify({
           model: "gpt-3.5-turbo",
@@ -60,7 +59,7 @@ export default function ChatBot() {
       {open && (
         <div className={styles.chatBox}>
           <div className={styles.header}>
-            <span>ChatBot</span>
+            <span>QLĐV</span>
             <button onClick={() => setOpen(false)}>×</button>
           </div>
 
