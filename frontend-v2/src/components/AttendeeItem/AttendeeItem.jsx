@@ -31,7 +31,7 @@ export default function AttendeeItem({ item }) {
   return (
     <div className={styles.container}>
       <img
-        src={item?.avatar.path || avatar}
+        src={item?.avatar?.path || avatar}
         alt="avatar"
         className={styles.avatar}
       />

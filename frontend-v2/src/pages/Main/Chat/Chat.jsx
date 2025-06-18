@@ -145,14 +145,15 @@ export default function Chat() {
                 gap: "15px",
                 backgroundColor: "#073763",
                 color: "white",
+                alignItems:'center'
               }}
             >
               <img
                 src={currentContact.avatar?.path || avatar}
-                style={{ width: "60px", aspectRatio: "1/1" }}
+                style={{ width: "60px", aspectRatio: "1/1", borderRadius:100 }}
               />
               <div>
-                <p>{currentContact.fullname}</p>
+                <p style={{fontWeight:'bold'}}>{currentContact.fullname}</p>
                 <p>{currentContact.managerOf?.name}</p>
               </div>
             </div>
@@ -189,7 +190,7 @@ export default function Chat() {
                   display: "flex",
                   alignItems: "center",
                   borderRadius: 10,
-                  padding: "0 10px",
+                  padding: "10px 10px",
                 }}
               >
                 <input
@@ -198,6 +199,7 @@ export default function Chat() {
                     border: "none",
                     outline: "none",
                     height: 30,
+                    caretColor:'black'
                   }}
                   type="text"
                   placeholder="Nhập nội dung tin nhắn"
@@ -320,7 +322,7 @@ function RenderChat({ me, item, partner }) {
       {!isMe && (
         <img
           src={partner.avatar?.path || avatar}
-          style={{ width: "48px", aspectRatio: "1/1" }}
+          style={{ width: "48px", aspectRatio: "1/1", borderRadius:100 }}
         />
       )}
       <div
@@ -336,7 +338,7 @@ function RenderChat({ me, item, partner }) {
       {isMe && (
         <img
           src={me.avatar?.path || avatar}
-          style={{ width: "48px", aspectRatio: "1/1" }}
+          style={{ width: "48px", aspectRatio: "1/1", borderRadius:100  }}
         />
       )}
     </div>
@@ -349,20 +351,21 @@ function ContactItem({ item, onClick }) {
     <div
       onClick={onClick}
       style={{
-        borderBottom: "1px solid",
+        borderBottom: "1px solid #999",
         display: "flex",
         gap: "15px",
         padding: "10px",
         cursor: "pointer",
+        alignItems:'center'
       }}
     >
       <img
         src={item.avatar?.path || avatar}
-        style={{ width: "60px", aspectRatio: "1/1" }}
+        style={{ width: "60px", aspectRatio: "1/1", borderRadius:100 }}
       />
-      <div>
-        <p>{item.fullname}</p>
-        <p>{item.managerOf?.name || item.email}</p>
+      <div style={{color:'var(--dark-blue)'}}>
+        <p style={{fontWeight:'bold'}}>{item.fullname}</p>
+        <p>{item.managerOf?.name}</p>
       </div>
     </div>
   );

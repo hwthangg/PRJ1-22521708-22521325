@@ -47,10 +47,24 @@ function UserSection({ user }) {
       toast.info(text);
     };
 
+    const handleNotification = (text)=>{
+      const newNotification = {
+        id: Date.now(), // ID tạm thời
+        text,
+        type: "info",
+        status: "unread",
+      };
+      setNotifications((prev) => [newNotification, ...prev]);
+      setHasBadge((prev) => prev + 1);
+      toast.info(text);
+    }
+
     socket.on("admin_req", handleAdminReq);
+    socket.on("notifications", handleNotification)
 
     return () => {
       socket.off("admin_req", handleAdminReq);
+        socket.off("notifications", handleNotification)
     };
   }, [socketReady]);
 
@@ -72,7 +86,7 @@ function UserSection({ user }) {
         setHasBadge(data.data.filter((item) => item.status === "unread").length);
       } catch (error) {
         console.log(error);
-        toast.error("Có lỗi xảy ra khi lấy thông báo");
+       
       }
     };
 
@@ -85,16 +99,7 @@ function UserSection({ user }) {
   };
 
   const handleClickNotification = async (item) => {
-    try {
-      if (item.type === "event") {
-        navigate(`/manager/events/${item.id}`);
-      } else {
-        navigate(`/${user.role}/accounts/${item.id}`);
-      }
-    } catch (error) {
-      toast.error("Có lỗi xảy ra");
-      console.log(error);
-    }
+    
   };
 
   const readNotification = async () => {
@@ -113,7 +118,6 @@ function UserSection({ user }) {
       setHasBadge(0)
     } catch (error) {
       console.log(error);
-      toast.error("Có lỗi xảy ra khi đánh dấu thông báo");
     }
   };
 

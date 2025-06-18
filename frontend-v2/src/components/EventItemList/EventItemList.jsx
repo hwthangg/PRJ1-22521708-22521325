@@ -4,6 +4,7 @@ import { MdComment } from "react-icons/md";
 import avatar from "../../assets/avatar.png";
 import { formatVietnamTime } from "../../../utils";
 import styles from "./EventItemList.module.css";
+import { toast } from "react-toastify";
 
 const EventItemList = ({ event }) => {
   const [like, setLike] = useState(false);
@@ -11,6 +12,7 @@ const EventItemList = ({ event }) => {
   const [comments, setComments] = useState([]);
   const [comment, setComment] = useState("");
   const [user, setUser] = useState({});
+  const [flag, setFlag] = useState(false)
 
   // Xử lý yêu thích
   const handleLike = async (eventId) => {
@@ -46,6 +48,7 @@ const EventItemList = ({ event }) => {
   // Xử lý gửi bình luận
   const handleComment = async () => {
     try {
+      
       console.log("Gửi bình luận");
       if (!comment.trim()) return;
       // TODO: Gửi bình luận lên server tại đây
@@ -60,14 +63,6 @@ const EventItemList = ({ event }) => {
           body: JSON.stringify({ eventId: event._id, text: comment }),
         }
       );
-      const newComment = {
-        accountId: {
-          fullname: user.fullname,
-          avatar: user.avatar.path,
-        },
-        comment: comment.trim(),
-      };
-      setComments((prev) => [newComment, ...prev]);
       setComment("");
     } catch (error) {
       console.error("Lỗi khi gửi bình luận:", error);
@@ -90,6 +85,15 @@ const EventItemList = ({ event }) => {
           },
         }
       );
+
+      const result = await res.json()
+
+      if(result.success){
+        toast.success('Đăng ký sự kiện thành công')
+      }
+      else{
+        toast.info('Bạn đã đăng ký sự kiện này')
+      }
     } catch (error) {
       console.error("Lỗi khi đăng ký:", error);
     }
@@ -137,8 +141,8 @@ const EventItemList = ({ event }) => {
         setComments(
           data.data.map((item) => ({
             accountId: {
-              fullname: item.accountId.fullname,
-              avatar: item.accountId.avatar.path,
+              fullname: item.accountId?.fullname,
+              avatar: item.accountId?.avatar?.path,
             },
             comment: item.text,
           }))
@@ -171,7 +175,7 @@ const EventItemList = ({ event }) => {
 
     fetchIsLiked();
     fetchComments();
-  }, []);
+  }, [comment]);
   return (
     <div className={styles.container}>
       <div className={styles.header}>

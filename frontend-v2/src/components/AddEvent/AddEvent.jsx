@@ -177,12 +177,14 @@ export default function AddEvent({ open }) {
             <label htmlFor="description">Mô tả</label>
             <textarea
               id="description"
-              rows={3}
+              rows={7}
               value={data.description}
               onChange={handleChange}
               placeholder="Nhập mô tả sự kiện"
               style={{
                 resize: "none",
+                outline:'none',
+                caretColor:'black',
                 padding: "10px",
                 borderRadius: "10px",
                 border: "1px solid var(--normal-blue)",

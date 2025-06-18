@@ -88,7 +88,7 @@ export default function Documents() {
       clearTimeout(timeout);
       controller.abort();
     };
-  }, [search, currentPage, scope, status]);
+  }, [search, currentPage, scope, status, openAdd, openDetails]);
 
   return (
     <div className={styles.container}>
@@ -168,7 +168,7 @@ export default function Documents() {
                 <div className={styles.cell} style={{ flex: fields[1].flex }}>
                   <p>{item.name}</p>
                 </div>
-                <div className={styles.cell} style={{ flex: fields[2].flex }}>
+                <div className={styles.cell} style={{ flex: fields[2].flex, textAlign: "center" }}>
                   <p>{item.docCode}</p>
                 </div>
                 <div className={styles.cell} style={{ flex: fields[3].flex }}>
@@ -203,7 +203,7 @@ export default function Documents() {
           totalPages={totalPages}
         />
       </div>
-      {openDetails && <DocumentDetails id={id} open={setOpenDetails} />}
+      {openDetails && <DocumentDetails id={id} open={setOpenDetails} canEdit={true}/>}
       {openAdd && <AddDocument open={setOpenAdd} />}
     </div>
   );

@@ -1,5 +1,6 @@
 import { transporter } from "../configs/mailer.js";
 import Account from "../models/account.model.js";
+import Chapter from "../models/chapter.model.js";
 import Member from "../models/member.model.js";
 import Notification from "../models/notification.model.js";
 import { accountFields, memberFields } from "../utils/field.js";
@@ -141,12 +142,8 @@ const AuthController = () => {
       
       
       
-
-      return sendResponse(
-        res,
-        200,
-        "Đăng ký tài khoản thành công. Chờ phê duyệt"
-      );
+      
+     res.redirect(301, 'http://localhost:5173/'); // redirect vĩnh viễn
     } catch (error) {
       console.log(error);
       return sendResponse(res, 500, "Lỗi đăng ký. Hãy thử lại");
@@ -158,7 +155,7 @@ const AuthController = () => {
        
       const { email, password } = req.body;
 
-      const account = await Account.findOne({ email: email });
+      const account = await Account.findOne({ email: email }).populate('infoMember');
       if (!account) {
         return sendResponse(
           res,
@@ -170,8 +167,9 @@ const AuthController = () => {
       if (!(await comparePassword(password, account.password))) {
         return sendResponse(res, 404, "Lỗi đăng nhập. Mật khẩu không đúng");
       }
-
-      if (account.status != "active") {
+      const chapterId = account.managerOf || account.infoMember?.memberOf || null
+      const chapter = await Chapter.findById(chapterId)
+      if (account.status != "active" || (chapter && chapter.status !='active') ) {
         return sendResponse(res, 403, "Bạn chưa có quyền truy cập");
       }
 

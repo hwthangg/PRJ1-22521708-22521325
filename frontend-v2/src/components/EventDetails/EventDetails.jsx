@@ -6,6 +6,7 @@ import { toast } from "react-toastify";
 import Accounts from "../../pages/Main/Admin/Accounts/Accounts";
 import AttendeeItem from "../AttendeeItem/AttendeeItem";
 import { FaChevronCircleDown, FaChevronCircleUp } from "react-icons/fa";
+import avatar from '../../assets/avatar.png'
 
 export default function EventDetails({ id, open }) {
   const [data, setData] = useState({});
@@ -111,8 +112,8 @@ export default function EventDetails({ id, open }) {
           data.data.map((item) => ({
             id: item._id,
             accountId: {
-              fullname: item.accountId.fullname,
-              avatar: item.accountId.avatar.path,
+              fullname: item?.accountId?.fullname,
+              avatar: item?.accountId?.avatar?.path,
             },
             comment: item.text,
             status: item.status

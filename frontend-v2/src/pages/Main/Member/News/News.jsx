@@ -40,12 +40,11 @@ export default function News() {
   }, []);
 
   return (
-    <div style={{backgroundColor:'var(--light-blue)', minHeight:'100vh'}}>
-      <h2>Tin tức / Sự kiện</h2>
+    <div style={{backgroundColor:'var(--light-blue)', minHeight:'100vh', padding: 60}}>
       {loading ? (
         <p>Đang tải...</p>
       ) : (
-        <div style={{ display:'flex', gap:20,flexDirection:'column', border:'1px solid', justifyItems:'center', alignItems:'center'}}>
+        <div style={{ display:'flex', gap:20,flexDirection:'column', justifyItems:'center', alignItems:'center'}}>
           {events.map((event) => (
             <EventItemList event={event}/>
           ))}
