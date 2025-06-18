@@ -1,131 +1,262 @@
-import React, { lazy, useEffect, useState } from "react";
-import Table from "../../../../components/Table/Table";
-import Pagination from "../../../../components/Pagination/Pagination";
+import React, { useEffect, useState } from "react";
 import styles from "./Events.module.css";
-import TextInput from "../../../../components/Input/TextInput/TextInput";
-import Dropdown from "../../../../components/Input/Dropdown/Dropdown";
+import Pagination from "../../../../components/Pagination/Pagination";
+import AddEvent from "../../../../components/AddEvent/AddEvent";
+import ClipLoader from "react-spinners/ClipLoader";
 import { IoAddCircle } from "react-icons/io5";
-import AccountForm from "../../../../components/Form/AccountForm/AccountForm";
+import { toast } from "react-toastify";
+import EventDetails from "../../../../components/EventDetails/EventDetails";
 
-function Events() {
-  const [data, setData] = useState([]);
-  const [showAddForm, setShowAddForm] = useState(false);
-  const scopeOptions = [
-    { value: "all", label: "Tất cả" },
-    { value: "public", label: "Công khai" },
-    { value: "chapter", label: "Chi đoàn" },
+export default function Events() {
+  const fields = [
+    { flex: 1, field: "STT" },
+    { flex: 4, field: "Tên sự kiện" },
+    { flex: 4, field: "Địa điểm" },
+    { flex: 2, field: "Ngày bắt đầu" },
+    { flex: 2, field: "Quy mô" },
+    { flex: 2, field: "Trạng thái" },
   ];
-  const statusOptions = [
-    { value: "all", label: "Tất cả" },
-    { value: "completed", label: "Hoàn thành" },
-    { value: "doing", label: "Đang diễn ra" },
-    { value: "canceled", label: "Hủy bỏ" },
-    { value: "pending", label: "Sắp diễn ra" },
-  ];
+
+  const mapFields = {
+    completed: "Hoàn thành",
+    doing: "Đang diễn ra",
+    pending: "Sắp diễn ra",
+    canceled: "Đã hủy",
+    public: "Công khai",
+    chapter: "Chi đoàn",
+  };
+
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-
+  const [data, setData] = useState([]);
   const [search, setSearch] = useState("");
-  const [status, setStatus] = useState("all");
-  const [scope, setScope] = useState("all");
+  const [scope, setScope] = useState("");
+  const [status, setStatus] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [openAdd, setOpenAdd] = useState(false);
+  const [id, setId] = useState('')
+  const [openDetails, setOpenDetails] = useState(false);
 
-  const chooseFilter = (e) => {
-    const { name, value } = e.target;
-    console.log(name);
-
-    switch (name) {
-      case "scope":
-        setScope(value);
-        break;
-      case "status":
-        setStatus(value);
-        break;
-      case "search":
-        setSearch(value);
-        break;
-      default:
-        break;
-    }
-  };
   useEffect(() => {
-    const fetchMembers = async () => {
+    const controller = new AbortController();
+    let retryInterval = null;
+    let timeout = null;
+    let isMounted = true;
+
+    const fetchEvents = async () => {
       try {
         const res = await fetch(
-          `http://localhost:5000/api/events?page=${currentPage}&limit=5&search=${search}&status=${status}&scope=${scope}&chapterId=1&sortBy=createdAt&sortOrder=asc`,
+          `${
+            import.meta.env.VITE_APP_SERVER_URL
+          }/api/events?page=${currentPage}&limit=6&search=${search}&scope=${scope}&status=${status}`,
           {
-            method: "GET",
+            signal: controller.signal,
             headers: {
-              "Content-Type": "application/json",
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
             },
-            credentials: "include",
           }
         );
-
         const result = await res.json();
-        console.log(result);
-        setData(result.data.events);
-        setTotalPages(result.data.pagination.totalPages);
-      } catch (error) {
-        console.error("Error fetching accounts:", error);
+
+        if (isMounted && result.data) {
+          clearInterval(retryInterval);
+          clearTimeout(timeout);
+          setData(result.data.data);
+          setTotalPages(result.data.totalPages || 1);
+          setLoading(false);
+        }
+      } catch (err) {
+        if (err.name !== "AbortError") {
+          console.error(err);
+          toast.error("Không thể tải danh sách sự kiện");
+          setLoading(false);
+        }
       }
     };
 
-    fetchMembers();
-    console.log(search);
-  }, [search, status, scope, currentPage]);
+    setLoading(true);
+    fetchEvents();
+    retryInterval = setInterval(fetchEvents, 5000);
+    timeout = setTimeout(() => {
+      clearInterval(retryInterval);
+      setLoading(false);
+    }, 60000);
+
+    return () => {
+      isMounted = false;
+      clearInterval(retryInterval);
+      clearTimeout(timeout);
+      controller.abort();
+    };
+  }, [search, currentPage, scope, status, openDetails, openAdd]);
+
   return (
     <div className={styles.container}>
-      <div className={styles.toolsContainer}>
-        {" "}
-        <TextInput
-          width={50}
-          label={"Tìm kiếm"}
-          name="search"
-          value={search}
-          onChangeValue={chooseFilter}
-          placeholder="Nhập thông tin tài khoản cần tìm"
-        />
-        <Dropdown
-          name="scope"
-          value={scope}
-          onChangeValue={chooseFilter}
-          label={"Quy mô"}
-          options={scopeOptions}
-        />
-        <Dropdown
-          name="status"
-          value={status}
-          onChangeValue={chooseFilter}
-          label={"Trạng thái"}
-          options={statusOptions}
-        />
-        <button
-          className={styles.addBtn}
-          onClick={() => {
-            setShowAddForm(true);
-          }}
+      <div className={styles.toolBar}>
+        <div className={styles.inputContainer} style={{ flex: 2 }}>
+          <label htmlFor="search">Tìm kiếm</label>
+          <input
+            type="search"
+            id="search"
+            placeholder="Tìm theo tên, địa điểm..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+        </div>
+
+        <div className={styles.inputContainer} style={{ flex: 1 }}>
+          <label htmlFor="scope">Quy mô</label>
+          <select
+            id="scope"
+            value={scope}
+            onChange={(e) => setScope(e.target.value)}
+            className={styles.inputSelect}
+          >
+            <option value="">Tất cả</option>
+            <option value="public">Công khai</option>
+            <option value="chapter">Chi đoàn</option>
+          </select>
+        </div>
+
+        <div className={styles.inputContainer} style={{ flex: 1 }}>
+          <label htmlFor="status">Trạng thái</label>
+          <select
+            id="status"
+            value={status}
+            onChange={(e) => setStatus(e.target.value)}
+            className={styles.inputSelect}
+          >
+            <option value="">Tất cả</option>
+            <option value="completed">Hoàn thành</option>
+            <option value="doing">Đang diễn ra</option>
+            <option value="pending">Sắp diễn ra</option>
+            <option value="canceled">Đã hủy</option>
+          </select>
+        </div>
+
+        <div
+          className={styles.inputContainer}
+          style={{ flex: 1, justifyContent: "flex-end" }}
+          onClick={() => setOpenAdd(true)}
         >
-          <IoAddCircle size={40} />
-        </button>
+          <IoAddCircle size={60} color="#3c78d8" className={styles.addButton} />
+        </div>
       </div>
-      <div className={styles.tableWrapper}>
-        {" "}
-        <Table name="event" data={data} startIndex={(currentPage - 1) * 5} />
+
+      <div className={styles.table}>
+        <div className={styles.head}>
+          {fields.map((item, index) => (
+            <div
+              key={index}
+              className={styles.cell}
+              style={{ flex: item.flex }}
+            >
+              <p>{item.field}</p>
+            </div>
+          ))}
+        </div>
+
+        <div className={styles.data}>
+          {loading ? (
+            <div className={styles.loadingContainer}>
+              <ClipLoader color="#36d7b7" size={50} />
+              <p>Đang tải dữ liệu...</p>
+            </div>
+          ) : data.length === 0 ? (
+            <div className={styles.noDataContainer}>
+              <p>Không có dữ liệu</p>
+            </div>
+          ) : (
+            data.map((item, index) => (
+              <div
+                key={index}
+                className={styles.row}
+                onClick={() => {setOpenDetails(true), setId(item._id)}}
+              >
+                <div
+                  className={styles.cell}
+                  style={{ flex: fields[0].flex, textAlign: "center" }}
+                >
+                  <p>{index + 1 + (currentPage - 1) * 6}</p>
+                </div>
+                <div className={styles.cell} style={{ flex: fields[1].flex }}>
+                  <p>{item.name}</p>
+                </div>
+                <div className={styles.cell} style={{ flex: fields[2].flex }}>
+                  <p>{item.location}</p>
+                </div>
+                <div className={styles.cell} style={{ flex: fields[3].flex }}>
+                  <p
+                    style={{
+                      textAlign: "center",
+                    }}
+                  >
+                    {(() => {
+                      const date = new Date(item.startedAt);
+                      const day = String(date.getDate()).padStart(2, "0");
+                      const month = String(date.getMonth() + 1).padStart(
+                        2,
+                        "0"
+                      );
+                      const year = date.getFullYear();
+                      return `${day}/${month}/${year}`;
+                    })()}
+                  </p>
+                </div>
+                <div className={styles.cell} style={{ flex: fields[4].flex }}>
+                  <p
+                    style={{
+                      textAlign: "center",
+                    }}
+                  >
+                    {mapFields[item.scope]}
+                  </p>
+                </div>
+                <div className={styles.cell} style={{ flex: fields[5].flex }}>
+                  <p
+                    style={{
+                      textAlign: "center",
+                      color:
+                        item.status === "completed"
+                          ? "green"
+                          : item.status === "canceled"
+                          ? "red"
+                          : "#ff8f00",
+                    }}
+                  >
+                    <span
+                      style={{
+                        display: "inline-block",
+                        width: 8,
+                        height: 8,
+                        borderRadius: "50%",
+                        marginRight: 6,
+                        backgroundColor:
+                          item.status === "completed"
+                            ? "green"
+                            : item.status === "canceled"
+                            ? "red"
+                            : "#ff8f00",
+                      }}
+                    ></span>
+                    {mapFields[item.status]}
+                  </p>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+      </div>
+
+      <div className={styles.pagination}>
         <Pagination
           currentPage={currentPage}
-          totalPages={totalPages}
           setCurrentPage={setCurrentPage}
+          totalPages={totalPages}
         />
       </div>
-      {showAddForm ? (
-        <>
-          <AccountForm setOpen={setShowAddForm} />
-        </>
-      ) : (
-        <></>
-      )}
+      {openDetails && <EventDetails id={id} open={setOpenDetails} />}
+      {openAdd && <AddEvent open={setOpenAdd} />}
     </div>
   );
 }
-
-export default Events;

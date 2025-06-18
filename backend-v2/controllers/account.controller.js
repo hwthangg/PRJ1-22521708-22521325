@@ -1,391 +1,210 @@
-// import { Account, Chapter, Member } from "../models/index.js";
-// import { response } from "../utils/index.js";
-// import bcrypt from "bcryptjs";
+import cloudinary from "../configs/cloudinary.js";
+import Account from "../models/account.model.js";
+import Member from "../models/member.model.js";
+import { sendResponse } from "../utils/response.js"
+import { validateForm } from "../utils/validate.js";
 
-// // Controller quản lý các thao tác với tài khoản
-// const AccountController = () => {
-//   // Tạo tài khoản mới
-//   const createAccount = async (req, res) => {
-//     try {
-//       console.log("Call: create account");
-//       const body = req.body;
 
-//       // Kiểm tra dữ liệu bắt buộc
-//       if (
-//         !body.email ||
-//         !body.phone ||
-//         !body.fullname ||
-//         !body.birthday ||
-//         !body.gender ||
-//         !body.role ||
-//         !body.password
-//       ) {
-//        return res.json({ message: "missing data" });
-        
-//       }
+const AccountController = () => {
 
-//       // Kiểm tra email trùng
-//       const duplicate = await Account.findOne({ email: body.email });
-//       if (duplicate) {
-//         return res.json({ message: "duplicated email" });
-//       }
+  const getAccountsInPage = async (req, res) => {
+    try {
+      const {
+        page = 1,
+        limit = 6,
+        search,
+        role,
+        status,
+      } = req.query;
 
-//       // Tạo đối tượng Account
-//       const account = new Account({
-//         email: body.email,
-//         phone: body.phone,
-//         fullname: body.fullname,
-//         birthday: new Date(body.birthday),
-//         gender: body.gender,
-//         role: body.role,
-//         password: await bcrypt.hash(body.password, 10), // Mã hóa mật khẩu
-//       });
+      const query = {};
 
-//       // Gán đường dẫn ảnh đại diện nếu có
-//       if (req.file) {
-//         account.avatar = req.file.path;
-//       }
+      // Tìm theo họ tên hoặc email
+      if (search) {
+        query.$or = [
+          { fullname: { $regex: search, $options: "i" } },
+          { email: { $regex: search, $options: "i" } },
+        ];
+      }
 
-//       // Nếu là member -> tạo thêm thông tin member
-//       if (body.role === "member") {
-//         // Kiểm tra dữ liệu member
-//         if (
-//           !body.memberOf ||
-//           !body.cardId ||
-//           !body.position ||
-//           !body.joinedAt ||
-//           !body.address ||
-//           !body.hometown ||
-//           !body.ethnicity ||
-//           !body.religion ||
-//           !body.eduLevel
-//         ) {
-//           return res.json({ message: "missing data" });
-//         }
+      // Lọc theo vai trò
+      if (role) {
+        query.role = role;
+      }
 
-//         // Kiểm tra cardId trùng
-//         const duplicate = await Member.findOne({ cardId: body.cardId });
-//         if (duplicate) {
-//          return  res.json({ message: "duplicated cardId" });
-//         }
+      // Lọc theo trạng thái
+      if (status) {
+        query.status = status;
+      }
 
-//         // Tạo và lưu member
-//         const member = new Member({
-//           memberOf: body.memberOf,
-//           cardId: body.cardId,
-//           position: body.position,
-//           joinedAt: body.joinedAt,
-//           address: body.address,
-//           hometown: body.hometown,
-//           ethnicity: body.ethnicity,
-//           religion: body.religion,
-//           eduLevel: body.eduLevel,
-//         });
+      const skip = (page - 1) * limit > -1 ? (page - 1) * limit : 0
 
-//         await member.save();
-//         account.infoMember = member._id; // Gắn member vào account
-//       }
+      const [accounts, total] = await Promise.all([
+        Account.find(query)
+          .sort({ createdAt: -1 })
+          .skip(skip)
+          .limit(parseInt(limit)),
+        Account.countDocuments(query),
+      ]);
 
-//       // Nếu là manager -> gắn chapter phụ trách
-//       if (body.role === "manager") {
-//         if (!body.managerOf) {
-//          return  res.json({ message: "missing data" });
-//         }
+      return sendResponse(res, 200, "Lấy danh sách tài khoản thành công", {
+        accounts,
+        total,
+        currentPage: parseInt(page),
+        totalPages: Math.ceil(total / limit),
+      });
+    } catch (error) {
+      console.log(error);
+      return sendResponse(
+        res,
+        500,
+        "Lỗi khi lấy danh sách tài khoản, hãy thử lại"
+      );
+    }
+  }
 
-//         account.managerOf = body.managerOf;
-//       }
+  const getAccountById = async (req, res) => {
+    try {
+      const { id } = req.params
+      const account = await Account.findById(id)
+      let result = { ...account.toObject() }
+      if (account.infoMember) {
+        const member = await Member.findById(account.infoMember)
+        result = { ...member.toObject(), ...account.toObject() }
+      }
 
-//       account.status = "active"; // Trạng thái mặc định
-//       await account.save(); // Lưu account
 
-//       // Truy vấn lại để lấy dữ liệu đầy đủ
-//       const result = await Account.findById(account._id)
-//         .populate("infoMember")
-//         .populate("managerOf");
+      return sendResponse(res, 200, "Lấy thông tin tài khoản thành công", result)
+    } catch (error) {
+      console.log(error);
+      return sendResponse(
+        res,
+        500,
+        "Lỗi khi lấy danh sách tài khoản, hãy thử lại"
+      );
+    }
+  }
+  const updateAccountById = async (req, res) => {
+    try {
+      const form = req.body
+      const avatar = req.file
+      const { id } = req.params
 
-//       return res.json({ message: "create account successfully", data: result });
-//     } catch (error) {
-//       console.log(error)
-//       res.json(error)
-//     }
-//   };
+      console.log(req.file, form)
 
-//   // Lấy danh sách tài khoản có phân trang và lọc
-//   const getAccountsInPage = async (req, res) => {
-//     const logPrefix = "[AccountController][getAccountsInPage]";
-//     // console.log(`${logPrefix} Start with query:`, req.query);
+      const account = await Account.findById(id)
+      console.log(validateForm(form, account.role, true), 123)
+      const member = await Member.findById(account.infoMember)
 
-//     try {
-//       // Lấy tham số từ query string
-//       const {
-//         page = 1,
-//         limit = 10,
-//         search,
-//         status,
-//         role,
-//         position,
-//         chapterId,
-//         sortBy = "createdAt",
-//         sortOrder = "asc",
+      if (form.email) {
+        const duplicate = await Account.findOne({ email: form.email })
+        if (duplicate) {
+          return sendResponse(res, 400, 'Email này đã được sử dụng')
+        }
+      }
 
-//       } = req.query;
+      if (form.managerOf) {
+        const duplicate = await Account.findOne({ managerOf: form.managerOf })
+        if (duplicate) {
+          return sendResponse(res, 400, 'Chi đoàn này đã có người quản lý')
+        }
+      }
+      if (form.cardCode) {
+        const duplicate = await Account.findOne({ cardCode: form.cardCode })
+        if (duplicate) {
+          return sendResponse(res, 400, 'Số thẻ đoàn này đã được sử dụng')
+        }
+      }
 
-//       const filter = {};
+      const updateAccount = new Account(form)
 
-//       // Tìm kiếm gần đúng theo email, phone, fullname
-//       if (search) {
-//         filter.$or = [
-//           { email: { $regex: search, $options: "i" } },
-//           { phone: { $regex: search, $options: "i" } },
-//           { fullname: { $regex: search, $options: "i" } },
-//         ];
-//       }
+      for (const field in updateAccount.toObject()) {
+        if (updateAccount[field] && field != '_id') {
+          account[field] =
+            updateAccount[field]
+        }
+      }
+      if (account.role == 'member') {
+        const updateMember = new Member(form)
 
-//       // Lọc theo status nếu có
-//       if (status) {
-//         filter.status = status;
-//       }
+        for (const field in updateMember.toObject()) {
+          if (updateMember[field] && field != '_id') {
+            member[field] =
+              updateMember[field]
+          }
+        }
+        await member.save()
+      }
 
-//       // Lọc theo role nếu có
-//       if (role) {
-//         filter.role = role;
-//       }
 
-//       const options = {
-//         page: parseInt(page),
-//         limit: parseInt(limit),
-//         sort: {
-//           [sortBy]: sortOrder === "asc" ? 1 : -1,
-//         },
-//         populate: { path: "managerOf" },
+      if (avatar) {
+        if (account.avatar) {
+          cloudinary.uploader.destroy(account.avatar.filename)
+        }
 
-//       };
+        account.avatar = avatar
+      }
+      console.log(updateAccount, account)
+      await account.save()
 
-//       const result = await Account.paginate(filter, options);
 
-      
-//       return response(res, 200, "ACCOUNTS_FETCHED", {
-//         accounts: result.docs,
-//         pagination: {
-//           currentPage: result.page,
-//           totalPages: result.totalPages,
-//           totalItems: result.totalDocs,
-//           itemsPerPage: result.limit,
-//         },
-//       });
-//     } catch (error) {
-//       console.error(`${logPrefix} Error:`, error);
-//       return response(res, 500, "SERVER_ERROR");
-//     }
-//   };
+      return sendResponse(
+        res,
+        200,
+        "Cập nhật tài khoản thành công"
+      );
+    } catch (error) {
+      console.log(error);
+      return sendResponse(
+        res,
+        500,
+        "Lỗi khi lấy danh sách tài khoản, hãy thử lại"
+      );
+    }
+  }
 
-//   // Lấy tài khoản theo ID
-//   // const getAccountById = async (req, res) => {
-    
+ const getStatistic = async (req, res) => {
+  try {
+    const accounts = await Account.find();
 
-//   //   try {
-//   //     const account = await Account.findById(req.params.accountId);
-     
+    // Thống kê theo trạng thái
+    const active = accounts.filter(item => item.status === "active").length;
+    const locked = accounts.filter(item => item.status === "locked").length;
+    const pending = accounts.filter(item => item.status === "pending").length;
 
-//   //     result["account"] = account;
+    // Thống kê theo vai trò
+    const admin = accounts.filter(item => item.role === "admin").length;
+    const manager = accounts.filter(item => item.role === "manager").length;
+    const member = accounts.filter(item => item.role === "member").length;
 
-//   //     // Nếu là member -> lấy thêm infoMember
-//   //     if (account.role === "member") {
-//   //       const infoMember = await Member.findById(account.infoMember).populate(
-//   //         "chapterId"
-//   //       );
-//   //       result["infoMember"] = infoMember;
-//   //     }
+    return res.status(200).json({
+      success: true,
+      data: {
+        status: {
+          active,
+          locked,
+          pending
+        },
+        role: {
+          admin,
+          manager,
+          member
+        },
+        total: accounts.length
+      }
+    });
 
-//   //     // Nếu là manager -> lấy chapter phụ trách
-//   //     if (account.role === "manager") {
-//   //       const infoManagerOf = await Chapter.findById(account.managerOf);
-//   //       result["infoManagerOf"] = infoManagerOf;
-//   //     }
+  } catch (error) {
+    console.error(error);
+    return sendResponse(
+      res,
+      500,
+      "Lỗi khi lấy thống kê tài khoản, hãy thử lại."
+    );
+  }
+};
 
-//   //     return response(res, 200, "ACCOUNT_FETCHED", result);
-//   //   } catch (error) {
-//   //     console.error(`${logPrefix} Error:`, error);
-//   //     return response(res, 500, "SERVER_ERROR");
-//   //   }
-//   // };
-// const getAccountById = async(req, res)=>{
-//   try {
-//     console.log('Call: get account by id')
-//     const {id} = req.params
-//     const account = await Account.findById(id).populate('infoMember')
-//     res.json({message:'get account successfully', data: account})
-//   } catch (error) {
-//       console.log(error)
-//       res.json(error)
-//   }
-// }
-//   // Cập nhật tài khoản
-//   // const updateAccountById = async (req, res) => {
-//   //   const logPrefix = "[AccountController][updateAccount]";
-//   //   console.log(`${logPrefix} Start update for:`, req.params.accountId, req.body);
+  return { getAccountsInPage, getAccountById, updateAccountById, getStatistic }
+}
 
-//   //   try {
-//   //     const input = req.body;
-//   //     const file = req.file;
-
-//   //     const accountFields = [
-//   //       "email", "phone", "fullname", "birthday", "gender", "role"
-//   //     ];
-
-//   //     // Kiểm tra trùng email nếu có thay đổi
-//   //     if (input.email != "") {
-//   //       const existingAccount = await Account.findOne({ email: input.email });
-//   //       if (
-//   //         existingAccount &&
-//   //         existingAccount._id.toString() != req.params.accountId.toString()
-//   //       ) {
-//   //         return response(res, 400, "INVALID_ACCOUNT_DATA");
-//   //       }
-//   //     }
-
-//   //     const currentAccount = await Account.findById(req.params.accountId);
-
-//   //     // Gán lại các trường đã thay đổi
-//   //     for (const field of accountFields) {
-//   //       if (input[field] != "") {
-//   //         currentAccount[field] = input[field];
-//   //       }
-//   //     }
-
-//   //     // Gán lại avatar nếu có file mới
-//   //     if (file && input.avatar != "" ) {
-//   //       currentAccount.avatar = file.path;
-//   //     }
-
-//   //     // Cập nhật thông tin member nếu có
-//   //     if (currentAccount.infoMember) {
-//   //       const currentMember = await Member.findById(currentAccount.infoMember);
-//   //       const infoMemberFields = [
-//   //         "chapterId", "cardId", "position", "joinedAt", "address",
-//   //         "hometown", "ethnicity", "religion", "eduLevel"
-//   //       ];
-
-//   //       if (input.cardId != "") {
-//   //         const existingMember = await Member.findOne({ cardId: input.cardId });
-//   //         if (existingMember && currentMember._id.toString() != existingMember._id.toString()) {
-//   //           return response(res, 400, "INVALID_MEMBER_DATA");
-//   //         }
-//   //       }
-
-//   //       for (const field of infoMemberFields) {
-//   //         if (input[field] != "") {
-//   //           currentMember[field] = input[field];
-//   //         }
-//   //       }
-
-//   //       await currentMember.save();
-//   //     }
-
-//   //     // Cập nhật chapter cho manager nếu có
-//   //     if (currentAccount.managerOf && input.chapterId != "") {
-//   //       currentAccount.managerOf = input.chapterId;
-//   //     }
-
-//   //     await currentAccount.save();
-
-//   //     // Lấy lại thông tin sau khi cập nhật
-//   //     const updatedAccount = await Account.findById(currentAccount._id)
-//   //       .populate("infoMember")
-//   //       .populate("managerOf");
-
-//   //     return response(res, 201, "ACCOUNT_UPDATED", updatedAccount);
-//   //   } catch (error) {
-//   //     console.error(`${logPrefix} Error:`, error);
-//   //     return response(res, 500, "SERVER_ERROR");
-//   //   }
-//   // };
-
-//   const updateAccountById = async (req, res) => {
-//     try {
-//       console.log("Call: update account");
-//       const { id } = req.params;
-//       const body = req.body;
-//       const accountFields = [
-//         "status",
-//         "email",
-//         "phone",
-//         "avatar",
-//         "fullname",
-//         "birthday",
-//         "gender",
-//       ];
-//       const managerField = "managerOf";
-//       const memberFields = [
-//         "memberOf",
-//         "position",
-//         "cardId",
-//         "joinedAt",
-//         "address",
-//         "hometown",
-//         "ethnicity",
-//         "religion",
-//         "eduLevel",
-//       ];
-//       //Cập nhật thông tin tài khoản
-
-//       const account = await Account.findById(id);
-//       if (body.email) {
-//         const duplicate = await Account.findOne({ email: body.email });
-//         if (duplicate._id.toString() == id) {
-//           res.json("Duplicated email");
-//         }
-//       }
-//       const updateAccount = new Account(body);
-//       for (const field of accountFields) {
-//         if (updateAccount[field] !== null) {
-//           account[field] = updateAccount[field];
-//         }
-//       }
-
-//       if (req.file) {
-//         account.avatar = req.file.path;
-//       }
-
-//       if (body[managerField]) {
-//         account.managerOf = body[managerField];
-//       }
-
-//       if (account.infoMember) {
-//         const member = await Member.findById(account.infoMember);
-//         if (body.cardId) {
-//           const duplicate = await Member.findOne({ cardId: body.cardId });
-//           if (duplicate._id.toString() != infoMember) {
-//             res.json("Duplicated email");
-//           }
-//         }
-//         const updateMember = new Member(body);
-//         console.log(updateMember);
-//         for (const field of memberFields) {
-//           if (updateMember[field] !== null) {
-//             member[field] = updateMember[field];
-//           }
-//         }
-//         await member.save();
-//       }
-//       await account.save();
-
-//       const result = await Account.findById(id).populate("infoMember");
-
-//       res.json({ message: "updating account successfully", data: result });
-//     } catch (error) {
-//       console.log(error);
-//       res.json(error);
-//     }
-//   };
-
-//   // Trả về các hàm để export
-//   return {
-//     createAccount,
-//     getAccountsInPage,
-//     getAccountById,
-//     updateAccountById,
-//   };
-// };
-
-// export default AccountController();
+export default AccountController()

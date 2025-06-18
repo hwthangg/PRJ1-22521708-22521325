@@ -1,76 +1,86 @@
 import { transporter } from "../configs/mailer.js";
 import Account from "../models/account.model.js";
 import Member from "../models/member.model.js";
+import Notification from "../models/notification.model.js";
 import { accountFields, memberFields } from "../utils/field.js";
 import { comparePassword, hashPassword } from "../utils/hash.js";
 import { regexValidators } from "../utils/regex.js";
 import { sendResponse } from "../utils/response.js";
+import { getIO } from "../utils/socket.js";
 import { signToken, verifyToken } from "../utils/token.js";
 
-
 const AuthController = () => {
-
   const register = async (req, res) => {
     try {
-
-      const { token } = req.query
-      const form = req.body
-      console.log(form)
+     
+      const { token } = req.query;
+      const form = req.body;
+      console.log(form);
       if (!token) {
-        const { account, roleInfo } = form
+        const { account, roleInfo } = form;
 
         //checkDuplicatedAccount
-        console.log(account.password)
-        const duplicatedEmail = await Account.findOne({ email: form.account.email })
+        console.log(account.password);
+        const duplicatedEmail = await Account.findOne({
+          email: form.account.email,
+        });
         if (duplicatedEmail) {
-          return sendResponse(res, 400, 'Email này đã được sử dụng.')
+          return sendResponse(res, 400, "Email này đã được sử dụng.");
         }
 
         for (const field of accountFields) {
           if (!account[field]) {
-            return sendResponse(res, 400, `${field} không được để trống`)
+            return sendResponse(res, 400, `${field} không được để trống`);
           }
 
-          if (regexValidators[field] && !regexValidators[field].test(account[field])) {
-            return sendResponse(res, 400, `${field} không đúng định dạng`)
+          if (
+            regexValidators[field] &&
+            !regexValidators[field].test(account[field])
+          ) {
+            return sendResponse(res, 400, `${field} không đúng định dạng`);
           }
         }
 
-        if (account.role == 'member') {
+        if (account.role == "member") {
           //checkDuplicatedCardCode
-          const duplicatedCardCode = await Member.findOne({ cardCode: roleInfo.cardCode })
+          const duplicatedCardCode = await Member.findOne({
+            cardCode: roleInfo.cardCode,
+          });
           if (duplicatedCardCode) {
-            return sendResponse(res, 400, 'Số thẻ đoàn này đã được sử dụng.')
+            return sendResponse(res, 400, "Số thẻ đoàn này đã được sử dụng.");
           }
 
           //checkRoleInfo
           for (const field of memberFields) {
             if (!roleInfo[field]) {
-              return sendResponse(res, 400, `${field} không được để trống`)
+              return sendResponse(res, 400, `${field} không được để trống`);
             }
 
-            if (regexValidators[field] && !regexValidators[field].test(roleInfo[field])) {
-              return sendResponse(res, 400, `${field} không đúng định dạng`)
+            if (
+              regexValidators[field] &&
+              !regexValidators[field].test(roleInfo[field])
+            ) {
+              return sendResponse(res, 400, `${field} không đúng định dạng`);
             }
           }
-
-
         }
 
-        if (account.role == 'manager') {
-          const duplicatedManagerOf = await Account.findOne({ managerOf: roleInfo.managerOf })
+        if (account.role == "manager") {
+          const duplicatedManagerOf = await Account.findOne({
+            managerOf: roleInfo.managerOf,
+          });
           if (duplicatedManagerOf) {
-            return sendResponse(res, 400, 'Chi đoàn này đã có người quản lý.')
+            return sendResponse(res, 400, "Chi đoàn này đã có người quản lý.");
           }
         }
 
         //hashPassword
-        account.password = await hashPassword(account.password)
-        const confirm = signToken(form)
+        account.password = await hashPassword(account.password);
+        const confirm = signToken(form);
         await transporter.sendMail({
           from: '"Ứng dụng QLDV" <your_email@gmail.com>',
           to: account.email,
-          subject: 'Xác nhận tài khoản QLDV',
+          subject: "Xác nhận tài khoản QLDV",
           html: `
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; border: 1px solid #ddd; padding: 20px; border-radius: 8px;">
       <h2 style="color: #2c3e50;">👋 Chào mừng bạn đến với Ứng dụng QLDV!</h2>
@@ -88,65 +98,94 @@ const AuthController = () => {
       <hr style="margin: 20px 0;">
       <p style="font-size: 12px; color: #aaa;">Ứng dụng QLDV © 2025</p>
     </div>
-  `
+  `,
         });
 
-        return sendResponse(res, 200, 'Hãy kiểm tra email của bạn')
+        return sendResponse(res, 200, "Hãy kiểm tra email của bạn");
       }
 
-      const decode = verifyToken(token)
-      const { account, roleInfo } = decode
-      console.log(account)
-      const accountdb = new Account(account)
-      if (account.role == 'member') {
-        var memberdb = new Member(roleInfo)
-
+      const decode = verifyToken(token);
+      const { account, roleInfo } = decode;
+      console.log(account);
+      const accountdb = new Account(account);
+      if (account.role == "member") {
+        var memberdb = new Member(roleInfo);
       }
-      if (account.role == 'manager') {
-        accountdb.managerOf = roleInfo.managerOf
+      if (account.role == "manager") {
+        accountdb.managerOf = roleInfo.managerOf;
       }
 
-      accountdb.status = 'pending'
+      accountdb.status = "pending";
 
-      console.log(accountdb.password)
-      await accountdb.save()
-      if (memberdb) { await memberdb.save() }
-      return sendResponse(res, 200, 'Đăng ký tài khoản thành công. Chờ phê duyệt')
+      console.log(accountdb.password);
+     
+      if (memberdb) {
+        accountdb.infoMember = memberdb._id
+        await memberdb.save();
+      }
 
+ await accountdb.save();
+
+      const admin = await Account.findOne({role:'admin'})
+
+      const notification = new Notification(
+        {accountId: admin._id, text:`Bạn có yêu cầu phê duyệt từ ${account.fullname}`}
+
+      )
+
+      
+      
+      const io = getIO()
+      io.emit('admin_req', `Bạn có yêu cầu phê duyệt từ ${account.fullname}`)
+    await notification.save()
+      
+      
+      
+
+      return sendResponse(
+        res,
+        200,
+        "Đăng ký tài khoản thành công. Chờ phê duyệt"
+      );
     } catch (error) {
-      console.log(error)
-      return sendResponse(res, 500, 'Lỗi đăng ký. Hãy thử lại')
+      console.log(error);
+      return sendResponse(res, 500, "Lỗi đăng ký. Hãy thử lại");
     }
-
   };
 
   const login = async (req, res) => {
     try {
-      const { email, password } = req.body
+       
+      const { email, password } = req.body;
 
-      const account = await Account.findOne({ email: email })
+      const account = await Account.findOne({ email: email });
       if (!account) {
-        return sendResponse(res, 404, 'Lỗi đăng nhập. Không tìm thấy tài khoản')
+        return sendResponse(
+          res,
+          404,
+          "Lỗi đăng nhập. Không tìm thấy tài khoản"
+        );
       }
 
-      if (!await comparePassword(password, account.password)) {
-        return sendResponse(res, 404, 'Lỗi đăng nhập. Mật khẩu không đúng')
+      if (!(await comparePassword(password, account.password))) {
+        return sendResponse(res, 404, "Lỗi đăng nhập. Mật khẩu không đúng");
       }
 
-      if (account.status != 'active') {
-        return sendResponse(res, 403, 'Bạn chưa có quyền truy cập')
+      if (account.status != "active") {
+        return sendResponse(res, 403, "Bạn chưa có quyền truy cập");
       }
 
-      const token = signToken({accountId: account._id})
+      const token = signToken({ accountId: account._id });
 
-      return sendResponse(res, 200, 'Đăng nhập thành công', token)
-
-
+      return sendResponse(res, 200, "Đăng nhập thành công", {
+        token,
+        role: account.role,
+      });
     } catch (error) {
-      console.log(error)
-      return sendResponse(res, 500, 'Lỗi đăng ký. Hãy thử lại')
+      console.log(error);
+      return sendResponse(res, 500, "Lỗi đăng nhập. Hãy thử lại");
     }
-  }
+  };
   // // Hàm đăng nhập
   // const login = async (req, res) => {
   //   const logPrefix = "[AuthController][login]";
@@ -298,12 +337,20 @@ const AuthController = () => {
   //     return response(res, 500, "SERVER_ERROR");
   //   }
   // };
-
+  const getProfile = async (req, res) => {
+    try {
+      const account = await Account.findById(req.account._id)
+      return sendResponse(res, 200, 'Lấy hồ sơ thành công', account);
+    } catch (error) {
+      console.log(error);
+      return sendResponse(res, 500, "Lỗi lấy hồ sơ, hãy thử lại");
+    }
+  };
   return {
     register,
     login,
     // logout,
-    // getProfile,
+    getProfile,
     // updateProfile,
   };
 };

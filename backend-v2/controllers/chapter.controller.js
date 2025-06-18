@@ -1,271 +1,194 @@
-// // Import các model cần thiết từ thư mục models
-// import { Account, Chapter, Document, Event, Member } from "../models/index.js";
-// // Import các hàm tiện ích dùng chung
-// import { response, validateChapter } from "../utils/index.js";
+import Account from "../models/account.model.js"
+import Chapter from "../models/chapter.model.js"
+import { sendResponse } from "../utils/response.js"
+import { validateChapterForm } from "../utils/validate.js"
 
-// // Định nghĩa controller cho các chức năng liên quan đến Chapter
-// const ChapterController = () => {
-//   // Hàm tạo một chapter mới
-//   const createChapter = async (req, res) => {
+const ChapterController = () => {
 
+  const createChapter = async (req, res) => {
+    try {
+      const form = req.body
+      console.log(form)
 
-//     try {
-//       console.log('Call: create chapter')
-//       const body = req.body;
+      const validForm = validateChapterForm(form)
+      if (validForm) {
+        return sendResponse(res, 400, validForm)
+      }
 
-//       // Kiểm tra đầu vào - các trường bắt buộc
-//       if (
-//         !body.name ||
-//         !body.affiliated ||
-//         !body.address ||
-//         !body.establishedAt
-//       ) {
-//         res.json({ message: 'missing data' })
-//       }
+      const duplicate = await Chapter.findOne({ name: form.name, affiliated: form.affiliated })
+      if (duplicate) {
+        return sendResponse(res, 400, 'Chi đoàn này đã có')
+      }
+      const chapter = new Chapter(form)
+      chapter.status = 'active'
+      await chapter.save()
+      console.log(chapter)
+      return sendResponse(res, 200, 'Tạo chi đoàn thành công')
+    } catch (error) {
+      console.log(error)
+      return sendResponse(res, 500, 'Có lỗi xảy ra khi tạo chi đoàn')
+    }
+  }
 
-//       // Kiểm tra xem chapter đã tồn tại chưa (dựa trên tên, liên kết, địa chỉ)
-//       const duplicate = await Chapter.findOne({
-//         name: body.name,
-//         affiliated: body.affiliated,
-//         address: body.address,
-//       });
-//       if (duplicate) {
-//         res.json({ message: 'duplicated chapter' })
-//       }
+  const getChaptersInPage = async (req, res) => {
+    try {
+      const {
+        page = 1,
+        limit = 6,
+        search,
+        hadManager,
+        status,
+      } = req.query;
 
-//       // Tạo một chapter mới
-//       const chapter = new Chapter({
-//         name: body.name,
-//         affiliated: body.affiliated,
-//         address: body.address,
-//         establishedAt: body.establishedAt,
-//       });
+      const query = {};
 
-//       // Lưu chapter vào database
-//       await chapter.save();
+      // Tìm kiếm theo tên hoặc đơn vị trực thuộc
+      if (search) {
+        query.$or = [
+          { name: { $regex: search, $options: "i" } },
+          { affiliated: { $regex: search, $options: "i" } },
+        ];
+      }
 
+      // Lọc theo trạng thái
+      if (status) {
+        query.status = status;
+      }
 
-//       res.json({ message: 'create chapter successfully', data: chapter })
-//     } catch (error) {
-//       console.error(error);
-//       res.json(error)
-//     }
-//   };
+      // Lọc theo chi đoàn đã có quản lý hay chưa
+      if (hadManager === 'true') {
+        // Các chapter có ít nhất một Account quản lý
+        const managers = await Account.find(
+          { managerOf: { $ne: null } },
+          'managerOf'
+        );
 
-//   // Hàm lấy danh sách chapter có phân trang và tìm kiếm
-//   const getChaptersInPage = async (req, res) => {
-//     const logPrefix = "[ChapterController][getChaptersInPage]";
-//     console.log(`${logPrefix} Start with query:`, req.query);
+        const chapterIds = managers.map((acc) => acc.managerOf).filter(Boolean);
+        query._id = { $in: chapterIds };
+      } else if (hadManager === 'false') {
+        const managers = await Account.find(
+          { managerOf: { $ne: null } },
+          'managerOf'
+        );
 
-//     try {
-//       // Lấy các tham số từ query string
-//       const {
-//         page = 1,
-//         limit = 10,
-//         search = "",
-//         status,
-//         sortBy = "createdAt",
-//         sortOrder = "asc",
-//       } = req.query;
+        const chapterIds = managers.map((acc) => acc.managerOf).filter(Boolean);
+        query._id = { $nin: chapterIds };
+      }
 
-//       // Tạo bộ lọc tìm kiếm
-//       const filter = {};
-//       if (search) {
-//         filter.$or = [
-//           { name: { $regex: search, $options: "i" } },
-//           { affiliated: { $regex: search, $options: "i" } },
-//           { address: { $regex: search, $options: "i" } },
-//         ];
-//       }
+      const skip = (page - 1) * limit > -1 ? (page - 1) * limit : 0;
 
-//       if (status && status !== "all") filter.status = status;
+      const [chapters, total] = await Promise.all([
+        Chapter.find(query)
+          .sort({ createdAt: -1 })
+          .skip(skip)
+          .limit(parseInt(limit)),
+        Chapter.countDocuments(query),
+      ]);
 
-//       // Cấu hình phân trang
-//       const options = {
-//         page: parseInt(page),
-//         limit: parseInt(limit),
-//         sort: { [sortBy]: sortOrder === "asc" ? -1 : 1 },
-//       };
+      const result = await Promise.all(
+        chapters.map(async (chapter) => {
+          const manager = await Account.findOne({ managerOf: chapter._id }).select('avatar fullname');
 
-//       // Truy vấn cơ sở dữ liệu với phân trang
-//       const chapters = await Chapter.paginate(filter, options);
-
-//       // Với mỗi chapter, tìm thêm thông tin người quản lý
-//       const result = await Promise.all(
-//         chapters.docs.map(async (item) => {
-//           const manager = await Account.findOne({ managerOf: item._id }).select('-_id').lean();
-
-//           return {
-//             ...item.toObject(), // Đảm bảo item là object thuần
-//             ...manager
-//           };
-//         })
-//       );
+          return {
+            ...chapter.toObject(),
+            fullname: manager?.fullname || null,
+            avatar: manager?.avatar || null,
+          };
+        })
+      );
 
 
-//       // Trả về dữ liệu kèm thông tin phân trang
-//       return response(res, 200, "CHAPTERS_FETCHED", {
-//         chapters: result,
-//         pagination: {
-//           currentPage: chapters.page,
-//           totalPages: chapters.totalPages,
-//           totalItems: chapters.totalDocs,
-//           itemsPerPage: chapters.limit,
-//         },
-//       });
-//     } catch (error) {
-//       console.error(error);
-//       res.json(error)
-//     }
-//   };
 
-//   // Hàm lấy tất cả chapter để hiển thị trong dropdown hoặc combobox
-//   const getAllChapterForComboBox = async (req, res) => {
-//     const logPrefix = "[ChapterController][getAllChapterForComboBox]";
-//     try {
-//       const chapters = await Chapter.find().select("_id name");
-//       return response(res, 200, "CHAPTERS_FETCHED", { chapters });
-//     } catch (error) {
-//       console.error(`${logPrefix} Error:`, error);
-//       return response(res, 500, "SERVER_ERROR");
-//     }
-//   };
+      return sendResponse(res, 200, "Lấy danh sách chi đoàn thành công", {
+        result,
+        total,
+        currentPage: parseInt(page),
+        totalPages: Math.ceil(total / limit),
+      });
+    } catch (error) {
+      console.error(error);
+      return sendResponse(res, 500, "Có lỗi xảy ra khi lấy danh sách chi đoàn");
+    }
+  };
 
-//   // Hàm lấy thông tin chi tiết của một chapter theo ID
-//   const getChapterById = async (req, res) => {
-
-//     try {
-//       console.log('Call: get chapter by id')
-//       // Tìm chapter theo ID
-//       const { id } = req.params
-//       const chapter = await Chapter.findById(id);
-// const manager = await Account.findOne({managerOf: id}).select('-_id')
-
-// const result = {
-//       ...chapter.toObject(),
-//       ...(manager ? manager.toObject() : {}), // tránh lỗi nếu không tìm thấy manager
-//     };
-    
-
-//       return res.json({
-//         message: 'get chapter successfully', data: result
-        
-          
-        
-//       })
+  const getChapterById = async (req, res) => {
+    try {
+      const { id } = req.params
+      const chapter = await Chapter.findById(id)
+      const manager = await Account.findOne({ managerOf: chapter._id }).select('avatar fullname');
+      let result = chapter
+      if (manager) {
+        result = { ...chapter.toObject(), fullname: manager.fullname, avatar: manager.avatar }
+      }
 
 
-//     } catch (error) {
-//       console.log(error)
-//       return res.json(error)
-//     }
-//   };
 
-//   // Hàm cập nhật thông tin chapter
-//   const updateChapterById = async (req, res) => {
+      return sendResponse(res, 200, "Lấy danh sách chi đoàn thành công", result)
 
-//     try {
-//       const body = req.body;
-//       const {id} = req.params;
+    } catch (error) {
+      console.error(error);
+      return sendResponse(res, 500, "Có lỗi xảy ra khi lấy thông tin chi đoàn");
+    }
+  }
+  const updateChapterById = async (req, res) => {
+    try {
+      const { id } = req.params
+      const chapter = await Chapter.findById(id)
+      const form = req.body
+      const validForm = validateChapterForm(form, true)
+      if (validForm) {
+        return sendResponse(res, 400, validForm)
+      }
 
-//       const chapter = await Chapter.findById(id);
 
-//       // Kiểm tra trùng lặp thông tin
-//       const duplicate = await Chapter.findOne({
-//         name: body.name,
-//         affiliated: body.affiliated,
-//         address: body.address,
-//       });
 
-//       if (
-//         duplicate &&
-//         duplicate._id.toString() == id
-//       ) {
-//         return res.json({message:'missing data'})
-//       }
+      const update = new Chapter(form)
 
-//       const update = new Chapter(body)
-//       console.log(update,body)
-      
-//       // Cập nhật các trường được phép
-//       const allowedFields = ["name", "affiliated", "address", "establishedAt", 'status'];
-//       for (const field of allowedFields) {
-//         if (update[field] != null) {
-//           chapter[field] = update[field];
-//         }
-//       }
+      for (const field in update.toObject()) {
+        if (update[field] && field != '_id') {
+          chapter[field] =
+            update[field]
+        }
+      }
+      if(form.name || form.affiliated){
+ const duplicate = await Chapter.findOne({ name: chapter.name, affiliated: chapter.affiliated })
+      if (duplicate) {
+        console.log(duplicate)
+        return sendResponse(res, 400, 'Chi đoàn này đã có')
+      }
+      }
+     
+      await chapter.save()
+      return sendResponse(res, 200, "Cập nhật thông tin chi đoàn thành công");
+    } catch (error) {
+      console.error(error);
+      return sendResponse(res, 500, "Có lỗi xảy ra khi cập nhật thông tin chi đoàn");
+    }
+  }
+const getStatistic = async (req, res) => {
+  try {
+    const chapters = await Chapter.find();
+    const managers = await Account.find({managerOf:{$ne: null}})
 
-//      await chapter.save();
-//     const result = await Chapter.findById(id)
+    const active = chapters.filter(ch => ch.status === 'active').length;
+    const locked = chapters.filter(ch => ch.status === 'locked').length;
 
-//       return res.json({message:'update chapter successfully', data:result})
-//     } catch (error) {
-//       console.error(error);
-//       return res.json(error)
-//     }
-//   };
+    const hadManager = managers.length;
+    const noManager = chapters.length - hadManager;
 
-//   // Hàm thay đổi trạng thái của chapter
-//   const changeChapterStatus = async (req, res) => {
-//     const logPrefix = "[ChapterController][changeChapterStatus]";
-//     console.log(`${logPrefix} Request:`, req.params, req.body);
+   return sendResponse(res, 200, "Lấy thống kê thành công", {
+  status: { active, locked },
+  manager: { hadManager, noManager },
 
-//     try {
-//       const chapterId = req.params.chapterId;
-//       const status = req.body.status;
+});
 
-//       // Kiểm tra trạng thái hợp lệ
-//       const validStatuses = ["active", "banned"];
-//       if (!validStatuses.includes(status)) {
-//         console.warn(`${logPrefix} Invalid status: ${status}`);
-//         return response(res, 400, "INVALID_STATUS", { validStatuses });
-//       }
+  } catch (error) {
+    console.error(error);
+    return sendResponse(res, 500, "Có lỗi xảy ra khi lấy báo cáo chi đoàn");
+  }
+};
 
-//       // Tìm chapter
-//       const chapter = await Chapter.findById(chapterId);
-//       if (!chapter) {
-//         console.warn(`${logPrefix} Chapter not found`);
-//         return response(res, 404, "CHAPTER_NOT_FOUND");
-//       }
+  return { createChapter, getChaptersInPage, getChapterById, updateChapterById, getStatistic }
+}
 
-//       // Kiểm tra trạng thái đã thay đổi chưa
-//       if (chapter.status === status) {
-//         console.log(`${logPrefix} Status not changed`);
-//         return response(res, 200, "STATUS_UNCHANGED");
-//       }
-
-//       // Cập nhật trạng thái
-//       const previousStatus = chapter.status;
-//       chapter.status = status;
-//       await chapter.save();
-
-//       console.log(
-//         `${logPrefix} Status changed from ${previousStatus} to ${status}`
-//       );
-//       return response(res, 200, "STATUS_UPDATED", {
-//         previousStatus,
-//         newStatus: status,
-//       });
-//     } catch (error) {
-//       console.error(`${logPrefix} Error:`, error);
-
-//       if (error.name === "CastError") {
-//         return response(res, 400, "INVALID_ID");
-//       }
-
-//       return response(res, 500, "SERVER_ERROR");
-//     }
-//   };
-
-//   // Trả về các hàm để sử dụng bên ngoài
-//   return {
-//     createChapter,
-//     getChaptersInPage,
-//     getAllChapterForComboBox,
-//     getChapterById,
-//     updateChapterById,
-//     changeChapterStatus,
-//   };
-// };
-
-// export default ChapterController();
+export default ChapterController()

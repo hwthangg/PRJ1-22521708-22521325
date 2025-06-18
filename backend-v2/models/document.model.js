@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import mongoose, { Schema } from 'mongoose';
 import mongoosePaginate from 'mongoose-paginate-v2';
 
 const DocumentSchema = new mongoose.Schema({
@@ -16,8 +16,8 @@ const DocumentSchema = new mongoose.Schema({
     default: null
   },
   type: {
-    type: Schema.Types.ObjectId,
-    ref: 'DocumentType',
+   type:String,
+   enum:['VBHC', 'TLSH', 'other'],
     default: null
   },
   scope: {

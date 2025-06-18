@@ -4,7 +4,7 @@ import mongoosePaginate from 'mongoose-paginate-v2';
 const AccountSchema = new Schema({
   email: { type: String, default: null },
   phone: { type: String, default: null },
-  avatar: { type: String, default: null },
+  avatar: { type: Object, default: null },
   fullname: { type: String, default: null },
   birthday: { type: Date, default: null },
   gender: { type: String, enum: ['male', 'female'], default: null },

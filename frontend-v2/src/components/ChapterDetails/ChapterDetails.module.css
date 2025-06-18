@@ -1,115 +1,151 @@
-/* Register.module.css */
-
-.wrapper {
-  box-sizing: border-box;
-  display: flex;
+.container{
+  position: absolute;
+  top:0;
+  background-color: rgba(100, 100, 100, 0.5);
+width:100%;
+height: 100%;
+display: flex;
+justify-content: center;
+align-items: center;
 }
 
-.formSection {
-  flex: 1;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.formBox {
-  display: flex;
-  padding: 0 20px 0 40px;
+.formContainer{
+  width: 80%;
+  background-color: white;
   border-radius: 20px;
-  flex-direction: column;
- width: 100%;
+  padding: 50px;
+  box-sizing: border-box;
+  position: relative;
 }
 
-.label {
-  margin-bottom: 5px;
-  font-weight: 550;
-  color: #0d47a1;
-}
-
-.fieldWrapper {
-  border: 2px solid #0d47a1;
-  padding: 10px;
-  border-radius: 10px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: row;
-  margin-bottom: 20px;
-  height: 30px;
-}
-
-.input {
-  all: unset;
-  width: 100%;
-  margin-left: 15px;
-  caret-color: black;
-  color: #0d47a1;
-}
-
-.passwordToggle {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-left: 10px;
-  cursor: pointer;
-}
-
-.submitBtn {
+.closeButton{
   all:unset;
-  padding: 10px 60px;
-  border-radius: 10px;
-  background-color: #0d47a1;
-  cursor: pointer;
-  width: 80px;
+  position: absolute;
+  top: 10px;
+  right: 10px
+
 }
 
-.submitBtn:hover {
-  background-color: #1565c0;
+
+
+.closeButton:active{
+  transform: translateY(-2px);
 }
 
-.submitText {
-  font-size: large;
-  font-weight: bold;
-  color: white;
-  text-align: center;
+.form{
+
+ overflow: auto;
+max-height: 80vh;
+padding-right:10px ;
+display: flex;
+gap:20px;
+flex-direction: column;
 }
 
-.forgotPwd {
-  all: unset;
-  font-weight: 550;
-  cursor: pointer;
-}
 
-.registerPrompt {
+.avatarContainer{
   display: flex;
-  justify-content: center;
+  flex-direction: row;
+  justify-content: flex-start;
   align-items: center;
   gap: 10px;
+  color: var(--dark-blue);
+  
 }
 
-.registerLink {
-  all: unset;
-  font-weight: 600;
-  cursor: pointer;
+.avatarContainer img{
+  width: 48px;
+  aspect-ratio: 1/1;
+  border-radius: 100px;
 }
 
-.bannerSection {
-  flex: 1;
+
+.inputGroup {
+  display: flex;
+  gap: 20px;
+  
+
+}
+
+.inputContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  width: 100%;
+}
+
+.inputContainer label {
+  color: var(--normal-blue);
+  font-weight: bold;
+}
+
+.inputContainer input {
+  outline: none;
+  border: none;
+  height: 36px;
+  border-radius: 10px;
+  padding: 0 10px;
+  border: 1px solid var(--normal-blue);
+  caret-color: black;
+  color: var(--normal-blue);
+}
+
+.inputSelect {
+  outline: none;
+  border: none;
+  height: 36px;
+  border-radius: 10px;
+  padding: 0 10px;
+  border: 1px solid var(--normal-blue);
+  caret-color: black;
+  color: var(--normal-blue);
+}
+
+.inputSelect select {
+
+  outline: none;
+  border: none;
+  height: 100%;
+  width: 100%;
+  color: var(--normal-blue);
+}
+
+
+.buttonContainer {
   display: flex;
   justify-content: center;
   align-items: center;
+  margin-top: 20px;
 }
 
-.bannerImg {
-  object-fit: cover;
-  width: 50vw;
-  height: 100vh;
-  position: fixed;
-  top: 0;
+.buttonContainer button {
+  padding: 12px 18px;
+  height: 40px;
+  width: 120px;
+  color: white;
+  border: none;
+  font-size: large;
+  outline: none;
+  border-radius: 10px;
+  font-weight: bold;
+  background-color: var(--normal-blue);
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-@media screen and (max-width: 768px) {
-  .bannerSection {
-    display: none;
-  }
+.buttonContainer button:active {
+  transform: scale(0.97);
+  background-color: var(--normal-blue);
+  box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+.loadingContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  font-size: 18px;
+  gap: 10px;
 }

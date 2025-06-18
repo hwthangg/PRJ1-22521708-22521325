@@ -42,3 +42,17 @@ export const formatYYYYMMDD = (string)=>{
 
     return `${day}/${month}/${year}`;
   }
+
+  export function formatVietnamTime(isoString) {
+  const date = new Date(isoString);
+  // Cộng thêm 7 giờ để chuyển sang giờ Việt Nam
+  const vietnamTime = new Date(date.getTime() + 7 * 60 * 60 * 1000);
+
+  const hours = vietnamTime.getHours().toString().padStart(2, '0');
+  const minutes = vietnamTime.getMinutes().toString().padStart(2, '0');
+  const day = vietnamTime.getDate().toString().padStart(2, '0');
+  const month = (vietnamTime.getMonth() + 1).toString().padStart(2, '0');
+  const year = vietnamTime.getFullYear();
+
+  return `${hours}:${minutes}, ngày ${day}/${month}/${year}`;
+}

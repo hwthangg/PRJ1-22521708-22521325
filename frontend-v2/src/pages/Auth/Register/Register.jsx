@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "./Register.module.css";
 import logo from "../../../assets/logo.webp";
 import { FiEye, FiEyeOff } from "react-icons/fi";
@@ -12,25 +12,23 @@ export default function Register() {
     phone: "",
     fullname: "",
     birthday: "",
-    gender: "male",
+    gender: "",
     password: "",
-    role: "manager",
+    role: "",
   });
 
-  const [chapters, setChapters] = useState([
-    { value: "665f2f94aa8e74600f317d7a", name: "chi đoàn 1" },
-  ]);
+  const [chapters, setChapters] = useState([]);
   const [roleInfo, setRoleInfo] = useState({
-    managerOf: chapters[0].value,
+    managerOf:"",
     memberOf: "",
     cardCode: "",
-    position: "member",
+    position: "",
     address: "",
     hometown: "",
     ethnicity: "",
     religion: "",
     eduLevel: "",
-    joinDate: "",
+    joinedAt: "",
   });
   const [togglePassword, setTogglePassword] = useState(false);
 
@@ -102,7 +100,7 @@ export default function Register() {
           }
         }
       }
-
+ console.log("Form to submit:", JSON.stringify({ account, roleInfo }));
       // Nếu mọi thứ hợp lệ
       const res = await fetch(
         `${import.meta.env.VITE_APP_SERVER_URL}/api/auth/register`,
@@ -117,9 +115,14 @@ export default function Register() {
       const data = await res.json();
       console.log(data);
 
-      console.log("Form to submit:", JSON.stringify({ account, roleInfo }));
-      toast.success("Đăng ký thành công");
-      navigate('/')
+      if(data.success){
+         navigate('/')
+             toast.success("Đăng ký thành công");
+      }
+
+     
+  
+     
       // TODO: gửi form đến server
     } catch (error) {
       console.error(error);
@@ -134,7 +137,32 @@ export default function Register() {
   const handleRoleInfoChange = (key, value) => {
     setRoleInfo((prev) => ({ ...prev, [key]: value }));
   };
+useEffect(()=>{
+   const fetchChapters = async () => {
+      try {
+        const res = await fetch(
+          `${
+            import.meta.env.VITE_APP_SERVER_URL
+          }/api/chapters?page=1&limit=10000`,
+         
+        );
 
+        const result = await res.json();
+        
+        console.log(result);
+
+        setChapters(result.data.result.map(item=>({value:item._id, name:item.name})))
+
+       
+      } catch (err) {
+        if (err.name !== "AbortError") {
+          console.error(err);
+        }
+      }
+    };
+
+    fetchChapters()
+},[])
   return (
     <div className={styles.container}>
       <div className={styles.logoContainer}>
@@ -191,6 +219,9 @@ export default function Register() {
                 value={account.gender}
                 onChange={(e) => handleAccountChange("gender", e.target.value)}
               >
+                <option  value="" disabled>
+                    Chọn giới tính
+                  </option>
                 <option value="male">Nam</option>
                 <option value="female">Nữ</option>
               </select>
@@ -233,6 +264,9 @@ export default function Register() {
               value={account.role}
               onChange={(e) => handleAccountChange("role", e.target.value)}
             >
+              <option  value="" disabled>
+                    Chọn vai trò
+                  </option>
               <option value="manager">Quản lý chi đoàn</option>
               <option value="member">Đoàn viên</option>
             </select>
@@ -250,7 +284,9 @@ export default function Register() {
                 onChange={(e) =>
                   handleRoleInfoChange("managerOf", e.target.value)
                 }
-              >
+              > <option  value="" disabled>
+                    Chọn chi đoàn quản lý
+                  </option>
                 {chapters.map((item, index) => (
                   <option key={index} value={item.value}>
                     {item.name}
@@ -274,6 +310,9 @@ export default function Register() {
                     handleRoleInfoChange("memberOf", e.target.value)
                   }
                 >
+                  <option  value="" disabled>
+                    Chọn chi đoàn sinh hoạt
+                  </option>
                    {chapters.map((item, index) => (
                   <option key={index} value={item.value}>
                     {item.name}
@@ -297,13 +336,13 @@ export default function Register() {
                 />
               </div>
               <div className={styles.inputContainer}>
-                <label htmlFor="joinDate">Ngày vào đoàn</label>
+                <label htmlFor="joinedAt">Ngày vào đoàn</label>
                 <input
                   type="date"
-                  id="joinDate"
-                  value={roleInfo.joinDate}
+                  id="joinedAt"
+                  value={roleInfo.joinedAt}
                   onChange={(e) =>
-                    handleRoleInfoChange("joinDate", e.target.value)
+                    handleRoleInfoChange("joinedAt", e.target.value)
                   }
                 />
               </div>
@@ -319,6 +358,9 @@ export default function Register() {
                     handleRoleInfoChange("position", e.target.value)
                   }
                 >
+                  <option  value="" disabled>
+                    Chọn chức vụ
+                  </option>
                   <option value="secretary">Bí thư</option>
                   <option value="deputy_secretary">Phó Bí thư</option>
                   <option value="committee_member">Ủy viên BCH</option>

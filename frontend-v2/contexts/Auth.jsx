@@ -12,7 +12,7 @@ export function AuthProvider({ children }) {
     if (storedToken) {
       setToken(storedToken);
     }
-  }, []);
+  }, [token]);
 
   const login = (newToken) => {
     setToken(newToken);

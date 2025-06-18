@@ -6,7 +6,6 @@ const AuthMiddleware = (requiredRole) => {
   return async (req, res, next) => {
     try {
       const authHeader = req.headers['authorization'];
-
       if (!authHeader || !authHeader.startsWith('Bearer ')) {
         return sendResponse(res, 401, 'Bạn chưa đăng nhập');
       }
@@ -15,16 +14,16 @@ const AuthMiddleware = (requiredRole) => {
       const decoded = verifyToken(token);
       const accountId = decoded.accountId;
 
-      const account = await Account.findById(accountId);
+      const account = await Account.findById(accountId)
       if (!account) {
         return sendResponse(res, 404, 'Không tìm thấy tài khoản');
       }
 
-      if (account.role !== requiredRole) {
+      if (account.role !== requiredRole && requiredRole) {
         return sendResponse(res, 403, 'Bạn không có quyền truy cập');
       }
 
-      req.user = account; // lưu thông tin account nếu cần dùng tiếp
+      req.account = account; // lưu thông tin account nếu cần dùng tiếp
       next();
     } catch (error) {
       console.error(error);

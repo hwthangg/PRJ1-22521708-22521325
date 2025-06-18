@@ -9,7 +9,7 @@ const CommentSchema = new mongoose.Schema({
   status: {
     type: String,
     enum: ['active', 'locked'],
-    default: null
+    default: 'active'
   }
 }, {
   timestamps: true

@@ -2,152 +2,226 @@ import React, { useEffect, useState } from "react";
 import { FaHeart, FaRegHeart, FaShareAlt } from "react-icons/fa";
 import { MdComment } from "react-icons/md";
 import avatar from "../../assets/avatar.png";
+import { formatVietnamTime } from "../../../utils";
+import styles from "./EventItemList.module.css";
 
-const EventItemList = ({ event, formatVietnameseDate }) => {
+const EventItemList = ({ event }) => {
   const [like, setLike] = useState(false);
   const [openComment, setOpenComment] = useState(false);
   const [comments, setComments] = useState([]);
   const [comment, setComment] = useState("");
-  const handleLike = async () => {
+  const [user, setUser] = useState({});
+
+  // Xử lý yêu thích
+  const handleLike = async (eventId) => {
     try {
+      console.log("Yêu thích");
       setLike((prev) => !prev);
-    } catch (error) {}
+      const res = await fetch(
+        `${import.meta.env.VITE_APP_SERVER_URL}/api/favorites`,
+        {
+          method: "POST",
+          body: JSON.stringify({ eventId: eventId }),
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+    } catch (error) {
+      console.error("Lỗi khi yêu thích:", error);
+    }
   };
+
+  // Xử lý mở/đóng bình luận
+  const handleToggleComment = () => {
+    try {
+      console.log("Mở/Đóng bình luận");
+      setOpenComment((prev) => !prev);
+    } catch (error) {
+      console.error("Lỗi khi mở/đóng bình luận:", error);
+    }
+  };
+
+  // Xử lý gửi bình luận
   const handleComment = async () => {
     try {
-      console.log(comment);
+      console.log("Gửi bình luận");
+      if (!comment.trim()) return;
+      // TODO: Gửi bình luận lên server tại đây
       const res = await fetch(
-        `http://localhost:5000/api/events/${event._id}/comments`,
+        `${import.meta.env.VITE_APP_SERVER_URL}/api/comments`,
         {
           method: "POST",
           headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
             "Content-Type": "application/json",
           },
-          credentials: "include", // nếu server cần cookie/session
-          body: JSON.stringify({
-            comment: comment, // comment là biến chứa nội dung bình luận của bạn
-          }),
+          body: JSON.stringify({ eventId: event._id, text: comment }),
         }
       );
+      const newComment = {
+        accountId: {
+          fullname: user.fullname,
+          avatar: user.avatar.path,
+        },
+        comment: comment.trim(),
+      };
+      setComments((prev) => [newComment, ...prev]);
       setComment("");
-    } catch (error) {}
+    } catch (error) {
+      console.error("Lỗi khi gửi bình luận:", error);
+    }
+  };
+
+  // Xử lý đăng ký (nếu có)
+  const handleRegister = async () => {
+    try {
+      console.log("Đăng ký sự kiện");
+      // TODO: Gửi yêu cầu đăng ký sự kiện
+      const res = await fetch(
+        `${import.meta.env.VITE_APP_SERVER_URL}/api/event-registrations`,
+        {
+          method: "POST",
+          body: JSON.stringify({ eventId: event._id }),
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+    } catch (error) {
+      console.error("Lỗi khi đăng ký:", error);
+    }
   };
   useEffect(() => {
-    const fetchComments = async () => {
+    const fetchIsLiked = async () => {
       try {
         const res = await fetch(
-          `http://localhost:5000/api/events/${event._id}/comments?page=1&limit=100&status=all&sortBy=createdAt&sortOrder=asc`
+          `${import.meta.env.VITE_APP_SERVER_URL}/api/favorites?eventId=${
+            event._id
+          }`,
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+              "Content-Type": "application/json",
+            },
+          }
         );
         const data = await res.json();
         console.log(data);
-        setComments(data.data.comments);
-      } catch (error) {}
+        setLike(data.data.liked);
+      } catch (error) {
+        console.error("Lỗi khi lấy lượt thích:", error);
+      }
     };
 
-    fetchComments();
-  }, [comment]);
+    const fetchComments = async () => {
+      try {
+        const res = await fetch(
+          `${import.meta.env.VITE_APP_SERVER_URL}/api/comments?eventId=${
+            event._id
+          }&&status=active`,
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        const data = await res.json();
+        console.log(data);
 
-  useEffect(() => {
-    console.log(comments);
-  }, [comments]);
+        setComments(
+          data.data.map((item) => ({
+            accountId: {
+              fullname: item.accountId.fullname,
+              avatar: item.accountId.avatar.path,
+            },
+            comment: item.text,
+          }))
+        );
+      } catch (error) {
+        console.error("Lỗi khi lấy lượt thích:", error);
+      }
+    };
+    const fetchProfile = async () => {
+      try {
+        const res = await fetch(
+          `${import.meta.env.VITE_APP_SERVER_URL}/api/auth`,
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        const data = await res.json();
+        setUser(data.data);
+      } catch (error) {
+        console.log(error);
+        toast.error("Có lỗi xảy ra khi lấy hồ sơ");
+      }
+    };
+
+    fetchProfile();
+
+    fetchIsLiked();
+    fetchComments();
+  }, []);
   return (
-    <div
-      style={{
-        boxShadow: "0 0 5px black",
-        width: "800px",
-        padding: "30px",
-        borderRadius: "8px",
-      }}
-    >
-      {/* Header */}
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          marginBottom: "12px",
-        }}
-      >
-        <div style={{ display: "flex", alignItems: "center" }}>
-          <img
-            src={avatar}
-            alt="avatar"
-            style={{
-              borderRadius: "50%",
-              marginRight: "8px",
-              width: "40px",
-              aspectRatio: "1/1",
-            }}
-          />
+    <div className={styles.container}>
+      <div className={styles.header}>
+        <div className={styles.userInfo}>
+          <img src={avatar} alt="avatar" className={styles.avatar} />
           <div>
-            <div style={{ fontWeight: "bold" }}>{event.chapterId.name}</div>
+            <div className={styles.chapterName}>{event.chapterId.name}</div>
           </div>
         </div>
-        
-        <div
-          style={{
-            borderRadius: "10px",
-            backgroundColor: "#3d85c6",
-            color: "white",
-            padding: "10px 20px",
-            fontWeight: "bold",
-            display: event.status == 'pending'?'block':'none'
-          }}
-        >
-          Đăng ký
+        {event.status === "pending" && (
+          <div className={styles.register} onClick={handleRegister}>
+            Đăng ký
+          </div>
+        )}
+      </div>
+
+      <div className={styles.content}>
+        <div className={styles.title}>
+          <p>{event.name}</p>
+          <p>{formatVietnamTime(event.startedAt)}</p>
         </div>
+
+        <p className={styles.description}>{event.description}</p>
       </div>
 
-      {/* Content */}
-      <div style={{ marginBottom: "12px" }}>
-        <p>Diễn ra vào {formatVietnameseDate(event.startedAt)}</p>
-        <p style={{ textAlign: "justify" }}>{event.description}</p>
-      </div>
-
-      {/* Images */}
-      {event.images.length > 0 ?<><div
-        style={{
-          display: "flex",
-          gap: "10px",
-          height: "260px",
-          overflow: "auto",
-          padding: "10px",
-          marginBottom: "12px",
-        }}
-      >
-        { event.images.map((item, index) => (
-          <img
-            key={index}
-            src={item}
-            alt={`image-${index}`}
-            style={{
-              borderRadius: "10px",
-              boxShadow: "0 0 3px black",
-            }}
-          />
+      <div className={styles.tags}>
+        {event.tags.map((item, index) => (
+          <div key={index} className={styles.tag}>
+            {item}
+          </div>
         ))}
-      </div></>:<></>}
-      
+      </div>
 
-      {/* Actions */}
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          borderTop: "1px solid #ccc",
-          padding: "20px",
-          marginTop: "30px",
-        }}
-      >
+      {event.images.length > 0 && (
+        <div className={styles.imageContainer}>
+          {event.images.map((item, index) => (
+            <img
+              key={index}
+              src={item.path}
+              alt={`image-${index}`}
+              className={styles.image}
+            />
+          ))}
+        </div>
+      )}
+
+      <div className={styles.actions}>
         <button
+          className={styles.actionBtn}
           onClick={() => handleLike(event._id)}
-          style={{
-            backgroundColor: "transparent",
-            border: "none",
-            cursor: "pointer",
-            display: "flex",
-            alignItems: "center",
-            gap: "10px",
-          }}
         >
           {like ? (
             <FaHeart size={20} color="red" />
@@ -157,115 +231,44 @@ const EventItemList = ({ event, formatVietnameseDate }) => {
           <p>Yêu thích</p>
         </button>
 
-        <button
-          onClick={() => setOpenComment((prev) => !prev)}
-          style={{
-            backgroundColor: "transparent",
-            border: "none",
-            cursor: "pointer",
-            display: "flex",
-            alignItems: "center",
-            gap: "10px",
-          }}
-        >
+        <button className={styles.actionBtn} onClick={handleToggleComment}>
           <MdComment size={20} color="#073763" />
           <p>Bình luận</p>
         </button>
-
-        <button
-          style={{
-            backgroundColor: "transparent",
-            border: "none",
-            cursor: "pointer",
-            display: "flex",
-            alignItems: "center",
-            gap: "10px",
-          }}
-        >
-          <FaShareAlt size={20} color="#073763" />
-          <p>Chia sẻ</p>
-        </button>
       </div>
 
-      {/* Comment Section */}
       {openComment && (
-        <div style={{ borderTop: "1px solid #ccc", paddingTop: "8px" }}>
-          {/* Comment List */}
-          <div style={{ marginBottom: "8px" }}>
+        <div className={styles.commentSection}>
+          <div className={styles.inputContainer} style={{ marginBottom: 10 }}>
+            <input
+              type="text"
+              placeholder="Viết bình luận..."
+              value={comment}
+              onChange={(e) => setComment(e.target.value)}
+              className={styles.input}
+            />
+            <button onClick={handleComment} className={styles.sendBtn}>
+              Gửi
+            </button>
+          </div>
+          <div className={styles.commentList}>
             {comments.map((item, idx) => (
-              <div
-                key={idx}
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  margin: "20px 0",
-                }}
-              >
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "start",
-                    gap: "10px",
-                  }}
-                >
+              <div key={idx} className={styles.commentItem}>
+                <div className={styles.commentContent}>
                   <img
                     src={item.accountId.avatar || avatar}
                     alt="avatar"
-                    style={{
-                      borderRadius: "50%",
-                      width: "40px",
-                      aspectRatio: "1/1",
-                    }}
+                    className={styles.commentAvatar}
                   />
-                  <div
-                    style={{
-                      backgroundColor: "#e3f2fd",
-                      padding: "10px",
-                      borderRadius: "10px",
-                      display: "flex",
-                      flexDirection: "column",
-                      gap: "5px",
-                    }}
-                  >
-                    <div style={{ fontWeight: "bold" }}>
+                  <div className={styles.commentBox}>
+                    <div className={styles.commentName}>
                       {item.accountId.fullname}
                     </div>
-                    <p style={{ textAlign: "justify" }}>{item.comment}</p>
+                    <p className={styles.commentText}>{item.comment}</p>
                   </div>
                 </div>
               </div>
             ))}
-          </div>
-
-          {/* Comment Input */}
-          <div style={{ display: "flex" }}>
-            <input
-              type="text"
-              placeholder="Viết bình luận..."
-              style={{
-                flex: 1,
-                padding: "6px",
-                borderRadius: "4px",
-                border: "1px solid #ccc",
-                outline: "none",
-                caretColor: "black",
-              }}
-              value={comment}
-              onChange={(e) => setComment(e.target.value)}
-            />
-            <button
-              style={{
-                marginLeft: "8px",
-                padding: "6px 12px",
-                borderRadius: "4px",
-                border: "none",
-                backgroundColor: "#007bff",
-                color: "white",
-              }}
-              onClick={() => handleComment()}
-            >
-              Gửi
-            </button>
           </div>
         </div>
       )}

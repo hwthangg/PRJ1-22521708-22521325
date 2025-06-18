@@ -1,13 +1,11 @@
 import React from "react";
-import logoDoan from "../../../assets/huyhieudoan.png";
-import styles from './LogoSection.module.css'
+import logo from "../../../assets/logo.webp";
+import styles from "./LogoSection.module.css";
 function LogoSection() {
   return (
-    <div className={styles.logoSection}>
-      <img src={logoDoan} className={styles.logo} />
-      <p className={styles.title}>
-        HỆ THỐNG HỖ TRỢ <br /> NGHIỆP VỤ CÔNG TÁC ĐOÀN
-      </p>
+    <div className={styles.logoContainer}>
+      <img src={logo} />
+      <p>HỆ THỐNG QUẢN LÝ ĐOÀN VIÊN</p>
     </div>
   );
 }

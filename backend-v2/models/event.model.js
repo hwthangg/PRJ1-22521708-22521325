@@ -8,7 +8,7 @@ const EventSchema = new Schema({
   startedAt: { type: Date, default: null },
   location: { type: String, default: null },
   description: { type: String, default: null },
-  tags: [{ type: Schema.Types.ObjectId, ref: 'EventTag', default: null }],
+  tags: [{ type: String, default: null }],
   scope: {
     type: String,
     enum: ['public', 'chapter'],
@@ -18,7 +18,7 @@ const EventSchema = new Schema({
   likes: { type: Number, default: 0 },
   status: {
     type: String,
-    enum: ['completed', 'doing', 'pending', 'canceled'],
+    enum: ['completed', 'happening', 'pending', 'canceled'],
     default: null
   }
 }, {

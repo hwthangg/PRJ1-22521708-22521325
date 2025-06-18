@@ -1,43 +1,142 @@
-.container {
-  display: flex;
-  flex-direction: column;
-  position: relative;
-  box-sizing: border-box;
+.container{
+border: 1px solid;
+  width: 100%;
   height: 100%;
-  justify-content: flex-start;
+  display: flex;
+  box-sizing: border-box;
+  flex-direction: column;
   align-items: center;
-  padding: 40px;
-  gap: 20px;
+  padding: 20px;
+  gap:40px;
+  position: relative;
 }
 
-.toolsContainer{
-  width: 100%;
+.table{
+  width: 90%;
+  border: 1px solid #ccc;
+    border-top-right-radius: 10px ;
+   border-top-left-radius: 10px ;
+}
+.head{
   display: flex;
-  gap: 40px;
-  align-items: flex-end;
+  background-color: var(--normal-blue);
+  padding: 15px;
+  color: white;
+  font-weight: bold;
+  text-align: center;
+  border-top-right-radius: 10px ;
+   border-top-left-radius: 10px ;
+}
+.head p{
+  text-align: left;
+}
+
+.row{
+  display: flex;
+padding: 15px;
+
+color: var(--dark-blue);
+  text-align: left;
+  justify-content: center;
+  align-items: center;
+ border-bottom: 1px solid #ccc;
+
+}
+
+.row:hover{
+  background-color: var(--light-blue);
+  cursor: pointer;
+}
+.row:active{
+  background-color: var(--weight-blue);
+  cursor: pointer;
+}
+
+.avatarContainer{
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 10px;
+  padding: 0 15px;
   
 }
 
-.tableWrapper {
-  width: 100%;
+.avatarContainer img{
+  width: 48px;
+  aspect-ratio: 1/1;
+  border-radius: 100px;
+}
+
+
+.toolBar{
   display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
+  flex-direction: row;
+  width: 90%;
   gap: 20px;
-}
 
-.addBtn{
-  all: unset;
+}
+.inputContainer{
   display: flex;
-  justify-content: center;
-  align-items: center;
+  flex-direction: column;
+  gap:5px;
+  width: 100%;
+}
+
+.inputContainer label{
   color: var(--normal-blue);
-
-
+  font-weight: bold;
+}
+.inputContainer input{
+  outline: none;
+  border: none;
+  height: 52px;
+  border-radius: 10px;
+  padding: 0 10px;
+  border: 2px solid var(--normal-blue);
+ caret-color: black;
+ color: var(--normal-blue);
 }
 
-.addBtn:hover{
-  transform: translateY(-2px) scale(1.02);
+.inputSelect {
+  outline: none;
+  border: none;
+  height: 48px;
+  border-radius: 10px;
+  padding: 0 10px;
+  border: 2px solid var(--normal-blue);
+  caret-color: black;
+  color: var(--normal-blue);
 }
 
+.inputSelect select {
+
+  outline: none;
+  border: none;
+  height: 100%;
+  width: 100%;
+  color: var(--normal-blue);
+}
+
+.cell span{
+  width: 12px !important;
+  height: 12px !important;
+
+  margin-right: 10px;
+}
+
+.loadingContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40px;
+  font-size: 16px;
+  color: #666;
+}
+
+.noDataContainer {
+  text-align: center;
+  padding: 40px;
+  font-size: 16px;
+  color: #666;
+}

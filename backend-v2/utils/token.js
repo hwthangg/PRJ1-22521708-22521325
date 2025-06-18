@@ -5,7 +5,7 @@ configDotenv()
 
 export const signToken = (data) => {
   try {
-    const token = jwt.sign(data, process.env.JWT_KEY, { expiresIn: '1h' })
+    const token = jwt.sign(data, process.env.JWT_KEY, { expiresIn: '18h' })
     return token
   } catch (error) {
     console.log(error)

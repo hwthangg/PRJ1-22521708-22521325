@@ -22,16 +22,16 @@
 }
 
 *::-webkit-scrollbar-track {
-  background:var(--dark-blue);
+  background:var(--white-blue);
 }
 
 *::-webkit-scrollbar-thumb {
-  background-color: var(--light-blue);
+  background-color: var(--dark-blue);
   border-radius: 4px;
 }
 
 *::-webkit-scrollbar-thumb:hover {
-  background-color:var(--light-blue);
+  background-color:var(--dark-blue);
 }
 
 *::-webkit-scrollbar-button {

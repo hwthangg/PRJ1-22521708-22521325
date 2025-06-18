@@ -9,7 +9,7 @@ const EventRegistrationSchema = new Schema({
   status: {
     type: String,
     enum: ['registered', 'attended'],
-    default: null
+    default: 'registered'
   }
 }, {
   timestamps: true

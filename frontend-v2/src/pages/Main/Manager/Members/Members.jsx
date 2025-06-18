@@ -1,121 +1,223 @@
-import React, { lazy, useEffect, useState } from "react";
-import Table from "../../../../components/Table/Table";
-import Pagination from "../../../../components/Pagination/Pagination";
+import React, { useEffect, useState } from "react";
 import styles from "./Members.module.css";
-import TextInput from "../../../../components/Input/TextInput/TextInput";
-import Dropdown from "../../../../components/Input/Dropdown/Dropdown";
-import { IoAddCircle} from "react-icons/io5";
-import AccountForm from "../../../../components/Form/AccountForm/AccountForm";
+import avatar from "../../../../assets/avatar.png";
+import Pagination from "../../../../components/Pagination/Pagination";
+import AccountDetails from "../../../../components/AccountDetails/AccountDetails";
+import ClipLoader from "react-spinners/ClipLoader";
+import { toast } from "react-toastify";
 
-function Members() {
-  const [data, setData] = useState([]);
-  const [showAddForm, setShowAddForm] = useState(false)
-  const positionOptions = [
-    { value: "all", label: "Tất cả" },
-    { value: "Bí thư", label: "Bí thư" },
-    { value: "Phó Bí thư", label: "Phó Bí thư" },
-    { value: "Ủy viên BCH", label: "Ủy viên BCH" },
-    { value: "Đoàn viên", label: "Đoàn viên" },
+export default function Members() {
+  const fields = [
+    { flex: 1, field: "STT" },
+    { flex: 4, field: "Họ và tên" },
+    { flex: 4, field: "Số thẻ đoàn" },
+    { flex: 2, field: "Chức vụ" },
+    { flex: 2, field: "Trạng thái" },
   ];
-  const statusOptions = [
-    { value: "all", label: "Tất cả" },
-    { value: "active", label: "Hoạt động" },
-    { value: "banned", label: "Khóa" },
-     { value: "waiting", label: "Chờ phê duyệt" },
-  ];
+
+  const mapFields = {
+    secretary: "Bí thư",
+    deputy_secretary: "Phó Bí thư",
+    commitee_member: "Ủy viên Ban chấp hành",
+    member: "Đoàn viên",
+    active: "Hoạt động",
+    locked: "Khóa",
+    pending: "Chờ duyệt",
+  };
+
   const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
-
+  const [totalPages, setTotalPages] = useState();
+  const [data, setData] = useState([]);
   const [search, setSearch] = useState("");
-  const [status, setStatus] = useState("all");
-  const [position, setPosition] = useState("all");
-
-  const chooseFilter = (e) => {
-  const { name, value } = e.target;
-  console.log(name)
-
-  switch (name) {
-    case "position":
-      setPosition(value);
-      break;
-    case "status":
-      setStatus(value);
-      break;
-       case "search":
-      setSearch(value);
-      break;
-    default:
-      break;
-  }
-};
+  const [position, setPosition] = useState("");
+  const [accountId, setAccountId] = useState("");
+  const [openDetails, setOpenDetails] = useState(false);
+  const [loading, setLoading] = useState(false);
   useEffect(() => {
+    const controller = new AbortController(); // để có thể hủy fetch nếu cần
+    let retryInterval = null;
+    let timeout = null;
+    let isMounted = true;
+
     const fetchMembers = async () => {
       try {
         const res = await fetch(
-          `http://localhost:5000/api/members?page=${currentPage}&limit=5&search=${search}&status=${status}&position=${position}&sortBy=createdAt&sortOrder=asc`,
+          `${
+            import.meta.env.VITE_APP_SERVER_URL
+          }/api/members?page=${currentPage}&limit=6&search=${search}&position=${position}`,
           {
-            method: "GET",
+            signal: controller.signal,
             headers: {
-              "Content-Type": "application/json",
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
             },
-            credentials:'include'
           }
         );
-
         const result = await res.json();
-        console.log(result)
-        setData(result.data.members);
-        setTotalPages(result.data.pagination.totalPages);
-      } catch (error) {
-        console.error("Error fetching accounts:", error);
+        console.log(result);
+
+        if (isMounted && result.data.result.length > 0) {
+          clearInterval(retryInterval);
+          clearTimeout(timeout);
+          setData(result.data.result);
+          setTotalPages(result.data.totalPages);
+          setLoading(false);
+        }
+      } catch (err) {
+        if (err.name !== "AbortError") {
+          console.error(err);
+        }
       }
     };
 
-    fetchMembers();
-    console.log(search);
-  }, [search, status, position, currentPage]);
+    setLoading(true);
+    fetchMembers(); // gọi lần đầu ngay lập tức
+
+    // Thử lại mỗi 5 giây
+    retryInterval = setInterval(fetchMembers, 5000);
+
+    // Dừng sau 60 giây
+    timeout = setTimeout(() => {
+      clearInterval(retryInterval);
+      setLoading(false); // hết giờ mà chưa có dữ liệu thì dừng loading
+    }, 60000);
+
+    return () => {
+      isMounted = false;
+      clearInterval(retryInterval);
+      clearTimeout(timeout);
+      controller.abort();
+    };
+  }, [search, currentPage, position, openDetails]);
+
   return (
     <div className={styles.container}>
-      <div className={styles.toolsContainer}>
-        {" "}
-        <TextInput
-          width={50}
-          label={"Tìm kiếm"}
-          name="search"
-          value={search}
-          onChangeValue={chooseFilter}
-          placeholder="Nhập thông tin tài khoản cần tìm"
-        />
-        <Dropdown
-       
-          name="position"
-          value={position}
-          onChangeValue={chooseFilter}
-          label={"Chức vụ"}
-          options={positionOptions}
-        />
-        <Dropdown
-          name="status"
-          value={status}
-          onChangeValue={chooseFilter}
-          label={"Trạng thái"}
-          options={statusOptions}
-        />
-
-        
+      <div className={styles.toolBar}>
+        <div className={styles.inputContainer} style={{ flex: 2 }}>
+          <label htmlFor="search">Tìm kiếm</label>
+          <input
+            type="search"
+            id="search"
+            placeholder="Tìm kiếm theo số thẻ đoàn"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+        </div>
+        <div className={styles.inputContainer} style={{ flex: 1 }}>
+          <label htmlFor="position">Chức vụ</label>
+          <div className={styles.inputSelect}>
+            <select
+              id="position"
+              value={position}
+              onChange={(e) => setPosition(e.target.value)}
+            >
+              <option value="">Tất cả</option>
+              <option value="secretary">Bí thư</option>
+              <option value="deputy_secretary">Phó Bí thư</option>
+              <option value="commitee_member">Ủy viên Ban chấp hành</option>
+              <option value="member">Đoàn viên</option>
+            </select>
+          </div>
+        </div>
+    
       </div>
-      <div className={styles.tableWrapper}>
-        {" "}
-        <Table name="member" data={data} startIndex={(currentPage - 1) * 5} />
+
+      <div className={styles.table}>
+        <div className={styles.head}>
+          {fields.map((item, index) => (
+            <div
+              key={index}
+              className={styles.cell}
+              style={{ flex: item.flex }}
+            >
+              <p>{item.field}</p>
+            </div>
+          ))}
+        </div>
+
+        <div className={styles.data}>
+          {loading ? (
+            <div className={styles.loadingContainer}>
+              <ClipLoader color="#36d7b7" size={50} />
+              <p>Đang tải dữ liệu...</p>
+            </div>
+          ) : data.length === 0 ? (
+            <div className={styles.noDataContainer}>
+              <p>Không có dữ liệu</p>
+            </div>
+          ) : (
+            data.map((item, index) => (
+              <div
+                key={index}
+                className={styles.row}
+                onClick={() => {
+                  setAccountId(item._id);
+                  setOpenDetails(true);
+                }}
+              >
+                <div
+                  className={styles.cell}
+                  style={{ flex: fields[0].flex, textAlign: "center" }}
+                >
+                  <p style={{ paddingRight: 40 }}>
+                    {index + 1 + (currentPage - 1) * 6}
+                  </p>
+                </div>
+                <div className={styles.cell} style={{ flex: fields[1].flex }}>
+                  <div className={styles.avatarContainer}>
+                    <img src={item.avatar?.path || avatar} />
+                    <p>{item.fullname}</p>
+                  </div>
+                </div>
+                <div className={styles.cell} style={{ flex: fields[2].flex }}>
+                  <p>{item.cardCode}</p>
+                </div>
+                <div className={styles.cell} style={{ flex: fields[3].flex }}>
+                  <p>{mapFields[item.position]}</p>
+                </div>
+                <div className={styles.cell} style={{ flex: fields[4].flex }}>
+                  <p
+                    style={{
+                      color:
+                        item.status === "active"
+                          ? "green"
+                          : item.status === "locked"
+                          ? "red"
+                          : "#ff8f00",
+                    }}
+                  >
+                    <span
+                      style={{
+                        display: "inline-block",
+                        width: 8,
+                        height: 8,
+                        borderRadius: "50%",
+                        marginRight: 6,
+                        backgroundColor:
+                          item.status === "active"
+                            ? "green"
+                            : item.status === "locked"
+                            ? "red"
+                            : "#ff8f00",
+                      }}
+                    ></span>
+                    {mapFields[item.status]}
+                  </p>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+      </div>
+
+      <div className={styles.pagination}>
         <Pagination
           currentPage={currentPage}
-          totalPages={totalPages}
           setCurrentPage={setCurrentPage}
+          totalPages={totalPages}
         />
       </div>
-      {showAddForm ? <><AccountForm setOpen={setShowAddForm}/></>:<></>}
+
+      {openDetails && <AccountDetails id={accountId} open={setOpenDetails} />}
     </div>
   );
 }
-
-export default Members;

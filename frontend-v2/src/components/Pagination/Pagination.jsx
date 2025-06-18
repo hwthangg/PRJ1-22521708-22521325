@@ -8,117 +8,87 @@ import {
 const Pagination = ({ currentPage, totalPages, setCurrentPage }) => {
   const [hoverBack, setHoverBack] = useState(false);
   const [hoverNext, setHoverNext] = useState(false);
+
+  // Giới hạn currentPage trong khoảng [1, totalPages]
   useEffect(() => {
     if (currentPage > totalPages) {
+      setCurrentPage(totalPages);
+    }
+    if (currentPage < 1) {
       setCurrentPage(1);
     }
-  }, [totalPages]);
+  }, [currentPage, totalPages, setCurrentPage]);
+
+  const generatePageNumbers = () => {
+    const pages = [];
+
+    if (totalPages <= 7) {
+      for (let i = 1; i <= totalPages; i++) {
+        pages.push(i);
+      }
+    } else {
+      const first = 1;
+      const last = totalPages;
+
+      if (currentPage <= 4) {
+        pages.push(1, 2, 3, 4, 5, "...", last);
+      } else if (currentPage >= totalPages - 3) {
+        pages.push(first, "...", totalPages - 4, totalPages - 3, totalPages - 2, totalPages - 1, last);
+      } else {
+        pages.push(first, "...", currentPage - 1, currentPage, currentPage + 1, "...", last);
+      }
+    }
+
+    return pages;
+  };
+
+  const handlePageClick = (page) => {
+    if (typeof page === "number" && page !== currentPage) {
+      setCurrentPage(page);
+    }
+  };
+
   return (
     <div className={styles.container}>
-      {/* Previous Button */}
+      {/* Nút Quay lại */}
       <div
+        className={`${styles.navButton} ${currentPage === 1 ? styles.disabled : ""}`}
         onMouseEnter={() => setHoverBack(true)}
         onMouseLeave={() => setHoverBack(false)}
-        style={{ cursor: "pointer" }}
+        onClick={() => currentPage > 1 && setCurrentPage(currentPage - 1)}
       >
         <TbSquareRoundedChevronsLeftFilled
           size={40}
           color={hoverBack ? "#90caf9" : "#0d47a1"}
-          onClick={() => {
-            if (currentPage !== 1) setCurrentPage((prev) => prev - 1);
-          }}
         />
       </div>
 
-      {/* Page Numbers */}
+      {/* Danh sách số trang */}
       <div className={styles.pageGroup}>
-        {totalPages > 6 ? (
-          <>
-            {currentPage !== 1 && (
-              <div
-                className={styles.pageButton}
-                onClick={() => setCurrentPage((prev) => prev - 1)}
-              >
-                <p>{currentPage - 1}</p>
-              </div>
-            )}
-
-            <div className={`${styles.pageButton} ${styles.currentPage}`}>
-              <p>{currentPage}</p>
-            </div>
-
-            <div
-              className={styles.pageButton}
-              onClick={() => setCurrentPage((prev) => prev + 1)}
-            >
-              <p>{currentPage + 1}</p>
-            </div>
-
-            {currentPage === 1 && (
-              <div
-                className={styles.pageButton}
-                onClick={() => setCurrentPage((prev) => prev + 2)}
-              >
-                <p>{currentPage + 2}</p>
-              </div>
-            )}
-
-            <div className={`${styles.pageButton} ${styles.ellipsis}`}>
-              <p>...</p>
-            </div>
-
-            <div
-              className={styles.pageButton}
-              onClick={() => setCurrentPage(totalPages - 2)}
-            >
-              <p>{totalPages - 2}</p>
-            </div>
-
-            <div
-              className={styles.pageButton}
-              onClick={() => setCurrentPage(totalPages - 1)}
-            >
-              <p>{totalPages - 1}</p>
-            </div>
-
-            <div
-              className={styles.pageButton}
-              onClick={() => setCurrentPage(totalPages)}
-            >
-              <p>{totalPages}</p>
-            </div>
-          </>
-        ) : (
-          <>
-            {Array.from({ length: totalPages }).map((_, index) => (
-              <div
-                key={index}
-                className={`${styles.pageButton} ${
-                  index + 1 === currentPage ? styles.currentPage : ""
-                }`}
-                onClick={() => setCurrentPage(index + 1)}
-              >
-                <p>{index + 1}</p>
-              </div>
-            ))}
-          </>
-        )}
+        {generatePageNumbers().map((page, index) => (
+          <div
+            key={index}
+            className={`${styles.pageButton}
+              ${page === currentPage ? styles.currentPage : ""}
+              ${page === "..." ? styles.ellipsis : ""}`}
+            onClick={() => handlePageClick(page)}
+            style={{ cursor: page === "..." ? "default" : "pointer" }}
+          >
+            <p>{page}</p>
+          </div>
+        ))}
       </div>
 
-      {/* Next Button */}
+      {/* Nút Tiếp theo */}
       <div
+        className={`${styles.navButton} ${currentPage === totalPages ? styles.disabled : ""}`}
         onMouseEnter={() => setHoverNext(true)}
         onMouseLeave={() => setHoverNext(false)}
-        style={{ cursor: "pointer" }}
+        onClick={() => currentPage < totalPages && setCurrentPage(currentPage + 1)}
       >
         <TbSquareRoundedChevronsRightFilled
           size={40}
           color={hoverNext ? "#90caf9" : "#0d47a1"}
-          onClick={() => {
-            if (currentPage !== totalPages) {
-              setCurrentPage((prev) => prev + 1);
-            }
-          }}
         />
       </div>
     </div>
