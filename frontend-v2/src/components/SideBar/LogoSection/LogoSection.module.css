@@ -1,0 +1,42 @@
+.logoContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+
+  padding: 40px 0;
+
+}
+
+.logoContainer img {
+  width: 120px;
+  /* Add animation properties */
+  animation: floatUpDown 3s ease-in-out infinite;
+  /* Name, duration, timing, repetition */
+}
+
+@keyframes floatUpDown {
+  0% {
+    transform: translateY(0);
+    /* Start position */
+  }
+
+  50% {
+    transform: translateY(-10px);
+    /* Move up 20px */
+  }
+
+  100% {
+    transform: translateY(0);
+    /* Return to start */
+  }
+}
+
+.logoContainer p {
+  color: white;
+  font-size: medium;
+  font-weight: bold;
+  text-align: center;
+
+}

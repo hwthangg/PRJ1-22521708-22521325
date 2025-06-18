@@ -1,0 +1,185 @@
+.container {
+  box-shadow: 0 0 5px black;
+  width: 800px;
+  padding: 30px;
+  border-radius: 8px;
+  background-color: white;
+  margin-bottom: 20px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.userInfo {
+  display: flex;
+  align-items: center;
+}
+
+.avatar {
+  border-radius: 50%;
+  margin-right: 8px;
+  width: 40px;
+  aspect-ratio: 1/1;
+}
+
+.chapterName {
+  font-weight: bold;
+  color: var(--dark-blue);
+}
+
+.register {
+  border-radius: 10px;
+  background-color: #3d85c6;
+  color: white;
+  padding: 10px 20px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.register:active{
+opacity: 0.7;
+transform: translateY(-2px);
+
+}
+
+
+.content {
+  margin-bottom: 12px;
+}
+.title{
+  text-align: right;
+  color: #999;
+  font-size: medium;
+  width: 100%;
+  margin-bottom: 10px;
+}
+.title p:nth-child(1){
+color: var(--dark-blue);
+font-size: x-large;
+font-weight: bold;
+text-align: center;
+}
+
+.description {
+  text-align: justify;
+}
+
+.tags {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.tag {
+  background-color: var(--weight-blue);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 10px;
+}
+
+.imageContainer {
+  display: flex;
+  gap: 10px;
+  height: 260px;
+  overflow: auto;
+  padding: 10px;
+  margin-bottom: 12px;
+}
+
+.image {
+  border-radius: 10px;
+  box-shadow: 0 0 3px black;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-start;
+  border-top: 1px solid #ccc;
+  padding: 20px;
+  gap: 20px;
+  margin-top: 30px;
+}
+
+.actionBtn {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.commentSection {
+  border-top: 1px solid #ccc;
+  padding-top: 8px;
+
+}
+
+.commentList {
+  margin: 20px 10px;
+   max-height: 240px;
+  overflow: auto;
+  background-color: var(--light-blue);
+  outline: 10px solid var(--light-blue);
+  padding: 0 10px;
+  border-radius: 5px;
+}
+
+.commentItem {
+  margin: 20px 0;
+}
+
+.commentContent {
+  display: flex;
+  align-items: start;
+  gap: 10px;
+}
+
+.commentAvatar {
+  border-radius: 50%;
+  width: 40px;
+  aspect-ratio: 1/1;
+}
+
+.commentBox {
+  background-color: white;
+  padding: 10px;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.commentName {
+  font-weight: bold;
+}
+
+.commentText {
+  text-align: justify;
+}
+
+.inputContainer {
+  display: flex;
+}
+
+.input {
+  flex: 1;
+  padding: 6px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  outline: none;
+  caret-color: black;
+}
+
+.sendBtn {
+  margin-left: 8px;
+  padding: 6px 12px;
+  border-radius: 4px;
+  border: none;
+  background-color: #007bff;
+  color: white;
+}

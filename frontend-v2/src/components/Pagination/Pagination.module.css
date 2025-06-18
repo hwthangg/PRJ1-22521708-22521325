@@ -1,0 +1,44 @@
+.container {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+}
+
+.pageGroup {
+  display: flex;
+  flex-direction: row;
+  gap: 30px;
+}
+
+.pageButton,
+.pageNumber,
+.ellipsis {
+  width: 20px;
+  aspect-ratio: 1 / 1;
+  border: 1px solid;
+  padding: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 100px;
+  background-color: #0d47a1;
+  color: white;
+  cursor: pointer;
+}
+
+.pageButton:hover,
+.pageNumber:hover {
+  background-color: #90caf9;
+}
+
+.currentPage {
+  background-color: #90caf9;
+  font-weight: bold;
+  cursor: default;
+}
+
+.ellipsis {
+  cursor: default;
+}

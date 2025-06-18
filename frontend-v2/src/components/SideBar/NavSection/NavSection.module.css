@@ -1,0 +1,32 @@
+.navSection {
+  display: flex;
+  flex-direction: column;
+  z-index: 10;
+}
+
+.itemContainer {
+  all: unset;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0 0 0 10px;
+  cursor: pointer;
+}
+
+.itemLabel {
+  
+  color: white;
+  padding: 20px 0;
+  font-weight: bold;
+}
+
+.itemContainer:hover {
+background: linear-gradient(to right, var(--weight-blue), var(--dark-blue));
+ border-radius: 10px;
+ border: none;
+
+}
+
+.itemContainer:active{
+  transform: translateY(-2px);
+}

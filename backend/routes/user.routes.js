@@ -6,6 +6,9 @@ const UserRoutes = express.Router();
 // Tạo người dùng
 UserRoutes.post("/", UserController.createUser);
 
+UserRoutes.post("/login", UserController.login);
+UserRoutes.post("/logout", UserController.logout);
+
 // Lấy danh sách người dùng (có filter)
 UserRoutes.get("/", UserController.getAllUsersWithFilter);
 

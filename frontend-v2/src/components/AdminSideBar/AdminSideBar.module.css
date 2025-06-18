@@ -1,0 +1,125 @@
+/* AdminSideBar.module.css */
+.sidebarContainer {
+  width: 360px;
+  box-sizing: border-box;
+}
+
+.sidebarFixed {
+  position: fixed;
+  box-sizing: border-box;
+  height: 100vh;
+  width: 360px;
+  display: flex;
+  flex-direction: column;
+  background-color: #073763;
+}
+
+.sidebarContent {
+  padding: 20px 15px 15px 15px;
+  flex: 1;
+  display: flex;
+}
+
+.sidebarInner {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 60px;
+}
+
+.logoSection {
+  height: 200px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo {
+  height: 120px;
+  width: 120px;
+}
+
+.title {
+  font-size: 22px;
+  text-align: center;
+  font-weight: bold;
+  color: white;
+}
+
+.navLinks {
+  display: flex;
+  flex-direction: column;
+}
+
+.navLink {
+  all: unset;
+  color: white;
+  height: 80px;
+  border-bottom: 1px solid;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  font-size: large;
+  padding-left: 40px;
+  cursor: pointer;
+}
+
+.bottomSection {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
+}
+
+.profileSection {
+  padding: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #3d85c6;
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+}
+
+.profileInfo {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 15px;
+  position: relative;
+}
+
+.avatar {
+  height: 60px;
+  width: 60px;
+  border-radius: 100px;
+  border: 1px solid white;
+}
+
+.profileName {
+  color: white;
+  font-weight: 550;
+
+  max-width: 150px;
+}
+
+.profileDropdown {
+  position: absolute;
+  border-radius: 10px;
+  background-color: white;
+  box-shadow: 0 0 10px #616161;
+  bottom: 105%;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  left: 10px;
+}
+
+.dropdownItem {
+  padding: 10px;
+}
+
+.iconButton {
+  cursor: pointer;
+}

@@ -1,0 +1,37 @@
+.container{
+  display: flex;
+  flex-direction: column;
+  gap:5px;
+  caret-color: white;
+ 
+}
+.container label{
+  font-weight: bold;
+  color: var(--dark-blue)
+}
+.selectContainer{
+  height: 40px;
+ box-shadow: 0 0 5px var(--eff-shadow);
+ width: fit-content;
+  background-color: white;
+
+   border-radius: 10px;
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   box-sizing: border-box;
+   padding: 0 5px;
+     width: 100%;
+}
+.dropdown {
+    border-radius: 10px;
+     padding: 5px 10px;
+     width: 100%;
+  border: none;
+  height: 100%;
+  outline: none;
+  caret-color: black;
+ 
+  cursor: default;
+  box-sizing: border-box;
+}

@@ -201,13 +201,22 @@ const ChapterController = () => {
     }
   }
 
+  const getChapterForLeader = async(req, res)=>{
+
+    const chapterId = req.cookies.chapterId
+    const chapter = await Chapter.findById(chapterId)
+
+    res.json(chapter)
+  }
+
   return {
     createChapter,
     getAllChaptersWithFilter,
     getChapterById,
     updateChapterById,
     deleteChapterById,
-    getAllChapterLogs
+    getAllChapterLogs,
+    getChapterForLeader
   };
 };
 

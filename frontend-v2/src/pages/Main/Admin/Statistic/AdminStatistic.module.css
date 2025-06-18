@@ -1,0 +1,75 @@
+.container {
+
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  box-sizing: border-box;
+  padding: 40px;
+}
+
+.section {
+  background-color: var(--normal-blue);
+  box-shadow: 0 0 5px var(--eff-shadow);
+  flex: 1;
+  border-radius: 20px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.section p{
+  color: white;
+  font-weight: bold;
+  font-size: larger;
+}
+
+.title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.chartsRow {
+  display: flex;
+ 
+  gap: 2rem;
+  justify-content: space-around;
+}
+
+.chartBox {
+  background-color: white;
+  color: var(--normal-blue);
+  flex: 1;
+box-shadow: 0 0 5px var(--eff-shadow);
+border-radius: 10px;
+padding: 10px;
+flex-direction: column;
+display: flex;
+  text-align: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+.chartContainer{display: flex;flex-direction: row; justify-content: space-around;   height: 180px;}
+.legend {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.colorBox {
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+}

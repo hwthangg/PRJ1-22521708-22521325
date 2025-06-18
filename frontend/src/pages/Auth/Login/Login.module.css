@@ -2,8 +2,6 @@
     display: flex;
     height: 100vh;
     margin: 0;
-    font-family: sans-serif;
-    border: 1px solid;
   }
   
   .container_login {
@@ -24,7 +22,7 @@
   /* LOGIN FORM */
   .container_login_form {
     background-color: #f2f3ff;
-    padding: 0 40px 40px 40px;
+    padding: 40px;
     border-radius: 20px;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
     width: 380px;
