@@ -5,7 +5,7 @@ import avatarDefault from "../../assets/avatar.png";
 import { toast } from "react-toastify";
 import ClipLoader from "react-spinners/ClipLoader";
 
-export default function AccountDetails({ id, open, profile }) {
+export default function AccountDetails({ id, open, profile, isAdmin = false }) {
   const [data, setData] = useState({});
   const [update, setUpdate] = useState({});
   const [loading, setLoading] = useState(false);
@@ -222,7 +222,7 @@ useEffect(()=>{
                       id="role"
                       value={data.role || ""}
                       onChange={handleChange}
-                      disabled={profile}
+                      disabled={profile || !isAdmin}
                     >
                       <option value="admin">Quản trị viên</option>
                       <option value="manager">Quản lý chi đoàn</option>
@@ -259,7 +259,7 @@ useEffect(()=>{
               style={{
                 display: data.role == "member" ? "flex" : "none",
                 flexDirection: "column",
-                gap: 20,
+                gap: 10,
               }}
             >
               <div className={styles.inputContainer}>

@@ -65,8 +65,9 @@
   background-color: white;
   padding: 40px;
   flex-direction: column;
-  gap: 20px;
-  margin-bottom: 200px;
+  gap: 10px;
+  margin-bottom: 20px;
+
 }
 
 .inputGroup {

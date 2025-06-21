@@ -217,7 +217,7 @@ export default function Members() {
         />
       </div>
 
-      {openDetails && <AccountDetails id={accountId} open={setOpenDetails} />}
+      {openDetails && <AccountDetails id={accountId} open={setOpenDetails} isAdmin={false}/>}
     </div>
   );
 }

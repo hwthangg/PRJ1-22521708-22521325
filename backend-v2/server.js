@@ -81,7 +81,7 @@ const interval = setInterval(async () => {
     console.error("Lỗi khi gửi thông báo sự kiện:", err);
   }
 
-}, 60* 1000); // Mỗi 10 phút
+},  1000 * 60); 
 
 app.use('/api/auth', AuthRoutes)
 

@@ -230,7 +230,7 @@ export default function Chat() {
 
       {/* Danh sách liên hệ */}
       <div className={styles.managerList}>
-        <div className={styles.searchContainer}>
+        {/* <div className={styles.searchContainer}>
           <input
             type="text"
             placeholder="Nhập thông tin tài khoản tìm kiếm"
@@ -238,7 +238,7 @@ export default function Chat() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
-        </div>
+        </div> */}
 
         <div style={{ padding: 20 }}>
           <p style={{ fontSize: "large", fontWeight: "bold", color: "#0d47a1" }}>

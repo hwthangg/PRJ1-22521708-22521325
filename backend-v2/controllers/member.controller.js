@@ -43,8 +43,9 @@ const MemberController = () => {
     ]);
 
     const result = await Promise.all(members.map(async(member)=>{
-      const account = await Account.findOne({infoMember: member._id})
-      return({...member, ...account.toObject()})
+      const account = await Account.findOne({infoMember: member._id}).lean()
+      
+      return({...member, ...account})
     }))
   
 

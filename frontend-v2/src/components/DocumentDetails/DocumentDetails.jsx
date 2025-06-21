@@ -216,6 +216,7 @@ export default function DocumentDetails({ id, open, canEdit }) {
               >
                 {loading ? <ClipLoader size={16} color="#fff" /> : "Lưu"}
               </button>
+              
             )}
           </div>
 

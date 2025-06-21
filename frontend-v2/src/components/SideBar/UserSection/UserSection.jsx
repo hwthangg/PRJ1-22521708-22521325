@@ -48,6 +48,7 @@ function UserSection({ user }) {
     };
 
     const handleNotification = (text)=>{
+      toast.info(text);
       const newNotification = {
         id: Date.now(), // ID tạm thời
         text,
@@ -56,7 +57,7 @@ function UserSection({ user }) {
       };
       setNotifications((prev) => [newNotification, ...prev]);
       setHasBadge((prev) => prev + 1);
-      toast.info(text);
+      
     }
 
     socket.on("admin_req", handleAdminReq);

@@ -3,6 +3,7 @@ import styles from "./ChapterDetails.module.css";
 import { IoCloseCircle } from "react-icons/io5";
 import { toast } from "react-toastify";
 import ClipLoader from "react-spinners/ClipLoader";
+import avatar from '../../assets/avatar.png'
 
 export default function ChapterDetails({ id, open }) {
   const [data, setData] = useState({});

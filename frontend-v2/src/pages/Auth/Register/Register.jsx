@@ -442,7 +442,7 @@ useEffect(()=>{
         </div>
 
         <div className={styles.hyperlink}>
-          <p>Bạn đã có tài khoản.</p>
+          <p>Bạn đã có tài khoản</p>
           <NavLink to="/">Đăng nhập ngay</NavLink>
         </div>
       </div>

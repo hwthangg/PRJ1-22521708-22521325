@@ -1,15 +1,15 @@
-.container{
+.container {
   position: absolute;
-  top:0;
+  top: 0;
   background-color: rgba(100, 100, 100, 0.5);
-width:100%;
-height: 100%;
-display: flex;
-justify-content: center;
-align-items: center;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-.formContainer{
+.formContainer {
   width: 80%;
   background-color: white;
   border-radius: 20px;
@@ -18,42 +18,41 @@ align-items: center;
   position: relative;
 }
 
-.closeButton{
-  all:unset;
+.closeButton {
+  all: unset;
   position: absolute;
   top: 10px;
   right: 10px
-
 }
 
 
 
-.closeButton:active{
+.closeButton:active {
   transform: translateY(-2px);
 }
 
-.form{
+.form {
 
- overflow: auto;
-max-height: 80vh;
-padding-right:20px ;
-display: flex;
-gap:20px;
-flex-direction: column;
+  overflow: auto;
+  max-height: 80vh;
+  padding-right: 20px;
+  display: flex;
+  gap: 10px;
+  flex-direction: column;
 }
 
 
-.avatarContainer{
+.avatarContainer {
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
   align-items: center;
   gap: 10px;
   color: var(--dark-blue);
-  
+
 }
 
-.avatarContainer img{
+.avatarContainer img {
   width: 48px;
   aspect-ratio: 1/1;
   border-radius: 100px;
@@ -62,8 +61,8 @@ flex-direction: column;
 
 .inputGroup {
   display: flex;
-  gap: 20px;
-  
+  gap: 10px;
+
 
 }
 
@@ -121,7 +120,7 @@ flex-direction: column;
   padding: 12px 18px;
   height: 40px;
   width: 240px;
-margin-bottom: 10px;
+  margin-bottom: 10px;
   color: white;
   border: none;
   font-size: large;
@@ -156,7 +155,7 @@ margin-bottom: 10px;
   gap: 12px;
   margin-top: 10px;
   overflow: auto;
-  
+
 }
 
 .imageItem {
@@ -171,7 +170,7 @@ margin-bottom: 10px;
 .imageItem img {
   border-radius: 10px;
   box-shadow: 0 0 5px var(--dark-blue);
-height: 180px;
+  height: 180px;
   object-fit: cover;
 }
 
@@ -248,33 +247,35 @@ height: 180px;
 }
 
 
-.toolBar{
+.toolBar {
   display: flex;
   flex-direction: row;
   width: 90%;
-  gap: 20px;
+  gap: 10px;
 
 }
-.inputContainer{
+
+.inputContainer {
   display: flex;
   flex-direction: column;
-  gap:5px;
+  gap: 5px;
   width: 100%;
 }
 
-.inputContainer label{
+.inputContainer label {
   color: var(--normal-blue);
   font-weight: bold;
 }
-.inputContainer input{
+
+.inputContainer input {
   outline: none;
   border: none;
   height: 52px;
   border-radius: 10px;
   padding: 0 10px;
   border: 2px solid var(--normal-blue);
- caret-color: black;
- color: var(--normal-blue);
+  caret-color: black;
+  color: var(--normal-blue);
 }
 
 .inputSelect {
@@ -305,7 +306,7 @@ height: 180px;
 
 .commentList {
   margin: 20px 10px;
-   max-height: 240px;
+  max-height: 240px;
   overflow: auto;
   background-color: var(--light-blue);
   outline: 10px solid var(--light-blue);
@@ -319,11 +320,11 @@ height: 180px;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  gap: 20px;
+  gap: 10px;
 }
 
-.commentItem button{
-  all:unset;
+.commentItem button {
+  all: unset;
   color: red;
   background-color: white;
   padding: 12px 18px;
@@ -331,6 +332,7 @@ height: 180px;
   border-radius: 20px;
   cursor: pointer;
 }
+
 .sendBtn {
   margin-left: 8px;
   padding: 6px 12px;
@@ -339,6 +341,7 @@ height: 180px;
   background-color: #007bff;
   color: white;
 }
+
 .input {
   flex: 1;
   padding: 6px;
@@ -348,7 +351,7 @@ height: 180px;
   caret-color: black;
 }
 
-.commentItem button:active{
+.commentItem button:active {
   opacity: 0.8;
 }
 

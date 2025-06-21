@@ -6,7 +6,6 @@ import { toast } from "react-toastify";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../../../../contexts/Auth.jsx";
 
-
 export default function Login() {
   const navigate = useNavigate();
   const [account, setAccount] = useState({
@@ -49,13 +48,13 @@ export default function Login() {
       console.log("Form to submit:", form);
       toast.success("Đăng nhập thành công");
       if (data.data.role == "admin") {
-        navigate("/qldv/admin/dashboard", {state: data.data.role});
+        navigate("/qldv/admin/dashboard", { state: data.data.role });
       }
       if (data.data.role == "manager") {
-        navigate("/qldv/manager/members", {state: data.data.role});
+        navigate("/qldv/manager/members", { state: data.data.role });
       }
       if (data.data.role == "member") {
-        navigate("/qldv/member/news", {state: data.data.role});
+        navigate("/qldv/member/news", { state: data.data.role });
       }
 
       // TODO: gửi form đến server
@@ -120,7 +119,7 @@ export default function Login() {
         </div>
 
         <div className={styles.hyperlink}>
-          <p>Bạn chưa có tài khoản.</p>
+          <p>Bạn chưa có tài khoản? </p>
           <NavLink to="/register">Đăng ký ngay</NavLink>
         </div>
       </div>

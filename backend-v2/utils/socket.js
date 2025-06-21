@@ -1,3 +1,4 @@
+import Account from "../models/account.model.js";
 import { onlineUsers } from "./onlineUsers.js";
 import { verifyToken } from "./token.js";
 
@@ -23,10 +24,14 @@ export const handleSocket = (io) => {
         console.log("✅ User authenticated:", socket.userId);
         console.log("🟢 Online users:", onlineUsers);
 
- socket.on('chat', (data) => {
+ socket.on('chat', async(data) => {
 
       console.log(data,12)
-      if (onlineUsers[data.to]) { io.to(onlineUsers[data.to]).emit('chat', {senderId: socket.userId, message: data.text}) }
+      if (onlineUsers[data.to]) { 
+        io.to(onlineUsers[data.to]).emit('chat', {senderId: socket.userId, message: data.text})
+        const account = await Account.findById(decoded.accountId)
+        io.to(onlineUsers[data.to]).emit('notifications', `Bạn có một tin nhắn mới từ ${account.fullname}`)
+       }
 
     })
 

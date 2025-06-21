@@ -310,6 +310,7 @@ const hideComment = async(id)=>{
                         .slice(0, 16)
                     : ""
                 }
+                className={styles.input}
                 onChange={handleChange}
               />
             </div>
@@ -321,7 +322,7 @@ const hideComment = async(id)=>{
             <textarea
               id="description"
               name="description"
-              rows={3}
+              rows={6}
               placeholder="Nhập mô tả sự kiện"
               value={data.description || ""}
               onChange={handleChange}
@@ -329,27 +330,37 @@ const hideComment = async(id)=>{
                 resize: "none",
                 padding: "10px",
                 borderRadius: "10px",
-                border: "1px solid var(--normal-blue)",
+                border: "2px solid var(--normal-blue)",
                 color: "var(--normal-blue)",
               }}
             />
           </div>
 
           {/* Hashtag */}
-          <div className={styles.inputContainer}>
+          <div className={styles.inputContainer}        >
             <label>Hashtag sự kiện</label>
-            <div className={styles.tagInputWrapper}>
+            <div className={styles.tagInputWrapper}   style={{width:400, alignItems: "center" }}>
               <input
                 type="text"
                 name="newTag"
                 placeholder="Nhập hashtag, ví dụ: #muahe"
                 value={newTag}
                 onChange={(e) => setNewTag(e.target.value)}
+        
               />
               <button
                 type="button"
                 onClick={handleAddTag}
                 className={styles.addTagButton}
+                style={{
+                  all: "unset",
+                  backgroundColor: "var(--normal-blue)",
+                  color: "white",
+                  fontWeight: "bold",
+                  padding: "8px 24px",
+                  borderRadius: 10,
+                  height: 20,
+                }}
               >
                 Thêm
               </button>
@@ -435,7 +446,7 @@ const hideComment = async(id)=>{
             {toggleAttendee ? (
               <>
                 {" "}
-                <div className={styles.toolBar}>
+                {/* <div className={styles.toolBar}>
                   <div className={styles.inputContainer} style={{ flex: 2 }}>
                     <label htmlFor="search">Tìm kiếm</label>
                     <input
@@ -455,7 +466,7 @@ const hideComment = async(id)=>{
                       </select>
                     </div>
                   </div>
-                </div>
+                </div> */}
                 <div className={styles.listRegistrations}>
                   {registrations.map((item) => (
                     <AttendeeItem item={item} />
